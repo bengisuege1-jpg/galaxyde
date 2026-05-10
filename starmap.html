@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Galaxy'de — Yıldız Haritası</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'DM Sans',sans-serif;}
+
+#bgCanvas{position:fixed;inset:0;z-index:0;}
+#mapCanvas{position:fixed;inset:0;z-index:1;cursor:crosshair;}
+
+/* NAV */
+.top-bar{
+position:fixed;top:0;left:0;right:0;z-index:20;
+display:flex;align-items:center;justify-content:space-between;
+padding:1rem 1.5rem;
+background:rgba(0,0,0,0.5);backdrop-filter:blur(16px);
+border-bottom:1px solid rgba(216,180,254,0.12);
+}
+.top-logo{font-family:‘Cormorant Garamond’,serif;font-size:20px;font-weight:600;color:#fff;}
+.top-logo span{color:#d8b4fe;}
+.top-title{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(216,180,254,0.55);}
+.top-hint{font-size:11px;color:rgba(216,180,254,0.4);display:flex;align-items:center;gap:5px;}
+.hint-dot{width:5px;height:5px;border-radius:50%;background:#d8b4fe;animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* MESAJ KUTUSU */
+#msgBox{
+position:fixed;z-index:30;
+background:rgba(10,2,28,0.92);
+border:1px solid rgba(216,180,254,0.35);
+border-radius:20px;padding:1.25rem 1.5rem;
+max-width:280px;min-width:200px;
+text-align:center;
+pointer-events:none;
+opacity:0;transform:translateY(8px) scale(0.95);
+transition:opacity 0.3s ease,transform 0.3s ease;
+backdrop-filter:blur(16px);
+}
+#msgBox.show{opacity:1;transform:translateY(0) scale(1);}
+#msgConstellation{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(216,180,254,0.5);margin-bottom:6px;}
+#msgEmoji{font-size:32px;display:block;margin-bottom:8px;}
+#msgText{font-family:‘Cormorant Garamond’,serif;font-size:18px;font-style:italic;color:#fff;line-height:1.5;}
+#msgSub{font-size:11px;color:rgba(216,180,254,0.5);margin-top:6px;line-height:1.5;}
+
+/* LEGEND */
+#legend{
+position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:20;
+display:flex;gap:10px;flex-wrap:wrap;justify-content:center;
+padding:0 1rem;
+}
+.leg-pill{
+display:flex;align-items:center;gap:5px;
+background:rgba(0,0,0,0.5);
+border:1px solid rgba(216,180,254,0.15);
+border-radius:20px;padding:5px 12px;
+font-size:11px;color:rgba(216,180,254,0.55);
+cursor:pointer;transition:all 0.2s;backdrop-filter:blur(10px);
+}
+.leg-pill:hover,.leg-pill.active{border-color:rgba(216,180,254,0.5);color:#d8b4fe;background:rgba(216,180,254,0.1);}
+.leg-dot{width:6px;height:6px;border-radius:50%;}
+
+/* BACK BTN */
+#backBtn{
+position:fixed;top:72px;left:16px;z-index:20;
+font-size:11px;color:rgba(216,180,254,0.5);
+background:rgba(0,0,0,0.5);
+border:1px solid rgba(216,180,254,0.15);
+border-radius:20px;padding:5px 14px;
+cursor:pointer;backdrop-filter:blur(10px);
+transition:all 0.2s;text-decoration:none;
+}
+#backBtn:hover{color:#d8b4fe;border-color:rgba(216,180,254,0.4);}
+</style>
+
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+<canvas id="mapCanvas"></canvas>
+
+<div class="top-bar">
+  <div class="top-logo">galaxy<span>'de</span></div>
+  <div class="top-title">✦ Yıldız Haritası</div>
+  <div class="top-hint"><div class="hint-dot"></div>yıldızlara dokun</div>
+</div>
+
+<a href="index.html" id="backBtn">← Geri</a>
+
+<div id="msgBox">
+  <div id="msgConstellation"></div>
+  <span id="msgEmoji"></span>
+  <div id="msgText"></div>
+  <div id="msgSub"></div>
+</div>
+
+<div id="legend"></div>
+
+<script>
+const bgCv=document.getElementById('bgCanvas');
+const bgCx=bgCv.getContext('2d');
+const mapCv=document.getElementById('mapCanvas');
+const mapCx=mapCv.getContext('2d');
+
+function resize(){
+  bgCv.width=mapCv.width=window.innerWidth;
+  bgCv.height=mapCv.height=window.innerHeight;
+}
+resize();
+window.addEventListener('resize',()=>{resize();drawAll();});
+
+const W=()=>window.innerWidth, H=()=>window.innerHeight;
+
+/* ── ARKA PLAN YILDIZLARI ── */
+const bgStars=Array.from({length:180},()=>({
+  x:Math.random(),y:Math.random(),
+  r:Math.random()*1.2+0.2,
+  a:Math.random()*0.4+0.1,
+  phase:Math.random()*Math.PI*2,
+  speed:Math.random()*0.004+0.001
+}));
+
+function drawBg(){
+  const w=W(),h=H();
+  const bg=bgCx.createRadialGradient(w/2,h/2,0,w/2,h/2,Math.max(w,h)*0.8);
+  bg.addColorStop(0,'#0a0220');
+  bg.addColorStop(0.6,'#04010f');
+  bg.addColorStop(1,'#000005');
+  bgCx.fillStyle=bg;bgCx.fillRect(0,0,w,h);
+
+  // nebulalar
+  [[w*0.1,h*0.15,160,'rgba(109,40,217,0.13)'],[w*0.9,h*0.8,130,'rgba(76,29,149,0.1)'],[w*0.5,h*0.5,200,'rgba(59,16,120,0.07)']].forEach(([x,y,r,c])=>{
+    const g=bgCx.createRadialGradient(x,y,0,x,y,r);
+    g.addColorStop(0,c);g.addColorStop(1,'rgba(0,0,0,0)');
+    bgCx.beginPath();bgCx.arc(x,y,r,0,Math.PI*2);bgCx.fillStyle=g;bgCx.fill();
+  });
+
+  bgStars.forEach(s=>{
+    s.phase+=s.speed;
+    const a=s.a*(0.5+0.5*Math.sin(s.phase));
+    bgCx.beginPath();bgCx.arc(s.x*w,s.y*h,s.r,0,Math.PI*2);
+    bgCx.fillStyle=`rgba(220,200,255,${a})`;bgCx.fill();
+  });
+  requestAnimationFrame(drawBg);
+}
+drawBg();
+
+/* ── TAKIMYILDIZLARİ VERİSİ ── */
+// Koordinatlar 0-1 arası normalize — ekrana otomatik ölçeklenir
+const constellations=[
+  {
+    id:'diva',
+    name:'Diva Tacı',
+    color:'#d8b4fe',
+    emoji:'👑',
+    stars:[
+      {x:0.5,y:0.18,r:3.5,main:true},
+      {x:0.42,y:0.24,r:2.5},
+      {x:0.46,y:0.28,r:2},
+      {x:0.54,y:0.28,r:2},
+      {x:0.58,y:0.24,r:2.5},
+      {x:0.5,y:0.32,r:2},
+    ],
+    lines:[[0,1],[1,2],[2,5],[5,3],[3,4],[4,0]],
+    messages:[
+      {text:'PCOS\'lu olmak zor. Ama sen daha zorsun.',sub:'Ve bunu kanıtlamak için tahlil sonuçlarını takip ediyorsun. Respect. 👑'},
+      {text:'Aynaya baktığında düşmanını değil, en iyi arkadaşını gör.',sub:'Kortizol düşer, insülin dengelenir — bilimsel olarak kanıtlı ✦'},
+      {text:'Sivilce çıktığında bedeni suçlama. O sana "yardım et" diyor.',sub:'Dili tuhaf ama niyeti iyi 💜'},
+      {text:'Sen her gün savaşıyorsun ve kimse görmüyor. Biz görüyoruz.',sub:'Gökada seninle gurur duyuyor 🌟'},
+    ]
+  },
+  {
+    id:'inositol',
+    name:'İnsülin Yıldızı',
+    color:'#6ee7b7',
+    emoji:'⚡',
+    stars:[
+      {x:0.2,y:0.35,r:3,main:true},
+      {x:0.13,y:0.42,r:2},
+      {x:0.17,y:0.48,r:2.5},
+      {x:0.27,y:0.45,r:2},
+      {x:0.23,y:0.38,r:2},
+      {x:0.15,y:0.55,r:1.8},
+    ],
+    lines:[[0,4],[4,1],[1,2],[2,5],[2,3],[3,0]],
+    messages:[
+      {text:'Beyin sisin sabah 10\'da hâlâ kalkmadıysa — bu tembellik değil, insülin.',sub:'HOMA-IR 2.5\'in altına inince kafan kristal netliğinde olacak ⚡'},
+      {text:'Karbonhidrat düşmanın değil. Tek başına gelenler sorun çıkarıyor.',sub:'Yanına protein ve lif ver, barışsınlar 🥦'},
+      {text:'Tatlı krizin geldiğinde irade değil, kan şekerin çöküyor.',sub:'Suçlama kendini. Ara öğün ekle, hayat değişir 💚'},
+      {text:'Yemek sonrası yürüyüş mu? Evet, bu kadar basit.',sub:'15 dakika kaslar glikozu emer. Asansör değil merdiven = ilaç 🚶‍♀️'},
+    ]
+  },
+  {
+    id:'shbg',
+    name:'Hormon Kalkanı',
+    color:'#f0abfc',
+    emoji:'🛡️',
+    stars:[
+      {x:0.8,y:0.3,r:3,main:true},
+      {x:0.73,y:0.38,r:2.2},
+      {x:0.78,y:0.45,r:2},
+      {x:0.85,y:0.42,r:2.5},
+      {x:0.88,y:0.35,r:2},
+      {x:0.82,y:0.52,r:1.8},
+    ],
+    lines:[[0,4],[4,3],[3,2],[2,5],[2,1],[1,0]],
+    messages:[
+      {text:'SHBG\'n düşükse testosteron yüksek demek. Yani hormonun terbiyesiz.',sub:'Nane çayı 30 günde fark yaratır. Dene. 🍵'},
+      {text:'Çene sivilcesi "karaciğerim bana kızgın" diyor.',sub:'Brokoli, sarımsak, yeşil çay. Barış müzakeresi başlasın 🛡️'},
+      {text:'Saçın döküldüğünde aynaya bakıp ağladıysan — bu hissi biliyoruz.',sub:'Ama SHBG 40\'ın üstüne çıkınca saçın da döner. Söz. 💜'},
+      {text:'Kıllanma seni tanımlamaz. Hormonal bir veri noktasısın.',sub:'Ve o veri noktası değiştirilebilir ✦'},
+    ]
+  },
+  {
+    id:'ferritin',
+    name:'Onarım Kraliçesi',
+    color:'#fcd34d',
+    emoji:'✨',
+    stars:[
+      {x:0.25,y:0.72,r:3.2,main:true},
+      {x:0.18,y:0.65,r:2},
+      {x:0.15,y:0.75,r:2.2},
+      {x:0.22,y:0.82,r:2},
+      {x:0.32,y:0.78,r:2.5},
+      {x:0.29,y:0.65,r:1.8},
+      {x:0.35,y:0.7,r:2},
+    ],
+    lines:[[0,1],[1,2],[2,3],[3,4],[4,0],[0,5],[5,6]],
+    messages:[
+      {text:'Saç dökülüyorsa önce ferritine bak. Sonra strese.',sub:'Ferritin 40 µg\'nin altındaysa saçın gitmek zorunda hissediyor 💛'},
+      {text:'Yorgunluk zayıflık değil. Ferritin düşüklüğü.',sub:'"Tembelim" diyip kendini yargıladıysan — özür dileyeceğiz 💕'},
+      {text:'Çayını yemekten sonra iç. Sadece bu.',sub:'Demir emilimi %40 artar. Kahve de aynı. Bekle biraz. ☕'},
+      {text:'C vitamini demirin elinden tutar ve hücreye götürür.',sub:'Portakallı ıspanak salatası — lezzetli ilaç ✨'},
+    ]
+  },
+  {
+    id:'cortisol',
+    name:'Sakinlik Yıldızı',
+    color:'#93c5fd',
+    emoji:'🧘‍♀️',
+    stars:[
+      {x:0.72,y:0.7,r:3,main:true},
+      {x:0.65,y:0.76,r:2.2},
+      {x:0.68,y:0.83,r:2},
+      {x:0.76,y:0.82,r:2.5},
+      {x:0.8,y:0.75,r:2},
+      {x:0.63,y:0.68,r:1.8},
+    ],
+    lines:[[0,5],[5,1],[1,2],[2,3],[3,4],[4,0]],
+    messages:[
+      {text:'Kendine kızdığın her an kortizol salgılıyorsun.',sub:'Kortizol → insülin direnci → androjen artışı. Kısır döngü. Kır onu. 💙'},
+      {text:'"Daha çok çalışsam iyileşirim" değil. "Daha çok uyusam iyileşirim."',sub:'23:00\'de uyumak en ucuz takviye. Gerçekten. 🌙'},
+      {text:'Stres PCOS\'u ateşler. Bunu söyleyen sen değil, kortizol araştırmaları.',sub:'Bugün bir şeyi reddetme hakkın var 🧘‍♀️'},
+      {text:'Öz şefkat bir lüks değil, biyolojik bir tedavi adımı.',sub:'Sevgi dolu düşünceler gerçekten kortizolü düşürüyor. Bilim diyor 💜'},
+    ]
+  },
+  {
+    id:'omega',
+    name:'Şifa Oku',
+    color:'#34d399',
+    emoji:'🌊',
+    stars:[
+      {x:0.5,y:0.6,r:2.5,main:true},
+      {x:0.43,y:0.55,r:2},
+      {x:0.37,y:0.5,r:1.8},
+      {x:0.57,y:0.65,r:2},
+      {x:0.63,y:0.7,r:1.8},
+      {x:0.44,y:0.68,r:2},
+      {x:0.56,y:0.52,r:2},
+    ],
+    lines:[[2,1],[1,0],[0,6],[0,3],[3,4],[0,5]],
+    messages:[
+      {text:'Omega-3 testosteronun frenleri. 2-6 ayda fark görürsün.',sub:'2000mg EPA+DHA. Sabır da bir takviye 🌊'},
+      {text:'İnflamasyon sessizce yanar. Omega-3 onu söndürür.',sub:'Yağlı balık haftada 2 kez, ceviz her gün ✦'},
+      {text:'Cildin aynaya bakmayı sevmiyorsa belki omega-3 eksik.',sub:'Hücre zarları omega-3 ile yapılıyor. Güzel cilt içten başlar 💚'},
+      {text:'Her hücren yenileniyor. Sen de.',sub:'3 ay sonra olan sen bugünkü seninle aynı olmayacak 🌿'},
+    ]
+  },
+  {
+    id:'moon',
+    name:'Ay Döngüsü',
+    color:'#e2e8f0',
+    emoji:'🌙',
+    stars:[
+      {x:0.86,y:0.55,r:3.5,main:true},
+      {x:0.92,y:0.48,r:2},
+      {x:0.95,y:0.58,r:2.2},
+      {x:0.9,y:0.65,r:2},
+      {x:0.83,y:0.63,r:2.5},
+      {x:0.82,y:0.48,r:1.8},
+    ],
+    lines:[[0,5],[5,1],[1,2],[2,3],[3,4],[4,0]],
+    messages:[
+      {text:'Adet olmadığında "bozuk" değilsin. Bedenin fazla mesai yapıyor.',sub:'Döngü geri döner. Beden çok sabırlı, sen de ol 🌙'},
+      {text:'Ay hem dolar hem eksilir, hem de yok olmaz.',sub:'Sen de öylesin. Her fazın anlamı var ✦'},
+      {text:'Regl ağrısı normal değil. Normalize edilmiş.',sub:'"Hep böyleydi" demek "hep böyle olmalı" demek değil 💜'},
+      {text:'Döngün düzenlenince hayatın da düzenlenir.',sub:'Uyku, stres, beslenme — üçü birden. Birini değiştir, hepsi titreşir 🌟'},
+    ]
+  },
+];
+
+/* ── ÇİZİM ── */
+let hoveredConst=null;
+let activeFilter=null;
+
+function drawAll(){
+  const w=W(),h=H();
+  mapCx.clearRect(0,0,w,h);
+
+  constellations.forEach(c=>{
+    const isActive=!activeFilter||activeFilter===c.id;
+    const isHovered=hoveredConst===c.id;
+    const baseAlpha=isActive?1:0.2;
+
+    // ÇIZGILER
+    mapCx.globalAlpha=baseAlpha*(isHovered?0.7:0.3);
+    mapCx.strokeStyle=c.color;
+    mapCx.lineWidth=isHovered?1.5:1;
+    mapCx.setLineDash([4,6]);
+    c.lines.forEach(([a,b])=>{
+      const sa=c.stars[a],sb=c.stars[b];
+      mapCx.beginPath();
+      mapCx.moveTo(sa.x*w,sa.y*h);
+      mapCx.lineTo(sb.x*w,sb.y*h);
+      mapCx.stroke();
+    });
+    mapCx.setLineDash([]);
+
+    // YILDIZLAR
+    c.stars.forEach(s=>{
+      const px=s.x*w, py=s.y*h;
+      const r=isHovered?(s.r*1.6):(s.r*(isActive?1:0.7));
+
+      // glow
+      if(isActive){
+        const gl=mapCx.createRadialGradient(px,py,0,px,py,r*6);
+        gl.addColorStop(0,c.color.replace(')',`,${isHovered?0.35:0.18})`).replace('rgb','rgba'));
+        gl.addColorStop(1,'rgba(0,0,0,0)');
+        mapCx.globalAlpha=baseAlpha;
+        mapCx.fillStyle=gl;
+        mapCx.beginPath();mapCx.arc(px,py,r*6,0,Math.PI*2);mapCx.fill();
+      }
+
+      // ana yıldız
+      mapCx.globalAlpha=baseAlpha*(isHovered?1:0.85);
+      mapCx.fillStyle='#fff';
+      mapCx.beginPath();mapCx.arc(px,py,r,0,Math.PI*2);mapCx.fill();
+
+      // merkez yıldız için büyük parlama
+      if(s.main&&isActive){
+        const sparkle=mapCx.createRadialGradient(px,py,0,px,py,r*3);
+        sparkle.addColorStop(0,c.color);
+        sparkle.addColorStop(1,'rgba(0,0,0,0)');
+        mapCx.globalAlpha=baseAlpha*(isHovered?0.8:0.5);
+        mapCx.fillStyle=sparkle;
+        mapCx.beginPath();mapCx.arc(px,py,r*3,0,Math.PI*2);mapCx.fill();
+      }
+    });
+
+    // İSİM ETİKETİ
+    if(isActive){
+      const mainStar=c.stars.find(s=>s.main);
+      const px=mainStar.x*w, py=mainStar.y*h;
+      mapCx.globalAlpha=baseAlpha*(isHovered?0.9:0.45);
+      mapCx.fillStyle=c.color;
+      mapCx.font=`${isHovered?'500':'400'} 10px DM Sans`;
+      mapCx.letterSpacing='0.08em';
+      mapCx.textAlign='center';
+      mapCx.fillText(c.name.toUpperCase(), px, py-mainStar.r*3-8);
+    }
+  });
+
+  mapCx.globalAlpha=1;
+}
+
+/* ── LEGEND ── */
+const legEl=document.getElementById('legend');
+constellations.forEach(c=>{
+  const pill=document.createElement('div');
+  pill.className='leg-pill';
+  pill.innerHTML=`<div class="leg-dot" style="background:${c.color};"></div>${c.emoji} ${c.name}`;
+  pill.onclick=()=>{
+    if(activeFilter===c.id){ activeFilter=null; pill.classList.remove('active'); }
+    else{
+      activeFilter=c.id;
+      document.querySelectorAll('.leg-pill').forEach(p=>p.classList.remove('active'));
+      pill.classList.add('active');
+    }
+    drawAll();
+  };
+  legEl.appendChild(pill);
+});
+
+/* ── MESAJ KUTUSU ── */
+let msgTimeout=null;
+const msgBox=document.getElementById('msgBox');
+
+function showMsg(c,x,y){
+  const msgs=c.messages;
+  const msg=msgs[Math.floor(Math.random()*msgs.length)];
+  document.getElementById('msgConstellation').textContent='✦ '+c.name;
+  document.getElementById('msgEmoji').textContent=c.emoji;
+  document.getElementById('msgText').textContent=msg.text;
+  document.getElementById('msgSub').textContent=msg.sub;
+
+  // pozisyon — ekran kenarına taşmasın
+  const w=W(),h=H();
+  const bw=290,bh=140;
+  let lx=x+20,ly=y-bh/2;
+  if(lx+bw>w-20) lx=x-bw-20;
+  if(ly<70) ly=70;
+  if(ly+bh>h-80) ly=h-bh-80;
+  msgBox.style.left=lx+'px';
+  msgBox.style.top=ly+'px';
+  msgBox.classList.add('show');
+
+  clearTimeout(msgTimeout);
+  msgTimeout=setTimeout(()=>msgBox.classList.remove('show'),3500);
+}
+
+/* ── ETKİLEŞİM ── */
+function findNearestStar(mx,my){
+  const w=W(),h=H();
+  let nearest=null,nearConst=null,minD=9999;
+  constellations.forEach(c=>{
+    if(activeFilter&&activeFilter!==c.id) return;
+    c.stars.forEach(s=>{
+      const d=Math.hypot(s.x*w-mx, s.y*h-my);
+      if(d<minD){ minD=d; nearest=s; nearConst=c; }
+    });
+  });
+  return minD<55?{star:nearest,constellation:nearConst}:null;
+}
+
+function findNearestConstellation(mx,my){
+  const w=W(),h=H();
+  let nearConst=null,minD=9999;
+  constellations.forEach(c=>{
+    if(activeFilter&&activeFilter!==c.id) return;
+    const main=c.stars.find(s=>s.main);
+    const d=Math.hypot(main.x*w-mx, main.y*h-my);
+    if(d<minD){ minD=d; nearConst=c; }
+  });
+  return minD<120?nearConst:null;
+}
+
+mapCv.addEventListener('mousemove',e=>{
+  const res=findNearestConstellation(e.clientX,e.clientY);
+  const newHover=res?res.id:null;
+  if(newHover!==hoveredConst){ hoveredConst=newHover; drawAll(); }
+  mapCv.style.cursor=res?'pointer':'crosshair';
+});
+
+mapCv.addEventListener('click',e=>{
+  const res=findNearestStar(e.clientX,e.clientY);
+  if(res){
+    // parlat
+    res.star._glow=1;
+    showMsg(res.constellation,e.clientX,e.clientY);
+    // canvas'ta o yıldızı flash'la
+    flashStar(res.star,res.constellation.color);
+  } else {
+    // boş alana tıkla — random yıldız ekle
+    spawnTempStar(e.clientX,e.clientY);
+  }
+});
+
+// Dokunmatik
+mapCv.addEventListener('touchend',e=>{
+  e.preventDefault();
+  const t=e.changedTouches[0];
+  const res=findNearestStar(t.clientX,t.clientY);
+  if(res){ flashStar(res.star,res.constellation.color); showMsg(res.constellation,t.clientX,t.clientY); }
+  else spawnTempStar(t.clientX,t.clientY);
+});
+
+let tempStars=[];
+function spawnTempStar(x,y){
+  const w=W(),h=H();
+  tempStars.push({x:x/w,y:y/h,r:2,glow:1,alpha:1});
+  drawAll();
+  setTimeout(()=>{
+    tempStars=tempStars.filter(s=>s!==tempStars[0]);
+    drawAll();
+  },2000);
+}
+
+function flashStar(star,color){
+  // kısa parlama efekti
+  const w=W(),h=H();
+  const px=star.x*w, py=star.y*h;
+  let alpha=1;
+  function animate(){
+    mapCx.save();
+    const gl=mapCx.createRadialGradient(px,py,0,px,py,40);
+    gl.addColorStop(0,color.replace('rgb','rgba').replace(')',`,${alpha*0.6})`));
+    gl.addColorStop(1,'rgba(0,0,0,0)');
+    mapCx.globalAlpha=alpha;
+    mapCx.fillStyle=gl;
+    mapCx.beginPath();mapCx.arc(px,py,40,0,Math.PI*2);mapCx.fill();
+    mapCx.restore();
+    alpha-=0.06;
+    if(alpha>0) requestAnimationFrame(animate);
+    else drawAll();
+  }
+  animate();
+}
+
+/* ── ANİMASYON LOOP ── */
+let animFrame=0;
+function animLoop(){
+  animFrame++;
+  // her 2 framede bir çiz (performans)
+  if(animFrame%2===0) drawAll();
+  requestAnimationFrame(animLoop);
+}
+animLoop();
+</script>
+
+</body>
+</html>
