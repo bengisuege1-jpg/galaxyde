@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Galaxy'de — PCOS Şifa Gökadası</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{background:#000;color:#fff;font-family:'DM Sans',sans-serif;overflow-x:hidden;}
+#starCanvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+
+/* INTRO */
+#intro{position:fixed;inset:0;z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#000;text-align:center;transition:opacity 1s ease;}
+#intro.fade{opacity:0;pointer-events:none;}
+.i-logo{font-family:‘Cormorant Garamond’,serif;font-size:clamp(42px,10vw,64px);font-weight:600;color:#fff;opacity:0;animation:iUp 1s ease 0.4s forwards;}
+.i-logo span{color:#d8b4fe;}
+.i-sub{font-size:12px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(216,180,254,0.55);margin-top:10px;opacity:0;animation:iUp 0.8s ease 1.1s forwards;}
+.i-bar{width:1px;height:0;background:linear-gradient(to bottom,rgba(216,180,254,0.7),transparent);margin-top:22px;animation:iBar 1s ease 1.7s forwards;}
+@keyframes iUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes iBar{to{height:56px}}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;background:rgba(0,0,0,0.65);backdrop-filter:blur(20px);border-bottom:1px solid rgba(216,180,254,0.15);}
+.nav-logo{font-family:‘Cormorant Garamond’,serif;font-size:22px;font-weight:600;color:#fff;}
+.nav-logo span{color:#d8b4fe;}
+.nav-tabs{display:flex;gap:4px;}
+.nav-tab{font-size:11px;font-weight:500;padding:6px 12px;border-radius:20px;border:none;cursor:pointer;font-family:‘DM Sans’,sans-serif;color:rgba(216,180,254,0.6);background:transparent;transition:all 0.2s;}
+.nav-tab.active,.nav-tab:hover{color:#fff;background:rgba(216,180,254,0.12);}
+.nav-cta{font-size:11px;font-weight:600;padding:7px 16px;border-radius:20px;background:linear-gradient(135deg,#6d28d9,#9f5af4);color:#fff;border:none;cursor:pointer;font-family:‘DM Sans’,sans-serif;}
+
+/* PAGES */
+.page{display:none;min-height:100vh;padding-top:70px;position:relative;z-index:10;}
+.page.active{display:block;}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem 1.5rem 4rem;position:relative;}
+.nbl{position:absolute;border-radius:50%;pointer-events:none;filter:blur(80px);}
+.badge{display:inline-flex;align-items:center;gap:7px;background:rgba(216,180,254,0.1);border:1px solid rgba(216,180,254,0.3);border-radius:20px;padding:5px 16px;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:#d8b4fe;margin-bottom:2rem;opacity:0;animation:fadeUp 0.7s ease 0.2s forwards;}
+.bdot{width:5px;height:5px;border-radius:50%;background:#d8b4fe;animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.6)}}
+h1.big{font-family:‘Cormorant Garamond’,serif;font-size:clamp(48px,12vw,72px);font-weight:300;line-height:1.06;color:#fff;max-width:600px;margin-bottom:1.5rem;opacity:0;animation:fadeUp 0.8s ease 0.4s forwards;}
+h1.big em{font-style:italic;color:#d8b4fe;}
+.hero-sub{font-size:15px;color:rgba(216,180,254,0.7);max-width:360px;line-height:1.9;font-weight:300;margin-bottom:2.5rem;opacity:0;animation:fadeUp 0.8s ease 0.6s forwards;}
+.btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;opacity:0;animation:fadeUp 0.8s ease 0.8s forwards;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.btn-p{padding:14px 32px;border-radius:100px;background:linear-gradient(135deg,#6d28d9,#9f5af4);color:#fff;border:none;font-size:14px;font-weight:600;cursor:pointer;font-family:‘DM Sans’,sans-serif;transition:opacity 0.2s,transform 0.15s;}
+.btn-p:hover{opacity:.88;transform:translateY(-1px);}
+.btn-g{padding:14px 32px;border-radius:100px;background:rgba(216,180,254,0.1);color:#d8b4fe;border:1px solid rgba(216,180,254,0.3);font-size:14px;cursor:pointer;font-family:‘DM Sans’,sans-serif;transition:background 0.2s;}
+.btn-g:hover{background:rgba(216,180,254,0.2);}
+
+/* MANIFESTO */
+.sec{padding:0 1.5rem 4rem;max-width:720px;margin:0 auto;}
+.sec-lbl{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(216,180,254,0.5);text-align:center;margin-bottom:1.75rem;display:flex;align-items:center;gap:1rem;}
+.sec-lbl::before,.sec-lbl::after{content:’’;flex:1;height:1px;background:rgba(216,180,254,0.15);}
+.mcard{background:rgba(255,255,255,0.04);border:1px solid rgba(216,180,254,0.2);border-radius:24px;padding:2.5rem;text-align:center;}
+.mlbl{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(216,180,254,0.5);margin-bottom:1.25rem;}
+.mtext{font-family:‘Cormorant Garamond’,serif;font-size:20px;font-style:italic;font-weight:300;line-height:1.8;color:rgba(216,180,254,0.85);}
+.mtext strong{font-style:normal;font-weight:600;color:#fff;}
+
+/* PLANETS */
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+@media(max-width:480px){.pgrid{grid-template-columns:1fr;}}
+.pcard{background:rgba(255,255,255,0.04);border:1px solid rgba(216,180,254,0.18);border-radius:18px;padding:1.5rem 1rem;text-align:center;cursor:pointer;transition:border-color 0.2s,background 0.2s,transform 0.2s;}
+.pcard:hover{border-color:rgba(216,180,254,0.5);background:rgba(216,180,254,0.08);transform:translateY(-3px);}
+.pico{font-size:34px;display:block;margin-bottom:10px;}
+.pname{font-size:13px;font-weight:600;color:#d8b4fe;margin-bottom:4px;}
+.psub{font-size:11px;color:rgba(216,180,254,0.45);line-height:1.5;}
+
+/* POPUP */
+.pop-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;align-items:center;justify-content:center;padding:2rem;}
+.pop-ov.open{display:flex;}
+.pop-card{background:#100228;border:1px solid rgba(216,180,254,0.35);border-radius:24px;padding:2.5rem 2rem;max-width:360px;width:100%;text-align:center;position:relative;}
+.pop-x{position:absolute;top:14px;right:16px;background:none;border:none;color:rgba(216,180,254,0.5);font-size:22px;cursor:pointer;}
+.pop-ico{font-size:44px;display:block;margin-bottom:14px;}
+.pop-title{font-family:‘Cormorant Garamond’,serif;font-size:24px;color:#fff;margin-bottom:10px;}
+.pop-body{font-size:14px;color:rgba(216,180,254,0.8);line-height:1.8;}
+.pop-tag{display:inline-block;margin-top:14px;background:rgba(216,180,254,0.12);border:1px solid rgba(216,180,254,0.3);border-radius:12px;padding:4px 14px;font-size:12px;color:#d8b4fe;}
+
+/* TIPS */
+.tgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:12px;}
+.tcard{background:rgba(255,255,255,0.04);border:1px solid rgba(216,180,254,0.15);border-radius:18px;padding:1.5rem;transition:border-color 0.2s,transform 0.2s;}
+.tcard:hover{border-color:rgba(216,180,254,0.4);transform:translateY(-2px);}
+.tico{font-size:26px;margin-bottom:8px;display:block;}
+.tcat{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(216,180,254,0.4);margin-bottom:5px;}
+.ttitle{font-size:14px;font-weight:600;color:#fff;margin-bottom:7px;}
+.tbody{font-size:12px;color:rgba(216,180,254,0.65);line-height:1.75;}
+.ttag{display:inline-block;margin-top:8px;background:rgba(216,180,254,0.1);border-radius:8px;padding:2px 10px;font-size:11px;color:#d8b4fe;}
+
+/* FOOTER */
+.footer{text-align:center;padding:3rem 1.5rem 2rem;border-top:1px solid rgba(216,180,254,0.08);position:relative;z-index:10;}
+.flogo{font-family:‘Cormorant Garamond’,serif;font-size:24px;font-weight:600;color:#fff;margin-bottom:10px;}
+.flogo span{color:#d8b4fe;}
+.ftext{font-size:12px;color:rgba(216,180,254,0.35);font-style:italic;line-height:1.8;max-width:400px;margin:0 auto;}
+
+/* TAHLİL */
+.tp{padding:1.5rem;}
+.ptitle{font-family:‘Cormorant Garamond’,serif;font-size:32px;font-weight:300;color:#fff;line-height:1.1;margin-bottom:4px;}
+.ptitle em{font-style:italic;color:#d8b4fe;}
+.psub2{font-size:13px;color:rgba(216,180,254,0.5);margin-bottom:1.5rem;}
+.tgr{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+@media(max-width:480px){.tgr{grid-template-columns:1fr;}}
+.tc{background:rgba(255,255,255,0.05);border:1px solid rgba(216,180,254,0.2);border-radius:16px;padding:1.1rem;transition:border-color 0.2s;}
+.tc:focus-within{border-color:rgba(216,180,254,0.5);}
+.tpl{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(216,180,254,0.5);display:flex;align-items:center;gap:5px;margin-bottom:6px;}
+.tdot{width:6px;height:6px;border-radius:50%;}
+.tn{font-size:15px;font-weight:600;color:#fff;margin-bottom:2px;}
+.tr{font-size:11px;color:rgba(216,180,254,0.4);margin-bottom:10px;line-height:1.5;}
+.tir{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.tinput{width:80px;padding:8px 10px;font-size:15px;font-weight:600;text-align:center;background:rgba(255,255,255,0.07);border:1px solid rgba(216,180,254,0.3);border-radius:10px;color:#fff;font-family:‘DM Sans’,sans-serif;outline:none;transition:border-color 0.15s;}
+.tinput:focus{border-color:rgba(216,180,254,0.7);}
+.tinput::placeholder{color:rgba(216,180,254,0.25);}
+.tunit{font-size:11px;color:rgba(216,180,254,0.4);}
+.bbg{height:7px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden;margin-bottom:4px;}
+.bfill{height:100%;border-radius:4px;width:0%;transition:width 0.7s ease,background 0.4s;}
+.bzones{display:flex;justify-content:space-between;font-size:10px;color:rgba(216,180,254,0.3);margin-bottom:8px;}
+.tstat{display:none;font-size:11px;font-weight:600;padding:3px 10px;border-radius:8px;margin-bottom:6px;}
+.tins{display:none;font-size:12px;color:rgba(216,180,254,0.75);line-height:1.7;padding:9px 11px;background:rgba(255,255,255,0.04);border-radius:9px;}
+.sumcard{background:rgba(255,255,255,0.05);border:1px solid rgba(216,180,254,0.2);border-radius:16px;padding:1.25rem;margin-bottom:10px;display:none;}
+.sumtitle{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(216,180,254,0.5);margin-bottom:1rem;}
+.suminr{display:grid;grid-template-columns:1fr auto;gap:1.25rem;align-items:center;}
+.sumrow{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.sumlbl{font-size:12px;color:rgba(216,180,254,0.6);width:80px;flex-shrink:0;}
+.sumbbg{flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,0.08);overflow:hidden;}
+.sumbfill{height:100%;border-radius:3px;transition:width 0.7s ease;}
+.sumval{font-size:12px;font-weight:600;color:#fff;min-width:52px;text-align:right;}
+.scorew{display:flex;flex-direction:column;align-items:center;}
+.scoren{font-size:36px;font-weight:700;color:#fff;line-height:1;}
+.scorel{font-size:10px;color:rgba(216,180,254,0.4);letter-spacing:0.06em;margin-top:3px;}
+.actbox{margin-top:10px;padding:10px 12px;background:rgba(255,255,255,0.03);border:1px solid rgba(216,180,254,0.15);border-radius:10px;display:none;}
+.acttit{font-size:10px;color:rgba(216,180,254,0.5);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:7px;}
+.actlist{list-style:none;}
+.actlist li{font-size:12px;color:rgba(216,180,254,0.7);padding:3px 0;display:flex;gap:7px;}
+.actlist li::before{content:‘→’;color:rgba(216,180,254,0.4);flex-shrink:0;}
+.tahbtns{display:flex;gap:8px;margin-top:4px;}
+.tahbtn{font-size:12px;padding:9px 16px;background:rgba(255,255,255,0.05);border:1px solid rgba(216,180,254,0.2);border-radius:10px;color:rgba(216,180,254,0.7);cursor:pointer;font-family:‘DM Sans’,sans-serif;transition:background 0.15s;}
+.tahbtn:hover{background:rgba(216,180,254,0.1);}
+
+/* GÜNLÜK */
+.gp{padding:1.5rem;}
+.phead{background:rgba(255,255,255,0.04);border:1px solid rgba(216,180,254,0.18);border-radius:18px;padding:1.1rem 1.25rem;display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;}
+.grw{position:relative;width:62px;height:62px;flex-shrink:0;}
+.grw svg{transform:rotate(-90deg);}
+.grbg{fill:none;stroke:rgba(255,255,255,0.08);stroke-width:5;}
+.grfill{fill:none;stroke:#d8b4fe;stroke-width:5;stroke-linecap:round;stroke-dasharray:175.9;stroke-dashoffset:175.9;transition:stroke-dashoffset 0.6s ease,stroke 0.4s;}
+.grc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.grpct{font-size:15px;font-weight:700;color:#fff;line-height:1;}
+.grlbl{font-size:9px;color:rgba(216,180,254,0.5);}
+.gpmsg{font-size:15px;font-weight:600;color:#fff;margin-bottom:2px;}
+.gpsub{font-size:12px;color:rgba(216,180,254,0.5);}
+.gsl{font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(216,180,254,0.6);display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.gcnt{font-size:11px;color:rgba(216,180,254,0.5);letter-spacing:0;background:rgba(216,180,254,0.08);border-radius:10px;padding:1px 8px;}
+.gits{display:flex;flex-direction:column;gap:7px;margin-bottom:12px;}
+.git{background:rgba(255,255,255,0.05);border:1px solid rgba(216,180,254,0.18);border-radius:13px;padding:0.8rem 1rem;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all 0.2s;}
+.git.done{border-color:rgba(52,211,153,0.5);background:rgba(52,211,153,0.07);}
+.gico{font-size:20px;flex-shrink:0;}
+.gbody{flex:1;}
+.gname{font-size:13px;font-weight:600;color:#fff;margin-bottom:1px;}
+.git.done .gname{color:#6ee7b7;}
+.gdet{font-size:11px;color:rgba(216,180,254,0.45);}
+.gwhy{font-size:10px;color:rgba(216,180,254,0.3);margin-top:1px;}
+.gchk{width:26px;height:26px;border-radius:50%;border:1.5px solid rgba(216,180,254,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:700;color:transparent;transition:all 0.2s;}
+.git.done .gchk{background:#10b981;border-color:#10b981;color:#fff;}
+.stcard{background:rgba(255,255,255,0.05);border:1px solid rgba(216,180,254,0.18);border-radius:14px;padding:1rem 1.1rem;margin-bottom:12px;}
+.stcard .stlbl{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(216,180,254,0.5);margin-bottom:3px;}
+.stcard .stnums{display:flex;align-items:baseline;gap:3px;}
+.stcard .stcur{font-size:30px;font-weight:700;color:#fff;line-height:1;}
+.stcard .stmax{font-size:13px;color:rgba(216,180,254,0.4);}
+.stcard .sttop{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;}
+.stcard .stemo{font-size:26px;}
+.stbarbg{height:8px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden;margin-bottom:5px;}
+.stbarfill{height:100%;border-radius:4px;background:#d8b4fe;width:0%;transition:width 0.5s ease,background 0.4s;}
+.sthint{font-size:11px;color:rgba(216,180,254,0.4);margin-bottom:10px;}
+.stbtns{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+.stbtn{padding:9px 4px;border-radius:9px;background:rgba(255,255,255,0.05);border:1px solid rgba(216,180,254,0.18);color:#d8b4fe;font-size:12px;font-weight:600;cursor:pointer;font-family:‘DM Sans’,sans-serif;transition:all 0.15s;}
+.stbtn.ok{background:rgba(52,211,153,0.15);border-color:rgba(52,211,153,0.4);color:#34d399;}
+.wcard{background:rgba(255,255,255,0.05);border:1px solid rgba(216,180,254,0.18);border-radius:14px;padding:1rem 1.1rem;margin-bottom:12px;}
+.wtop{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.wlbl{font-size:12px;font-weight:600;color:#fff;}
+.wval{font-size:18px;font-weight:700;color:#93c5fd;}
+.wgls{display:flex;gap:6px;flex-wrap:wrap;}
+.glass{width:32px;height:36px;border-radius:7px;background:rgba(147,197,253,0.08);border:1px solid rgba(147,197,253,0.2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;font-size:16px;}
+.glass::after{content:‘○’;font-size:11px;color:rgba(147,197,253,0.3);}
+.glass.filled{background:rgba(147,197,253,0.18);border-color:rgba(147,197,253,0.5);}
+.glass.filled::after{content:‘💧’;font-size:16px;}
+.moodcard{background:rgba(255,255,255,0.05);border:1px solid rgba(216,180,254,0.18);border-radius:14px;padding:1rem 1.1rem;margin-bottom:12px;}
+.moodlbl{font-size:12px;font-weight:600;color:#fff;margin-bottom:10px;}
+.moods{display:flex;gap:8px;}
+.mbtn{flex:1;padding:10px 4px;border-radius:11px;background:rgba(255,255,255,0.04);border:1px solid rgba(216,180,254,0.15);cursor:pointer;text-align:center;transition:all 0.15s;font-family:‘DM Sans’,sans-serif;}
+.mbtn.sel{border-color:rgba(216,180,254,0.6);background:rgba(216,180,254,0.12);}
+.mem{font-size:22px;display:block;margin-bottom:3px;}
+.mtx{font-size:10px;font-weight:600;color:rgba(216,180,254,0.5);}
+.mbtn.sel .mtx{color:#d8b4fe;}
+.strcard{background:rgba(251,191,36,0.07);border:1px solid rgba(251,191,36,0.25);border-radius:14px;padding:1rem 1.1rem;display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.strico{font-size:32px;}
+.strn{font-size:30px;font-weight:700;color:#fbbf24;line-height:1;}
+.strl{font-size:12px;color:rgba(251,191,36,0.6);}
+
+/* FORM */
+.fp{padding:1.5rem;}
+.fcard{background:rgba(255,255,255,0.04);border:1px solid rgba(216,180,254,0.2);border-radius:22px;padding:2rem 1.5rem;max-width:480px;margin:0 auto;}
+.ftit{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(216,180,254,0.5);text-align:center;margin-bottom:1.5rem;}
+.ff{margin-bottom:12px;}
+.fl{display:block;font-size:12px;color:rgba(216,180,254,0.6);margin-bottom:5px;}
+.fi,.fsel{width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(216,180,254,0.25);border-radius:11px;color:#fff;font-size:14px;font-family:‘DM Sans’,sans-serif;outline:none;transition:border-color 0.15s;-webkit-appearance:none;}
+.fi:focus,.fsel:focus{border-color:rgba(216,180,254,0.6);background:rgba(216,180,254,0.08);}
+.fi::placeholder{color:rgba(216,180,254,0.25);}
+.fsel option{background:#100228;color:#fff;}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.fcon{display:flex;align-items:flex-start;gap:10px;margin:14px 0;}
+.fcon input{width:17px;height:17px;flex-shrink:0;margin-top:2px;accent-color:#7c3aed;cursor:pointer;}
+.fcontxt{font-size:12px;color:rgba(216,180,254,0.45);line-height:1.6;}
+.fsub{width:100%;padding:14px;background:linear-gradient(135deg,#6d28d9,#9f5af4);color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:‘DM Sans’,sans-serif;transition:opacity 0.2s,transform 0.15s;}
+.fsub:hover{opacity:.88;transform:translateY(-1px);}
+.fsucc{display:none;text-align:center;padding:2rem 1rem;}
+.fsico{font-size:48px;display:block;margin-bottom:14px;}
+.fstitl{font-family:‘Cormorant Garamond’,serif;font-size:28px;color:#fff;margin-bottom:8px;}
+.fssub{font-size:14px;color:rgba(216,180,254,0.65);line-height:1.7;}
+
+/* BOTTOM NAV */
+.bnav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(0,0,0,0.92);backdrop-filter:blur(20px);border-top:1px solid rgba(216,180,254,0.15);}
+@media(max-width:600px){.bnav{display:flex;}nav .nav-tabs{display:none;}nav .nav-cta{display:none;}body{padding-bottom:60px;}}
+.bb{flex:1;padding:12px 0;background:none;border:none;font-size:10px;font-weight:600;color:rgba(216,180,254,0.45);cursor:pointer;font-family:‘DM Sans’,sans-serif;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.bb.active{color:#d8b4fe;}
+.bico{font-size:20px;}
+</style>
+
+</head>
+<body>
+
+<canvas id="starCanvas"></canvas>
+
+<!-- INTRO -->
+
+<div id="intro">
+  <div class="i-logo">galaxy<span>'de</span></div>
+  <div class="i-sub">PCOS Şifa Gökadası</div>
+  <div class="i-bar"></div>
+</div>
+
+<nav>
+  <div class="nav-logo">galaxy<span>'de</span></div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('home',this)">Ana Sayfa</button>
+    <button class="nav-tab" onclick="showPage('tahlil',this)">Tahlil</button>
+    <button class="nav-tab" onclick="showPage('gunluk',this)">Günlük</button>
+    <button class="nav-tab" onclick="showPage('form',this)">Katıl</button>
+  </div>
+  <button class="nav-cta" onclick="showPage('form',null)">Gökadaya Katıl ✦</button>
+</nav>
+
+<!-- HOME -->
+
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="nbl" style="width:350px;height:350px;background:rgba(109,40,217,0.18);top:-80px;left:-80px;"></div>
+    <div class="nbl" style="width:280px;height:280px;background:rgba(76,29,149,0.12);bottom:0;right:-60px;"></div>
+    <div style="position:relative;z-index:1;">
+      <div class="badge"><div class="bdot"></div>PCOS Şifa Gökadası</div>
+      <h1 class="big">Bedenin senin<br><em>evin</em>,<br>savaş alanın değil.</h1>
+      <p class="hero-sub">HOMA-IR'ından SHBG'ye tahlillerini takip et. Takviyeni kaçırma. Binlerce Diva ile yürü.</p>
+      <div class="btns">
+        <button class="btn-p" onclick="showPage('form',null)">✦ Gökadaya Katıl</button>
+        <button class="btn-g" onclick="showPage('tahlil',null)">Tahlilimi Gir</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="mcard">
+      <div class="mlbl">✦ Kutup Yıldızı Manifestosu</div>
+      <div class="mtext">"Sivilcen, kilonu ya da dökülen saçların senin değerini belirlemez. <strong>Sen her halinle değerlisin — iyileşme bu sevginin sonucu olacak, şartı değil.</strong>"</div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-lbl">✦ Üç Büyük Gezegen</div>
+    <div class="pgrid">
+      <div class="pcard" onclick="openPop('insulin')"><span class="pico">🪐</span><div class="pname">Metabolizma Kalkanı</div><div class="psub">İnsülin & HOMA-IR</div></div>
+      <div class="pcard" onclick="openPop('shbg')"><span class="pico">💫</span><div class="pname">Hormon Mıknatısı</div><div class="psub">SHBG & Androjenler</div></div>
+      <div class="pcard" onclick="openPop('ferritin')"><span class="pico">✨</span><div class="pname">Onarım Kraliçesi</div><div class="psub">Ferritin & Demir</div></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-lbl">✦ PCOS Tavsiyeler</div>
+    <div class="tgrid">
+      <div class="tcard"><span class="tico">🍽️</span><div class="tcat">Beslenme</div><div class="ttitle">Yemek Sıralaması Önemli</div><div class="tbody">Önce sebze, sonra protein, en son karbonhidrat. Bu sıra insülin spikeini %73 azaltır. Tabakta karbonhidrat en son!</div><span class="ttag">HOMA-IR ↓</span></div>
+      <div class="tcard"><span class="tico">🍵</span><div class="tcat">İçecek</div><div class="ttitle">Kıvırcık Nane Çayı</div><div class="tbody">Günde 2 bardak, 30 günde testosteron düşürücü etki. Antiandrojenik etkisi klinik çalışmalarla kanıtlı. Sabah + öğlen iç.</div><span class="ttag">SHBG ↑ · Testosteron ↓</span></div>
+      <div class="tcard"><span class="tico">🚶‍♀️</span><div class="tcat">Hareket</div><div class="ttitle">Yemek Sonrası 15 Dakika</div><div class="tbody">Yemekten hemen sonra yapılan kısa yürüyüş kaslar glikozu emer ve insülin spikeini büyük ölçüde azaltır. Asansör yerine merdiven bile sayılır.</div><span class="ttag">Glikoz spike ↓</span></div>
+      <div class="tcard"><span class="tico">🔵</span><div class="tcat">Takviye</div><div class="ttitle">Inositol — Altın Standart</div><div class="tbody">Myo+D-Chiro-Inositol 40:1 oranında 4g/gün. Metformine alternatif olarak insülin direncini ve ovülasyonu iyileştiriyor.</div><span class="ttag">HOMA-IR ↓ · Ovülasyon ↑</span></div>
+      <div class="tcard"><span class="tico">🌙</span><div class="tcat">Uyku</div><div class="ttitle">23:00'de Uyu, Kortizol Düşsün</div><div class="tbody">Geç uyumak kortizol → insülin direnci → androjen zincirini tetikler. Uyku, takviyeler kadar güçlü bir tedavi aracı.</div><span class="ttag">Kortizol ↓ · Androjen ↓</span></div>
+      <div class="tcard"><span class="tico">🥩</span><div class="tcat">Protein</div><div class="ttitle">Her Öğüne 20–30g Protein</div><div class="tbody">Protein tokluk hormonu GLP-1'i uyarır, insülin salgısını dengeler. Kahvaltıda yumurta, öğlende tavuk, akşamda baklagil.</div><span class="ttag">İnsülin dengesi ↑</span></div>
+      <div class="tcard"><span class="tico">☀️</span><div class="tcat">Vitamin D</div><div class="ttitle">D Vitamini Eksikse Her Şey Zor</div><div class="tbody">PCOS'lu kadınların %67-85'i D vitamini eksikliği yaşıyor. Eksiklikte insülin sinyali bozulur, SHBG düşer. 2000–4000 IU/gün şart.</div><span class="ttag">SHBG ↑ · İnsülin ↑</span></div>
+      <div class="tcard"><span class="tico">🧘‍♀️</span><div class="tcat">Stres</div><div class="ttitle">Öz Şefkat Biyolojik Tedavidir</div><div class="tbody">Kendine kızma, stres ve kortizolü artırır. Kortizol insülin direncini ve androjenleri tetikler. Kendini sevmek PCOS'u iyileştirir.</div><span class="ttag">Kortizol ↓ · İyileşme ↑</span></div>
+      <div class="tcard"><span class="tico">🐟</span><div class="tcat">Omega-3</div><div class="ttitle">Testosteronu Omega-3 ile Düşür</div><div class="tbody">Günde 2000mg EPA+DHA, 2–6 ayda testosteronu düşürüyor, kıllanmayı azaltıyor. Yağlı balık, keten tohumu ve ceviz de kaynak.</div><span class="ttag">Testosteron ↓ · İnflamasyon ↓</span></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="flogo">galaxy<span>'de</span></div>
+    <div class="ftext">"Bu gökada, mükemmel kadınların değil — her gün kendine bir şans daha veren, bedenini seven ve şifayı birlikte arayan güçlü kadınların evidir."</div>
+  </div>
+</div>
+
+<!-- TAHLİL -->
+
+<div class="page" id="page-tahlil">
+  <div class="tp">
+    <div class="ptitle">Diva <em>Tahlil</em> Paneli</div>
+    <div class="psub2">Değerlerini gir — anlık yorum al</div>
+    <div class="tgr">
+      <div class="tc"><div class="tpl"><div class="tdot" style="background:#d8b4fe;"></div>Metabolizma Kalkanı</div><div class="tn">HOMA-IR</div><div class="tr">İdeal &lt;2.5 · Sınır 2.5–4 · Yüksek &gt;4</div><div class="tir"><input class="tinput" type="number" id="homaVal" placeholder="—" min="0" max="20" step="0.1" inputmode="decimal" oninput="updateT()"><span class="tunit">değer</span></div><div class="bbg"><div class="bfill" id="homaBar"></div></div><div class="bzones"><span>0</span><span>2.5</span><span>4</span><span>8+</span></div><div class="tstat" id="hst"></div><div class="tins" id="hins"></div></div>
+      <div class="tc"><div class="tpl"><div class="tdot" style="background:#6ee7b7;"></div>Hormon Mıknatısı</div><div class="tn">SHBG</div><div class="tr">Düşük &lt;30 · Sınır 30–40 · İdeal &gt;40</div><div class="tir"><input class="tinput" type="number" id="shbgVal" placeholder="—" min="0" max="200" step="1" inputmode="numeric" oninput="updateT()"><span class="tunit">nmol/L</span></div><div class="bbg"><div class="bfill" id="shbgBar"></div></div><div class="bzones"><span>0</span><span>30</span><span>40</span><span>100+</span></div><div class="tstat" id="sst"></div><div class="tins" id="sins"></div></div>
+      <div class="tc"><div class="tpl"><div class="tdot" style="background:#fcd34d;"></div>Onarım Kraliçesi</div><div class="tn">Ferritin</div><div class="tr">Düşük &lt;20 · Yetersiz 20–40 · İdeal 40–80</div><div class="tir"><input class="tinput" type="number" id="ferVal" placeholder="—" min="0" max="300" step="1" inputmode="numeric" oninput="updateT()"><span class="tunit">µg/L</span></div><div class="bbg"><div class="bfill" id="ferBar"></div></div><div class="bzones"><span>0</span><span>20</span><span>40</span><span>150+</span></div><div class="tstat" id="fst"></div><div class="tins" id="fins"></div></div>
+      <div class="tc"><div class="tpl"><div class="tdot" style="background:#93c5fd;"></div>Güneş Vitamini</div><div class="tn">Vitamin D</div><div class="tr">Eksik &lt;20 · Yetersiz 20–40 · İdeal &gt;40</div><div class="tir"><input class="tinput" type="number" id="vitdVal" placeholder="—" min="0" max="150" step="1" inputmode="numeric" oninput="updateT()"><span class="tunit">ng/mL</span></div><div class="bbg"><div class="bfill" id="vitdBar"></div></div><div class="bzones"><span>0</span><span>20</span><span>40</span><span>80+</span></div><div class="tstat" id="dst"></div><div class="tins" id="dins"></div></div>
+    </div>
+    <div class="sumcard" id="sumCard">
+      <div class="sumtitle">✦ Genel Tablo</div>
+      <div class="suminr">
+        <div>
+          <div class="sumrow"><div class="sumlbl">HOMA-IR</div><div class="sumbbg"><div class="sumbfill" id="sb1" style="background:#d8b4fe;"></div></div><div class="sumval" id="sv1">—</div></div>
+          <div class="sumrow"><div class="sumlbl">SHBG</div><div class="sumbbg"><div class="sumbfill" id="sb2" style="background:#6ee7b7;"></div></div><div class="sumval" id="sv2">—</div></div>
+          <div class="sumrow"><div class="sumlbl">Ferritin</div><div class="sumbbg"><div class="sumbfill" id="sb3" style="background:#fcd34d;"></div></div><div class="sumval" id="sv3">—</div></div>
+          <div class="sumrow"><div class="sumlbl">Vitamin D</div><div class="sumbbg"><div class="sumbfill" id="sb4" style="background:#93c5fd;"></div></div><div class="sumval" id="sv4">—</div></div>
+        </div>
+        <div class="scorew">
+          <svg width="64" height="64" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="5"/><circle id="scoreArc" cx="32" cy="32" r="26" fill="none" stroke="#d8b4fe" stroke-width="5" stroke-dasharray="163.4" stroke-dashoffset="163.4" stroke-linecap="round" transform="rotate(-90 32 32)" style="transition:stroke-dashoffset 0.8s ease,stroke 0.4s;"/></svg>
+          <div style="margin-top:-46px;text-align:center;padding-bottom:28px;"><div class="scoren" id="scoreN">—</div><div class="scorel">skor</div></div>
+        </div>
+      </div>
+      <div class="actbox" id="actBox"><div class="acttit">Bu Haftanın Önerisi</div><ul class="actlist" id="actList"></ul></div>
+    </div>
+    <div class="tahbtns">
+      <button class="tahbtn" onclick="loadDemo()">Örnek değerler</button>
+      <button class="tahbtn" onclick="clearT()">Temizle</button>
+    </div>
+  </div>
+</div>
+
+<!-- GÜNLÜK -->
+
+<div class="page" id="page-gunluk">
+  <div class="gp">
+    <div class="ptitle" style="margin-bottom:4px;">Günlük <em>Yıldız</em> Eylemleri</div>
+    <div class="psub2" style="margin-bottom:1rem;">Bugün ne yaptın, Diva?</div>
+    <div class="phead">
+      <div class="grw"><svg width="62" height="62" viewBox="0 0 62 62"><circle class="grbg" cx="31" cy="31" r="26"/><circle class="grfill" id="gRing" cx="31" cy="31" r="26"/></svg><div class="grc"><div class="grpct" id="gPct">0%</div><div class="grlbl">tamam</div></div></div>
+      <div><div class="gpmsg" id="gMsg">Bugüne başla ✦</div><div class="gpsub" id="gSub">Takviye ve alışkanlıklarını işaretle</div></div>
+    </div>
+    <div class="gsl">💊 Takviyeler <span class="gcnt" id="supCnt">0/6</span></div>
+    <div class="gits">
+      <div class="git" onclick="gt(this,'s')"><div class="gico">🔵</div><div class="gbody"><div class="gname">Inositol (Myo+DCI 40:1)</div><div class="gdet">4g/gün · 2g sabah, 2g akşam</div><div class="gwhy">↑ İnsülin duyarlılığı · ↑ Ovülasyon</div></div><div class="gchk">✓</div></div>
+      <div class="git" onclick="gt(this,'s')"><div class="gico">⚡</div><div class="gbody"><div class="gname">Magnezyum 400mg</div><div class="gdet">akşam yemekle</div><div class="gwhy">↓ İnsülin direnci · ↑ Uyku</div></div><div class="gchk">✓</div></div>
+      <div class="git" onclick="gt(this,'s')"><div class="gico">☀️</div><div class="gbody"><div class="gname">Vitamin D3 + K2</div><div class="gdet">2000–4000 IU · sabah yemekle</div><div class="gwhy">↑ SHBG · ↑ Hormon dengesi</div></div><div class="gchk">✓</div></div>
+      <div class="git" onclick="gt(this,'s')"><div class="gico">🐟</div><div class="gbody"><div class="gname">Omega-3 (EPA+DHA) 2000mg</div><div class="gdet">yemekle</div><div class="gwhy">↓ Testosteron · ↓ İnflamasyon</div></div><div class="gchk">✓</div></div>
+      <div class="git" onclick="gt(this,'s')"><div class="gico">🛡️</div><div class="gbody"><div class="gname">Çinko 30–50mg</div><div class="gdet">yemekle</div><div class="gwhy">↓ Kıllanma & sivilce · ↑ Saç</div></div><div class="gchk">✓</div></div>
+      <div class="git" onclick="gt(this,'s')"><div class="gico">🌿</div><div class="gbody"><div class="gname">Berberine 1500mg</div><div class="gdet">3×500mg yemekle</div><div class="gwhy">↓ HOMA-IR · Metformin benzeri</div></div><div class="gchk">✓</div></div>
+    </div>
+    <div class="gsl">🌟 Alışkanlıklar <span class="gcnt" id="habCnt">0/5</span></div>
+    <div class="gits">
+      <div class="git" onclick="gt(this,'h')"><div class="gico">🍵</div><div class="gbody"><div class="gname">Kıvırcık Nane Çayı</div><div class="gdet">2 bardak · sabah + öğlen</div><div class="gwhy">↓ Testosteron · ↑ SHBG</div></div><div class="gchk">✓</div></div>
+      <div class="git" onclick="gt(this,'h')"><div class="gico">🚶‍♀️</div><div class="gbody"><div class="gname">Yemek Sonrası Yürüyüş</div><div class="gdet">15 dk · öğle veya akşam</div><div class="gwhy">↓ Glikoz spike · ↑ İnsülin</div></div><div class="gchk">✓</div></div>
+      <div class="git" onclick="gt(this,'h')"><div class="gico">🥩</div><div class="gbody"><div class="gname">Her Öğüne Protein</div><div class="gdet">20–30g · önce sebze, sonra protein</div><div class="gwhy">↓ İnsülin spike · ↑ Tokluk</div></div><div class="gchk">✓</div></div>
+      <div class="git" onclick="gt(this,'h')"><div class="gico">🌙</div><div class="gbody"><div class="gname">23:00'den Önce Uyu</div><div class="gdet">7–9 saat · düzenli uyku saati</div><div class="gwhy">↓ Kortizol · ↑ Hormon dengesi</div></div><div class="gchk">✓</div></div>
+      <div class="git" onclick="gt(this,'h')"><div class="gico">🧘‍♀️</div><div class="gbody"><div class="gname">Stres Yönetimi</div><div class="gdet">10 dk nefes / meditasyon</div><div class="gwhy">↓ Kortizol → ↓ İnsülin direnci</div></div><div class="gchk">✓</div></div>
+    </div>
+    <div class="stcard">
+      <div class="sttop"><div><div class="stlbl">Günlük Adım · 8.000 hedef</div><div class="stnums"><div class="stcur" id="stCur">0</div><div class="stmax">/ 8.000</div></div></div><div class="stemo">👟</div></div>
+      <div class="stbarbg"><div class="stbarfill" id="stBar"></div></div>
+      <div class="sthint" id="stHint">Yemek sonrası 15 dk yürüyüş ≈ 1.500 adım</div>
+      <div class="stbtns">
+        <button class="stbtn" onclick="addSt(1000)">+1.000</button>
+        <button class="stbtn" onclick="addSt(2000)">+2.000</button>
+        <button class="stbtn" onclick="addSt(4000)">+4.000</button>
+        <button class="stbtn ok" onclick="compSt()">✓ Tamam</button>
+      </div>
+    </div>
+    <div class="wcard"><div class="wtop"><div class="wlbl">💧 Su Takibi · 2 litre hedef</div><div class="wval" id="wVal">0 L</div></div><div class="wgls" id="wGls"></div></div>
+    <div class="moodcard"><div class="moodlbl">💜 Bugün nasıl hissediyorsun?</div><div class="moods"><div class="mbtn" onclick="selM(this)"><span class="mem">😔</span><span class="mtx">Zorlu</span></div><div class="mbtn" onclick="selM(this)"><span class="mem">😐</span><span class="mtx">Normal</span></div><div class="mbtn" onclick="selM(this)"><span class="mem">🙂</span><span class="mtx">İyi</span></div><div class="mbtn" onclick="selM(this)"><span class="mem">✨</span><span class="mtx">Harika</span></div></div></div>
+    <div class="strcard"><div class="strico">🔥</div><div><div class="strn">3</div><div class="strl">günlük seri — bugün de tamamla!</div></div></div>
+  </div>
+</div>
+
+<!-- FORM -->
+
+<div class="page" id="page-form">
+  <div class="fp">
+    <div class="ptitle" style="text-align:center;margin-bottom:4px;">Gökadaya <em>Katıl</em></div>
+    <div class="psub2" style="text-align:center;margin-bottom:1.5rem;">Yıldızını yak, iyileşme yolculuğuna başla</div>
+    <div class="fcard">
+      <div class="ftit">✦ Diva Kayıt Formu</div>
+      <div id="fFields">
+        <div class="frow"><div class="ff"><label class="fl">Adın</label><input class="fi" type="text" id="fName" placeholder="Diva adın..."></div><div class="ff"><label class="fl">Yaşın</label><input class="fi" type="number" id="fAge" placeholder="25" inputmode="numeric"></div></div>
+        <div class="ff"><label class="fl">E-posta</label><input class="fi" type="email" id="fEmail" placeholder="yildizin@galaktik.com" inputmode="email"></div>
+        <div class="ff"><label class="fl">Teşhis ne zaman konuldu?</label><select class="fsel" id="fDiag"><option value="" disabled selected>Seç...</option><option>1 yıldan az önce</option><option>1–3 yıl önce</option><option>3–5 yıl önce</option><option>5+ yıl önce</option><option>Henüz resmi teşhis yok</option></select></div>
+        <div class="ff"><label class="fl">Seni en çok zorlayan ne?</label><select class="fsel" id="fChal"><option value="" disabled selected>Seç...</option><option>İnsülin direnci / kilo</option><option>Hormonal sivilce / kıllanma</option><option>Adet düzensizliği</option><option>Beyin sisi / yorgunluk</option><option>Saç dökülmesi</option><option>Ruh hali dalgalanmaları</option></select></div>
+        <div class="fcon"><input type="checkbox" id="fCon"><div class="fcontxt">Galaxy'de'nin destek amaçlı bir platform olduğunu, tıbbi tavsiye yerine geçmediğini anlıyorum.</div></div>
+        <button class="fsub" onclick="doForm()">✦ Yıldızımı Yak</button>
+      </div>
+      <div class="fsucc" id="fSucc">
+        <span class="fsico">✨</span>
+        <div class="fstitl" id="fSName">Hoş geldin, Diva!</div>
+        <div class="fssub">Yıldızın gökadada yanmaya başladı.<br>Tahlil paneline giderek ilk değerlerini girebilirsin.</div>
+        <button class="btn-g" style="margin-top:1.25rem;" onclick="showPage('tahlil',null)">Tahlil Paneline Git →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- POPUP -->
+
+<div class="pop-ov" id="pop">
+  <div class="pop-card">
+    <button class="pop-x" onclick="closePop()">✕</button>
+    <span class="pop-ico" id="pIco"></span>
+    <div class="pop-title" id="pTit"></div>
+    <div class="pop-body" id="pBody"></div>
+    <span class="pop-tag" id="pTag"></span>
+  </div>
+</div>
+
+<!-- SES KONTROL -->
+
+<div id="audioBtn" onclick="toggleAudio()" title="Müzik aç/kapat" style="
+  position:fixed;bottom:80px;right:16px;z-index:200;
+  width:44px;height:44px;border-radius:50%;
+  background:rgba(216,180,254,0.12);
+  border:1px solid rgba(216,180,254,0.3);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:18px;
+  transition:background 0.2s;
+  backdrop-filter:blur(10px);
+">🔇</div>
+
+<!-- SÜPERNOVA OVERLAY -->
+
+<div id="supernova" style="
+  display:none;position:fixed;inset:0;z-index:500;
+  background:rgba(0,0,0,0);
+  pointer-events:none;
+  transition:background 0.5s;
+">
+  <canvas id="snCanvas" style="position:absolute;inset:0;width:100%;height:100%;"></canvas>
+  <div id="snMsg" style="
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:2rem;
+    opacity:0;transition:opacity 0.8s;
+  ">
+    <div style="font-size:56px;margin-bottom:16px;">🌟</div>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,8vw,52px);font-weight:600;color:#fff;line-height:1.1;margin-bottom:12px;">
+      SÜPERNOVA<br><span style="color:#fcd34d;">Diva!</span>
+    </div>
+    <div style="font-size:14px;color:rgba(216,180,254,0.8);max-width:300px;line-height:1.7;margin-bottom:20px;" id="snSubMsg">
+      Bugün tüm görevlerini tamamladın.<br>Gökada seninle gurur duyuyor ✦
+    </div>
+    <div style="
+      background:rgba(252,211,77,0.15);border:1px solid rgba(252,211,77,0.4);
+      border-radius:20px;padding:6px 18px;font-size:12px;color:#fcd34d;
+      letter-spacing:0.08em;
+    ">✦ BUGÜNÜN YILDIZI</div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+
+<div class="bnav">
+  <button class="bb active" id="bb-home" onclick="showPage('home',this)"><span class="bico">🌌</span>Ana</button>
+  <button class="bb" id="bb-tahlil" onclick="showPage('tahlil',this)"><span class="bico">🔬</span>Tahlil</button>
+  <button class="bb" id="bb-gunluk" onclick="showPage('gunluk',this)"><span class="bico">⭐</span>Günlük</button>
+  <button class="bb" id="bb-form" onclick="showPage('form',this)"><span class="bico">✦</span>Katıl</button>
+</div>
+
+<script>
+/* CANVAS */
+const cv=document.getElementById('starCanvas'),cx=cv.getContext('2d');
+function rsz(){cv.width=window.innerWidth;cv.height=window.innerHeight;}
+rsz();window.addEventListener('resize',rsz);
+const stars=Array.from({length:220},()=>({x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight,r:Math.random()*1.6+0.2,base:Math.random()*0.5+0.15,phase:Math.random()*Math.PI*2,speed:Math.random()*0.005+0.002,glow:0,decay:0}));
+
+function shooter(){
+  const s={x:Math.random()*window.innerWidth,y:Math.random()*250,len:60+Math.random()*90,life:1};
+  const d=()=>{if(s.life<=0)return;const dx=Math.cos(Math.PI/4)*s.len*s.life,dy=Math.sin(Math.PI/4)*s.len*s.life;cx.save();cx.globalAlpha=s.life*0.75;const g=cx.createLinearGradient(s.x,s.y,s.x-dx,s.y-dy);g.addColorStop(0,'#fff');g.addColorStop(1,'rgba(216,180,254,0)');cx.strokeStyle=g;cx.lineWidth=1.5;cx.beginPath();cx.moveTo(s.x,s.y);cx.lineTo(s.x-dx,s.y-dy);cx.stroke();cx.restore();s.life-=0.035;if(s.life>0)requestAnimationFrame(d);};d();
+}
+setInterval(()=>{if(Math.random()<0.4)shooter();},3000);
+
+function loop(){
+  const W=cv.width,H=cv.height;
+  const bg=cx.createRadialGradient(W/2,H/2,0,W/2,H/2,Math.max(W,H)*0.85);
+  bg.addColorStop(0,'#0d0520');bg.addColorStop(0.5,'#06020f');bg.addColorStop(1,'#000008');
+  cx.fillStyle=bg;cx.fillRect(0,0,W,H);
+  [[W*.15,H*.2,150,'rgba(109,40,217,0.14)'],[W*.85,H*.75,120,'rgba(76,29,149,0.11)'],[W*.5,H*.08,100,'rgba(139,92,246,0.09)']].forEach(([x,y,r,c])=>{const g2=cx.createRadialGradient(x,y,0,x,y,r);g2.addColorStop(0,c);g2.addColorStop(1,'rgba(0,0,0,0)');cx.beginPath();cx.arc(x,y,r,0,Math.PI*2);cx.fillStyle=g2;cx.fill();});
+  stars.forEach(s=>{s.phase+=s.speed;const a=s.base*(0.4+0.6*Math.sin(s.phase));if(s.glow>0){s.glow-=s.decay;if(s.glow<0)s.glow=0;}const fr=s.r+s.glow*4,fa=Math.min(1,a+s.glow);if(s.glow>0.15){const g3=cx.createRadialGradient(s.x,s.y,0,s.x,s.y,fr*9);g3.addColorStop(0,`rgba(200,160,255,${fa*0.45})`);g3.addColorStop(1,'rgba(0,0,0,0)');cx.beginPath();cx.arc(s.x,s.y,fr*9,0,Math.PI*2);cx.fillStyle=g3;cx.fill();}cx.beginPath();cx.arc(s.x,s.y,fr,0,Math.PI*2);cx.fillStyle=`rgba(230,215,255,${fa})`;cx.fill();});
+  requestAnimationFrame(loop);
+}
+loop();
+
+/* INTRO — tüm yıldızlar dalgalanarak parlar */
+function introBurst(){
+  stars.forEach((s,i)=>{setTimeout(()=>{s.glow=0.5+Math.random()*0.5;s.decay=0.005+Math.random()*0.007;},Math.random()*2000);});
+  for(let i=0;i<6;i++) setTimeout(shooter,i*350+100);
+}
+introBurst();
+setTimeout(()=>{
+  document.getElementById('intro').classList.add('fade');
+  setTimeout(()=>{document.getElementById('intro').style.display='none';},1000);
+  // site açılınca 2. dalga
+  setTimeout(()=>{
+    for(let i=0;i<50;i++) setTimeout(()=>{const s=stars[Math.floor(Math.random()*stars.length)];s.glow=1;s.decay=0.012;},i*40);
+    for(let i=0;i<4;i++) setTimeout(shooter,i*250);
+  },600);
+},3200);
+
+/* NAV */
+function showPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-tab,.bb').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  const b=document.getElementById('bb-'+id);if(b)b.classList.add('active');
+  window.scrollTo(0,0);
+  for(let i=0;i<25;i++) setTimeout(()=>{const s=stars[Math.floor(Math.random()*stars.length)];s.glow=0.9;s.decay=0.016;},i*40);
+}
+
+/* POPUP */
+const PD={insulin:{icon:'🪐',title:'Metabolizma Kalkanı',body:'HOMA-IR yüksekse beyin sisi, kilo direnci ve yorgunluk başlar. Inositol (40:1), magnezyum ve düşük glisemik beslenme bu gezegenin enerji kaynağı.',tag:'HOMA-IR < 2.5 ideal'},shbg:{icon:'💫',title:'Hormon Mıknatısı',body:'SHBG düşükse serbest testosteron artar — sivilce, kıllanma, ruh hali dalgalanmaları başlar. Nane çayı, yeşil çay ve karaciğer sağlığı bu gezegenin kalkanı.',tag:'SHBG > 40 nmol/L hedef'},ferritin:{icon:'✨',title:'Onarım Kraliçesi',body:'Ferritin düşükse hücre onarımı yavaşlar, saç dökülür ve enerji tükenir. C vitamini eşliğinde demir ve kırmızı et bu gezegenin yakıtı.',tag:'Ferritin 40–80 µg/L ideal'}};
+function openPop(k){const d=PD[k];document.getElementById('pIco').textContent=d.icon;document.getElementById('pTit').textContent=d.title;document.getElementById('pBody').textContent=d.body;document.getElementById('pTag').textContent=d.tag;document.getElementById('pop').classList.add('open');}
+function closePop(){document.getElementById('pop').classList.remove('open');}
+document.getElementById('pop').addEventListener('click',e=>{if(e.target===document.getElementById('pop'))closePop();});
+
+/* TAHLİL */
+const TC={homa:{bar:'homaBar',st:'hst',ins:'hins',sb:'sb1',sv:'sv1',max:8,zones:[{max:2.5,l:'İdeal ✓',bg:'rgba(52,211,153,0.15)',c:'#34d399',bc:'#34d399',t:'HOMA-IR ideal. İnsülin duyarlılığın güçlü. Inositol ve magnezyum rutinine devam et.'},{max:4,l:'Sınırda',bg:'rgba(251,191,36,0.15)',c:'#fbbf24',bc:'#fbbf24',t:'Eşiğindesin. Protein önceliğini artır, yemek sonrası yürüyüş dene.'},{max:99,l:'Yüksek ↑',bg:'rgba(248,113,113,0.15)',c:'#f87171',bc:'#f87171',t:'İnsülin direnci belirgin. Doktorunla Inositol dozunu konuş. Yemekten 15 dk sonra yürüyüş etkili.'}],act:{border:['Her öğüne protein ekle','Şekerli içecekleri kes','Yemekten 15 dk sonra yürü'],high:['Doktorla Inositol dozunu konuş','Düşük GI beslenmeye geç']}},
+shbg:{bar:'shbgBar',st:'sst',ins:'sins',sb:'sb2',sv:'sv2',max:100,zones:[{max:30,l:'Düşük ↓',bg:'rgba(248,113,113,0.15)',c:'#f87171',bc:'#f87171',t:'SHBG düşük — serbest testosteron yüksek. Nane çayı, brokoli ve yeşil çay karaciğerini destekler.'},{max:40,l:'Sınırda',bg:'rgba(251,191,36,0.15)',c:'#fbbf24',bc:'#fbbf24',t:'SHBG sınırda. Alkolü azalt. Günde 2 bardak nane çayı dene.'},{max:999,l:'İdeal ✓',bg:'rgba(52,211,153,0.15)',c:'#34d399',bc:'#34d399',t:'SHBG ideal. Hormon dengesi güçlü!'}],act:{low:['Günde 2 bardak nane çayı','Alkolü kes','Brokoli ve lahana ekle'],border:['Nane çayına başla']}},
+fer:{bar:'ferBar',st:'fst',ins:'fins',sb:'sb3',sv:'sv3',max:150,zones:[{max:20,l:'Çok düşük ↓',bg:'rgba(248,113,113,0.15)',c:'#f87171',bc:'#f87171',t:'Ferritin çok düşük. C vitamini ile demir takviyesi başla. Çayı yemekten 1 saat sonraya ertele.'},{max:40,l:'Yetersiz',bg:'rgba(251,191,36,0.15)',c:'#fbbf24',bc:'#fbbf24',t:'Ferritin yetersiz. Kırmızı et, ıspanak ve mercimek ekle.'},{max:80,l:'İdeal ✓',bg:'rgba(52,211,153,0.15)',c:'#34d399',bc:'#34d399',t:'Ferritin ideal. Hücre onarımın güçlü!'},{max:999,l:'Yüksek ↑',bg:'rgba(251,191,36,0.15)',c:'#fbbf24',bc:'#fbbf24',t:'Ferritin yüksek — doktoruna bildir.'}],act:{low:['C vitamini ile demir takviyesi','Kırmızı et ve ıspanak artır']}},
+vitd:{bar:'vitdBar',st:'dst',ins:'dins',sb:'sb4',sv:'sv4',max:80,zones:[{max:20,l:'Eksik ↓',bg:'rgba(248,113,113,0.15)',c:'#f87171',bc:'#f87171',t:'Vitamin D çok düşük. 4000–5000 IU/gün takviye ve günlük 15 dk güneş önerilir.'},{max:40,l:'Yetersiz',bg:'rgba(251,191,36,0.15)',c:'#fbbf24',bc:'#fbbf24',t:'Vitamin D yetersiz. 2000 IU/gün takviye ve sabah güneşi dene.'},{max:999,l:'İdeal ✓',bg:'rgba(52,211,153,0.15)',c:'#34d399',bc:'#34d399',t:'Vitamin D ideal — sürdür!'}],act:{low:['4000 IU/gün D vitamini başla','Her gün 15 dk güneş'],yetersiz:['2000 IU/gün takviye']}}};
+function gz(v,z){for(let z2 of z)if(v<=z2.max)return z2;return z[z.length-1];}
+function updateT(){
+  const keys=['homa','shbg','fer','vitd'];
+  const ids=['homaVal','shbgVal','ferVal','vitdVal'];
+  const vals=ids.map(id=>parseFloat(document.getElementById(id).value));
+  let filled=0,score=0;const acts=[];
+  keys.forEach((k,i)=>{
+    const c=TC[k],v=vals[i];
+    const b=document.getElementById(c.bar),s=document.getElementById(c.st),ins=document.getElementById(c.ins);
+    if(isNaN(v)||v<0){b.style.width='0%';s.style.display='none';ins.style.display='none';return;}
+    const pct=Math.min(100,v/c.max*100),z=gz(v,c.zones);
+    b.style.width=pct+'%';b.style.background=z.bc;
+    s.style.cssText=`display:inline-block;background:${z.bg};color:${z.c};font-size:11px;font-weight:600;padding:3px 10px;border-radius:8px;margin-bottom:6px;`;
+    s.textContent=z.l;ins.style.display='block';ins.textContent=z.t;filled++;
+    if(k==='homa'){score+=z.max===2.5?100:z.max===4?55:20;if(z.max===4)acts.push(...(c.act.border||[]));if(z.max===99)acts.push(...(c.act.high||[]));}
+    if(k==='shbg'){score+=z.max===30?20:z.max===40?55:100;if(z.max===30)acts.push(...(c.act.low||[]));if(z.max===40)acts.push(...(c.act.border||[]));}
+    if(k==='fer'){score+=z.max===20?20:z.max===40?55:z.max===80?100:70;if(z.max===20)acts.push(...(c.act.low||[]));}
+    if(k==='vitd'){score+=z.max===20?20:z.max===40?55:100;if(z.max===20)acts.push(...(c.act.low||[]));if(z.max===40)acts.push(...(c.act.yetersiz||[]));}
+  });
+  const sc=document.getElementById('sumCard');if(!filled){sc.style.display='none';return;}sc.style.display='block';
+  const lb=['—','—','—','—'],pc=[0,0,0,0];
+  if(!isNaN(vals[0])){lb[0]=vals[0].toFixed(1);pc[0]=Math.min(100,vals[0]/8*100);}
+  if(!isNaN(vals[1])){lb[1]=vals[1].toFixed(0)+' nmol';pc[1]=Math.min(100,vals[1]/100*100);}
+  if(!isNaN(vals[2])){lb[2]=vals[2].toFixed(0)+' µg';pc[2]=Math.min(100,vals[2]/150*100);}
+  if(!isNaN(vals[3])){lb[3]=vals[3].toFixed(0)+' ng';pc[3]=Math.min(100,vals[3]/80*100);}
+  ['sv1','sv2','sv3','sv4'].forEach((id,i)=>document.getElementById(id).textContent=lb[i]);
+  ['sb1','sb2','sb3','sb4'].forEach((id,i)=>document.getElementById(id).style.width=pc[i]+'%');
+  const avg=Math.round(score/filled);document.getElementById('scoreN').textContent=avg;
+  const arc=document.getElementById('scoreArc'),circ=163.4;arc.style.strokeDashoffset=(circ-circ*avg/100).toFixed(1);arc.style.stroke=avg>=75?'#34d399':avg>=45?'#fbbf24':'#f87171';
+  const u=[...new Set(acts)].slice(0,5);const box=document.getElementById('actBox'),list=document.getElementById('actList');box.style.display='block';list.innerHTML=u.length>0?u.map(a=>`<li>${a}</li>`).join(''):'<li style="color:#34d399;">Tüm değerlerin ideal — sürdür! ✦</li>';
+}
+function loadDemo(){document.getElementById('homaVal').value=3.2;document.getElementById('shbgVal').value=28;document.getElementById('ferVal').value=18;document.getElementById('vitdVal').value=22;updateT();}
+function clearT(){['homaVal','shbgVal','ferVal','vitdVal'].forEach(id=>document.getElementById(id).value='');updateT();document.getElementById('sumCard').style.display='none';}
+
+/* GÜNLÜK */
+let gS=0,gH=0,gSt=false,gW=0;
+const GS=6,GH=5,GT=GS+GH+1+8;
+function gt(item,type){
+  const done=item.classList.toggle('done');item.querySelector('.gchk').style.color=done?'#fff':'transparent';
+  if(type==='s'){gS+=done?1:-1;document.getElementById('supCnt').textContent=gS+'/'+GS;}
+  else{gH+=done?1:-1;document.getElementById('habCnt').textContent=gH+'/'+GH;}
+  gRing();for(let i=0;i<10;i++) setTimeout(()=>{const s=stars[Math.floor(Math.random()*stars.length)];s.glow=0.9;s.decay=0.018;},i*40);
+}
+function gRing(){
+  const d=gS+gH+(gSt?1:0)+gW,p=Math.round(d/GT*100),c=175.9;
+  document.getElementById('gRing').style.strokeDashoffset=c-c*p/100;
+  document.getElementById('gRing').style.stroke=p>=80?'#34d399':'#d8b4fe';
+  document.getElementById('gPct').textContent=p+'%';
+  const m=document.getElementById('gMsg'),s=document.getElementById('gSub');
+  if(p===0){m.textContent='Bugüne başla ✦';s.textContent='Takviye ve alışkanlıklarını işaretle';}
+  else if(p<40){m.textContent='Harika başlangıç! 💫';s.textContent='Devam et, yıldızın parlıyor';}
+  else if(p<70){m.textContent='Yarıyı geçtin! ⭐';s.textContent='Biraz daha kaldı';}
+  else if(p<100){m.textContent='Neredeyse tam! 🌟';s.textContent='Son birkaç adım';}
+  else{m.textContent='Mükemmel gün! ✨';s.textContent='Gökada seninle gurur duyuyor';}
+}
+let steps=0;
+function addSt(n){steps=Math.min(8000,steps+n);updSt();}
+function compSt(){steps=8000;gSt=true;updSt();}
+function updSt(){
+  document.getElementById('stCur').textContent=steps.toLocaleString('tr');
+  const p=Math.min(100,steps/8000*100),b=document.getElementById('stBar');
+  b.style.width=p+'%';b.style.background=p>=100?'#34d399':'#d8b4fe';
+  document.getElementById('stHint').textContent=p>=100?'✓ Hedefi tamamladın! 🎉':(8000-steps).toLocaleString('tr')+' adım kaldı';
+  if(p>=100)gSt=true;gRing();
+}
+const wg=document.getElementById('wGls');
+for(let i=0;i<8;i++){
+  const g=document.createElement('div');g.className='glass';
+  g.onclick=()=>{const gs=document.querySelectorAll('.glass');const was=gs[i].classList.contains('filled');gs.forEach((gl,j)=>gl.classList.toggle('filled',!was?j<=i:j>i));gW=was?i:i+1;document.getElementById('wVal').textContent=(gW*0.25).toFixed(2).replace(/\.?0+$/,'')+' L';gRing();};
+  wg.appendChild(g);
+}
+function selM(btn){document.querySelectorAll('.mbtn').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');}
+
+/* FORM */
+function doForm(){
+  const name=document.getElementById('fName').value.trim();
+  const email=document.getElementById('fEmail').value.trim();
+  const con=document.getElementById('fCon').checked;
+  if(!name||!email||!email.includes('@')||!con)return;
+  document.getElementById('fFields').style.display='none';
+  document.getElementById('fSucc').style.display='block';
+  document.getElementById('fSName').textContent='Hoş geldin, '+name+'! ✨';
+  for(let i=0;i<18;i++) setTimeout(()=>{const s=stars[Math.floor(Math.random()*stars.length)];s.glow=1;s.decay=0.009;shooter();},i*160);
+}
+
+gRing();
+
+/* ── 528 HZ AMBİENT SES SİSTEMİ ── */
+let audioCtx=null,ambientNodes=[],starOscPool=[],audioOn=false;
+
+function initAudio(){
+  if(audioCtx) return;
+  audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+}
+
+function start528(){
+  if(!audioCtx||ambientNodes.length) return;
+  // 528 Hz ana frekans — şifa tonu
+  const freqs=[528,264,132,1056]; // oktavlar
+  freqs.forEach((freq,i)=>{
+    const osc=audioCtx.createOscillator();
+    const gain=audioCtx.createGain();
+    const pan=audioCtx.createStereoPanner();
+    // binaural etki için her oktav biraz farklı
+    osc.type=i===0?'sine':'sine';
+    osc.frequency.value=freq+(i*0.15); // hafif detune
+    gain.gain.value=i===0?0.06:i===1?0.04:i===2?0.025:0.015;
+    pan.pan.value=i%2===0?-0.3:0.3;
+    // yavaş tremolo
+    const lfo=audioCtx.createOscillator();
+    const lfoGain=audioCtx.createGain();
+    lfo.frequency.value=0.08+i*0.02;
+    lfoGain.gain.value=0.015;
+    lfo.connect(lfoGain);
+    lfoGain.connect(gain.gain);
+    lfo.start();
+    osc.connect(gain);
+    gain.connect(pan);
+    pan.connect(audioCtx.destination);
+    osc.start();
+    ambientNodes.push(osc,gain,lfo);
+  });
+
+  // uzay ambiyans — düşük sub frekans
+  const sub=audioCtx.createOscillator();
+  const subGain=audioCtx.createGain();
+  sub.type='sine';
+  sub.frequency.value=40;
+  subGain.gain.value=0.02;
+  sub.connect(subGain);
+  subGain.connect(audioCtx.destination);
+  sub.start();
+  ambientNodes.push(sub,subGain);
+}
+
+function stop528(){
+  ambientNodes.forEach(n=>{try{n.stop?n.stop():n.disconnect();}catch(e){}});
+  ambientNodes=[];
+}
+
+function toggleAudio(){
+  initAudio();
+  audioOn=!audioOn;
+  const btn=document.getElementById('audioBtn');
+  if(audioOn){
+    start528();
+    btn.textContent='🔊';
+    btn.style.background='rgba(216,180,254,0.25)';
+    btn.style.borderColor='rgba(216,180,254,0.6)';
+    // ilk açılışta hoş geldin tonu
+    playWelcomeTone();
+  } else {
+    stop528();
+    btn.textContent='🔇';
+    btn.style.background='rgba(216,180,254,0.12)';
+    btn.style.borderColor='rgba(216,180,254,0.3)';
+  }
+}
+
+function playWelcomeTone(){
+  if(!audioCtx) return;
+  // 528 Hz üstünde yükselen bir melodi — şifa akoru
+  const melody=[528,594,660,528*1.5];
+  melody.forEach((freq,i)=>{
+    setTimeout(()=>{
+      const o=audioCtx.createOscillator();
+      const g=audioCtx.createGain();
+      o.type='sine';o.frequency.value=freq;
+      g.gain.setValueAtTime(0,audioCtx.currentTime);
+      g.gain.linearRampToValueAtTime(0.08,audioCtx.currentTime+0.1);
+      g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+1.5);
+      o.connect(g);g.connect(audioCtx.destination);
+      o.start();o.stop(audioCtx.currentTime+1.5);
+    },i*300);
+  });
+}
+
+/* YILDIZ DOKUNMA SESİ */
+function playStarClick(x){
+  if(!audioCtx||!audioOn) return;
+  const freqs=[528,594,660,704,792,880,528*2];
+  const freq=freqs[Math.floor(Math.random()*freqs.length)];
+  const o=audioCtx.createOscillator();
+  const g=audioCtx.createGain();
+  const pan=audioCtx.createStereoPanner();
+  o.type='sine';
+  o.frequency.setValueAtTime(freq,audioCtx.currentTime);
+  o.frequency.exponentialRampToValueAtTime(freq*1.5,audioCtx.currentTime+0.4);
+  g.gain.setValueAtTime(0,audioCtx.currentTime);
+  g.gain.linearRampToValueAtTime(0.09,audioCtx.currentTime+0.03);
+  g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+1.0);
+  pan.pan.value=x?(x/window.innerWidth*2-1)*0.7:0;
+  o.connect(g);g.connect(pan);pan.connect(audioCtx.destination);
+  o.start();o.stop(audioCtx.currentTime+1.0);
+}
+
+/* CANVAS'A TIKLAMA — yıldız ses çıkarsın */
+document.getElementById('starCanvas').style.pointerEvents='auto';
+document.getElementById('starCanvas').addEventListener('click',e=>{
+  initAudio();
+  const rect=e.target.getBoundingClientRect();
+  const mx=e.clientX-rect.left,my=e.clientY-rect.top;
+  // en yakın yıldızı parlatstır
+  let nearest=null,minD=999;
+  stars.forEach(s=>{const d=Math.hypot(s.x-mx,s.y-my);if(d<minD){minD=d;nearest=s;}});
+  if(nearest&&minD<60){nearest.glow=1;nearest.decay=0.016;}
+  else{const ns={x:mx,y:my,r:1.2,base:0.8,phase:0,speed:0.004,glow:1,decay:0.015};stars.push(ns);if(stars.length>260)stars.shift();}
+  playStarClick(mx);
+  // küçük ripple
+  const rip=document.createElement('div');
+  rip.style.cssText=`position:fixed;left:${e.clientX-20}px;top:${e.clientY-20}px;width:40px;height:40px;border-radius:50%;border:1px solid rgba(216,180,254,0.6);pointer-events:none;z-index:50;animation:ripOut 0.9s ease forwards;`;
+  document.body.appendChild(rip);setTimeout(()=>rip.remove(),900);
+});
+
+// ripple keyframe
+const ripStyle=document.createElement('style');
+ripStyle.textContent='@keyframes ripOut{from{transform:scale(0);opacity:0.8}to{transform:scale(4);opacity:0}}';
+document.head.appendChild(ripStyle);
+
+/* ── SÜPERNOVA ── */
+let supernovaFired=false;
+
+function fireSuperNova(){
+  if(supernovaFired) return;
+  supernovaFired=true;
+
+  const sv=document.getElementById('supernova');
+  const snc=document.getElementById('snCanvas');
+  const msg=document.getElementById('snMsg');
+  snc.width=window.innerWidth;
+  snc.height=window.innerHeight;
+  const sc=snc.getContext('2d');
+  sv.style.display='block';
+  sv.style.pointerEvents='auto';
+  requestAnimationFrame(()=>{sv.style.background='rgba(0,0,0,0.88)';});
+
+  // 0.5s sonra mesaj belirir
+  setTimeout(()=>{msg.style.opacity='1';},500);
+
+  // PATLAMA PARTİKÜLLERİ
+  const particles=[];
+  const CX=window.innerWidth/2,CY=window.innerHeight/2;
+  const colors=['#fcd34d','#d8b4fe','#f0abfc','#ffffff','#fbbf24','#a78bfa','#34d399'];
+
+  // ilk patlama dalgası
+  for(let i=0;i<120;i++){
+    const angle=Math.random()*Math.PI*2;
+    const speed=2+Math.random()*8;
+    particles.push({
+      x:CX,y:CY,
+      vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,
+      r:Math.random()*3+1,
+      color:colors[Math.floor(Math.random()*colors.length)],
+      alpha:1,decay:0.012+Math.random()*0.015,
+      trail:[],type:'spark'
+    });
+  }
+
+  // büyük parlayan daireler
+  for(let i=0;i<8;i++){
+    const angle=(i/8)*Math.PI*2;
+    const speed=1.5+Math.random()*3;
+    particles.push({
+      x:CX,y:CY,
+      vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,
+      r:6+Math.random()*8,
+      color:colors[i%colors.length],
+      alpha:0.8,decay:0.008,type:'orb'
+    });
+  }
+
+  // yıldız şekilli ışıklar
+  for(let i=0;i<40;i++){
+    const angle=Math.random()*Math.PI*2;
+    const speed=4+Math.random()*12;
+    particles.push({
+      x:CX,y:CY,
+      vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,
+      r:Math.random()*2+0.5,
+      color:'#ffffff',
+      alpha:1,decay:0.018,type:'star'
+    });
+  }
+
+  let frame=0;
+  function animSN(){
+    if(frame===0) sc.clearRect(0,0,snc.width,snc.height);
+    sc.clearRect(0,0,snc.width,snc.height);
+
+    // merkez ışık
+    if(frame<60){
+      const prog=frame/60;
+      const radius=prog*300;
+      const g=sc.createRadialGradient(CX,CY,0,CX,CY,radius);
+      g.addColorStop(0,`rgba(252,211,77,${0.4*(1-prog)})`);
+      g.addColorStop(0.4,`rgba(216,180,254,${0.3*(1-prog)})`);
+      g.addColorStop(1,'rgba(0,0,0,0)');
+      sc.fillStyle=g;
+      sc.fillRect(0,0,snc.width,snc.height);
+    }
+
+    particles.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;
+      p.vy+=0.05; // hafif yerçekimi
+      p.vx*=0.99;p.alpha-=p.decay;
+
+      if(p.alpha<=0) return;
+      sc.globalAlpha=p.alpha;
+
+      if(p.type==='spark'){
+        const g2=sc.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*4);
+        g2.addColorStop(0,p.color);g2.addColorStop(1,'rgba(0,0,0,0)');
+        sc.fillStyle=g2;sc.beginPath();sc.arc(p.x,p.y,p.r*4,0,Math.PI*2);sc.fill();
+        sc.fillStyle=p.color;sc.beginPath();sc.arc(p.x,p.y,p.r,0,Math.PI*2);sc.fill();
+      } else if(p.type==='orb'){
+        const g3=sc.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*6);
+        g3.addColorStop(0,p.color);g3.addColorStop(1,'rgba(0,0,0,0)');
+        sc.fillStyle=g3;sc.beginPath();sc.arc(p.x,p.y,p.r*6,0,Math.PI*2);sc.fill();
+      } else {
+        sc.fillStyle='#fff';sc.fillRect(p.x,p.y,p.r,p.r);
+      }
+    });
+
+    sc.globalAlpha=1;frame++;
+    if(particles.some(p=>p.alpha>0)) requestAnimationFrame(animSN);
+  }
+  animSN();
+
+  // SÜPERNOVA SESİ — 528 Hz üzerinde yükselen akord
+  if(audioCtx){
+    const snFreqs=[528,660,792,1056,528*3];
+    snFreqs.forEach((freq,i)=>{
+      setTimeout(()=>{
+        const o=audioCtx.createOscillator();
+        const g=audioCtx.createGain();
+        o.type='sine';o.frequency.value=freq;
+        g.gain.setValueAtTime(0,audioCtx.currentTime);
+        g.gain.linearRampToValueAtTime(0.12,audioCtx.currentTime+0.1);
+        g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+3);
+        o.connect(g);g.connect(audioCtx.destination);
+        o.start();o.stop(audioCtx.currentTime+3);
+      },i*200);
+    });
+    // son şelale
+    setTimeout(()=>{
+      [528,660,792,660,528].forEach((freq,i)=>{
+        setTimeout(()=>{
+          const o=audioCtx.createOscillator();const g=audioCtx.createGain();
+          o.type='sine';o.frequency.value=freq;
+          g.gain.setValueAtTime(0.07,audioCtx.currentTime);
+          g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.8);
+          o.connect(g);g.connect(audioCtx.destination);
+          o.start();o.stop(audioCtx.currentTime+0.8);
+        },i*150);
+      });
+    },1200);
+  }
+
+  // gökadayı da patlatstır
+  for(let i=0;i<stars.length;i++){
+    setTimeout(()=>{
+      if(stars[i]){stars[i].glow=1;stars[i].decay=0.008;}
+    },i*8);
+  }
+  for(let i=0;i<8;i++) setTimeout(shooter,i*200);
+
+  // 5 saniye sonra kapat
+  setTimeout(()=>{
+    sv.style.background='rgba(0,0,0,0)';
+    msg.style.opacity='0';
+    setTimeout(()=>{sv.style.display='none';sv.style.pointerEvents='none';},1000);
+  },5000);
+
+  // 30 saniye sonra tekrar ateşlenebilir
+  setTimeout(()=>{supernovaFired=false;},30000);
+}
+
+/* Günlük %100 → Süpernova tetikle — gRing içine hook */
+const _snCheck=()=>{
+  const d=gS+gH+(gSt?1:0)+gW,p=Math.round(d/GT*100);
+  if(p>=100&&!supernovaFired){
+    setTimeout(()=>{initAudio();fireSuperNova();},800);
+  }
+};
+// orijinal gt ve updSt fonksiyonlarına snCheck ekle
+const _origGt=gt;
+window.gt=function(item,type){_origGt(item,type);_snCheck();};
+const _origUpdSt=updSt;
+window.updSt=function(){_origUpdSt();_snCheck();};
+gRing();
+</script>
+
+</body>
+</html>
