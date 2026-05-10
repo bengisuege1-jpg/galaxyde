@@ -245,6 +245,7 @@ h1.big em{font-style:italic;color:#d8b4fe;}
     <button class="nav-tab active" onclick="showPage('home',this)">Ana Sayfa</button>
     <button class="nav-tab" onclick="showPage('tahlil',this)">Tahlil</button>
     <button class="nav-tab" onclick="showPage('gunluk',this)">Günlük</button>
+    <button class="nav-tab" onclick="window.location.href='starmap.html'">🌌 Harita</button>
     <button class="nav-tab" onclick="showPage('form',this)">Katıl</button>
   </div>
   <button class="nav-cta" onclick="showPage('form',null)">Gökadaya Katıl ✦</button>
@@ -470,6 +471,7 @@ h1.big em{font-style:italic;color:#d8b4fe;}
   <button class="bb active" id="bb-home" onclick="showPage('home',this)"><span class="bico">🌌</span>Ana</button>
   <button class="bb" id="bb-tahlil" onclick="showPage('tahlil',this)"><span class="bico">🔬</span>Tahlil</button>
   <button class="bb" id="bb-gunluk" onclick="showPage('gunluk',this)"><span class="bico">⭐</span>Günlük</button>
+  <button class="bb" onclick="window.location.href='starmap.html'"><span class="bico">🗺️</span>Harita</button>
   <button class="bb" id="bb-form" onclick="showPage('form',this)"><span class="bico">✦</span>Katıl</button>
 </div>
 
@@ -622,309 +624,240 @@ function doForm(){
 
 gRing();
 
-/* ── 528 HZ AMBİENT SES SİSTEMİ ── */
-let audioCtx=null,ambientNodes=[],starOscPool=[],audioOn=false;
+/* ── SES SİSTEMİ ── */
+let AC=null,ambNodes=[],audioOn=false,supernovaFired=false;
 
-function initAudio(){
-  if(audioCtx) return;
-  audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+function initAC(){
+  if(AC) return;
+  try{ AC=new(window.AudioContext||window.webkitAudioContext)(); }catch(e){}
 }
 
-function start528(){
-  if(!audioCtx||ambientNodes.length) return;
-  // 528 Hz ana frekans — şifa tonu
-  const freqs=[528,264,132,1056]; // oktavlar
-  freqs.forEach((freq,i)=>{
-    const osc=audioCtx.createOscillator();
-    const gain=audioCtx.createGain();
-    const pan=audioCtx.createStereoPanner();
-    // binaural etki için her oktav biraz farklı
-    osc.type=i===0?'sine':'sine';
-    osc.frequency.value=freq+(i*0.15); // hafif detune
-    gain.gain.value=i===0?0.06:i===1?0.04:i===2?0.025:0.015;
-    pan.pan.value=i%2===0?-0.3:0.3;
-    // yavaş tremolo
-    const lfo=audioCtx.createOscillator();
-    const lfoGain=audioCtx.createGain();
-    lfo.frequency.value=0.08+i*0.02;
-    lfoGain.gain.value=0.015;
-    lfo.connect(lfoGain);
-    lfoGain.connect(gain.gain);
-    lfo.start();
-    osc.connect(gain);
-    gain.connect(pan);
-    pan.connect(audioCtx.destination);
-    osc.start();
-    ambientNodes.push(osc,gain,lfo);
+// Çok derin, neredeyse sessiz 528 Hz drone
+function startAmbient(){
+  if(!AC||ambNodes.length) return;
+  // Ana masterGain — çok düşük volume
+  const master=AC.createGain();
+  master.gain.value=0;
+  master.connect(AC.destination);
+  // Yavaşça aç — 4 saniyede
+  master.gain.linearRampToValueAtTime(0.025, AC.currentTime+4);
+
+  // 528 Hz — çok yavaş nefes gibi
+  [[528,0],[264,-0.2],[132,0.2]].forEach(([freq,pan])=>{
+    const o=AC.createOscillator();
+    const g=AC.createGain();
+    const p=AC.createStereoPanner();
+    o.type='sine';
+    o.frequency.value=freq;
+    g.gain.value=freq===528?1:0.35;
+    p.pan.value=pan;
+    // çok yavaş titreşim — nefes gibi (0.05 Hz = 20 saniyede bir)
+    const lfo=AC.createOscillator();
+    const lg=AC.createGain();
+    lfo.frequency.value=0.05;
+    lg.gain.value=0.3;
+    lfo.connect(lg); lg.connect(g.gain);
+    lfo.start(); o.connect(g); g.connect(p); p.connect(master); o.start();
+    ambNodes.push(o,g,lfo);
   });
 
-  // uzay ambiyans — düşük sub frekans
-  const sub=audioCtx.createOscillator();
-  const subGain=audioCtx.createGain();
-  sub.type='sine';
-  sub.frequency.value=40;
-  subGain.gain.value=0.02;
-  sub.connect(subGain);
-  subGain.connect(audioCtx.destination);
-  sub.start();
-  ambientNodes.push(sub,subGain);
+  // Çok alçak sub — sadece hissedilsin
+  const sub=AC.createOscillator();
+  const sg=AC.createGain();
+  sub.type='sine'; sub.frequency.value=33; sg.gain.value=0.4;
+  sub.connect(sg); sg.connect(master); sub.start();
+  ambNodes.push(sub,sg,master);
 }
 
-function stop528(){
-  ambientNodes.forEach(n=>{try{n.stop?n.stop():n.disconnect();}catch(e){}});
-  ambientNodes=[];
+function stopAmbient(){
+  ambNodes.forEach(n=>{try{n.stop?n.stop():n.disconnect();}catch(e){}});
+  ambNodes=[];
 }
 
 function toggleAudio(){
-  initAudio();
+  initAC();
+  if(AC&&AC.state==='suspended') AC.resume();
   audioOn=!audioOn;
   const btn=document.getElementById('audioBtn');
   if(audioOn){
-    start528();
+    startAmbient();
     btn.textContent='🔊';
-    btn.style.background='rgba(216,180,254,0.25)';
-    btn.style.borderColor='rgba(216,180,254,0.6)';
-    // ilk açılışta hoş geldin tonu
-    playWelcomeTone();
+    btn.style.background='rgba(216,180,254,0.22)';
+    btn.style.borderColor='rgba(216,180,254,0.55)';
+    // hoş geldin — çok hafif inen üç nota
+    setTimeout(()=>playNote(528,0.06,2),600);
+    setTimeout(()=>playNote(660,0.04,2),1200);
+    setTimeout(()=>playNote(792,0.03,2.5),1800);
   } else {
-    stop528();
+    stopAmbient();
     btn.textContent='🔇';
-    btn.style.background='rgba(216,180,254,0.12)';
-    btn.style.borderColor='rgba(216,180,254,0.3)';
+    btn.style.background='rgba(216,180,254,0.1)';
+    btn.style.borderColor='rgba(216,180,254,0.25)';
   }
 }
 
-function playWelcomeTone(){
-  if(!audioCtx) return;
-  // 528 Hz üstünde yükselen bir melodi — şifa akoru
-  const melody=[528,594,660,528*1.5];
-  melody.forEach((freq,i)=>{
-    setTimeout(()=>{
-      const o=audioCtx.createOscillator();
-      const g=audioCtx.createGain();
-      o.type='sine';o.frequency.value=freq;
-      g.gain.setValueAtTime(0,audioCtx.currentTime);
-      g.gain.linearRampToValueAtTime(0.08,audioCtx.currentTime+0.1);
-      g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+1.5);
-      o.connect(g);g.connect(audioCtx.destination);
-      o.start();o.stop(audioCtx.currentTime+1.5);
-    },i*300);
-  });
+function playNote(freq,vol,dur){
+  if(!AC) return;
+  const o=AC.createOscillator(),g=AC.createGain();
+  o.type='sine'; o.frequency.value=freq;
+  g.gain.setValueAtTime(0,AC.currentTime);
+  g.gain.linearRampToValueAtTime(vol,AC.currentTime+0.12);
+  g.gain.exponentialRampToValueAtTime(0.0001,AC.currentTime+dur);
+  o.connect(g); g.connect(AC.destination);
+  o.start(); o.stop(AC.currentTime+dur);
 }
 
 /* YILDIZ DOKUNMA SESİ */
-function playStarClick(x){
-  if(!audioCtx||!audioOn) return;
-  const freqs=[528,594,660,704,792,880,528*2];
+function playStarSound(x){
+  if(!AC||!audioOn) return;
+  const freqs=[528,594,660,704,792];
   const freq=freqs[Math.floor(Math.random()*freqs.length)];
-  const o=audioCtx.createOscillator();
-  const g=audioCtx.createGain();
-  const pan=audioCtx.createStereoPanner();
-  o.type='sine';
-  o.frequency.setValueAtTime(freq,audioCtx.currentTime);
-  o.frequency.exponentialRampToValueAtTime(freq*1.5,audioCtx.currentTime+0.4);
-  g.gain.setValueAtTime(0,audioCtx.currentTime);
-  g.gain.linearRampToValueAtTime(0.09,audioCtx.currentTime+0.03);
-  g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+1.0);
-  pan.pan.value=x?(x/window.innerWidth*2-1)*0.7:0;
-  o.connect(g);g.connect(pan);pan.connect(audioCtx.destination);
-  o.start();o.stop(audioCtx.currentTime+1.0);
+  const pan=AC.createStereoPanner();
+  pan.pan.value=(x/window.innerWidth*2-1)*0.6;
+  const o=AC.createOscillator(),g=AC.createGain();
+  o.type='sine'; o.frequency.value=freq;
+  o.frequency.exponentialRampToValueAtTime(freq*1.2,AC.currentTime+0.5);
+  g.gain.setValueAtTime(0,AC.currentTime);
+  g.gain.linearRampToValueAtTime(0.05,AC.currentTime+0.04);
+  g.gain.exponentialRampToValueAtTime(0.0001,AC.currentTime+1.2);
+  o.connect(g); g.connect(pan); pan.connect(AC.destination);
+  o.start(); o.stop(AC.currentTime+1.2);
 }
 
-/* CANVAS'A TIKLAMA — yıldız ses çıkarsın */
+/* CANVAS TIKLAMASI */
+const ripSt=document.createElement('style');
+ripSt.textContent='@keyframes ripOut{from{transform:scale(0);opacity:0.7}to{transform:scale(4);opacity:0}}';
+document.head.appendChild(ripSt);
+
 document.getElementById('starCanvas').style.pointerEvents='auto';
 document.getElementById('starCanvas').addEventListener('click',e=>{
-  initAudio();
-  const rect=e.target.getBoundingClientRect();
-  const mx=e.clientX-rect.left,my=e.clientY-rect.top;
-  // en yakın yıldızı parlatstır
-  let nearest=null,minD=999;
-  stars.forEach(s=>{const d=Math.hypot(s.x-mx,s.y-my);if(d<minD){minD=d;nearest=s;}});
-  if(nearest&&minD<60){nearest.glow=1;nearest.decay=0.016;}
-  else{const ns={x:mx,y:my,r:1.2,base:0.8,phase:0,speed:0.004,glow:1,decay:0.015};stars.push(ns);if(stars.length>260)stars.shift();}
-  playStarClick(mx);
-  // küçük ripple
+  initAC();
+  const mx=e.clientX,my=e.clientY;
+  let near=null,minD=9999;
+  stars.forEach(s=>{const d=Math.hypot(s.x-mx,s.y-my);if(d<minD){minD=d;near=s;}});
+  if(near&&minD<55){near.glow=1;near.decay=0.014;}
+  else{const ns={x:mx,y:my,r:1.2,base:0.9,phase:0,speed:0.003,glow:1,decay:0.013};stars.push(ns);if(stars.length>260)stars.shift();}
+  playStarSound(mx);
   const rip=document.createElement('div');
-  rip.style.cssText=`position:fixed;left:${e.clientX-20}px;top:${e.clientY-20}px;width:40px;height:40px;border-radius:50%;border:1px solid rgba(216,180,254,0.6);pointer-events:none;z-index:50;animation:ripOut 0.9s ease forwards;`;
-  document.body.appendChild(rip);setTimeout(()=>rip.remove(),900);
+  rip.style.cssText=`position:fixed;left:${mx-20}px;top:${my-20}px;width:40px;height:40px;border-radius:50%;border:1px solid rgba(216,180,254,0.5);pointer-events:none;z-index:50;animation:ripOut 1s ease forwards;`;
+  document.body.appendChild(rip);setTimeout(()=>rip.remove(),1000);
 });
 
-// ripple keyframe
-const ripStyle=document.createElement('style');
-ripStyle.textContent='@keyframes ripOut{from{transform:scale(0);opacity:0.8}to{transform:scale(4);opacity:0}}';
-document.head.appendChild(ripStyle);
-
 /* ── SÜPERNOVA ── */
-let supernovaFired=false;
-
 function fireSuperNova(){
   if(supernovaFired) return;
   supernovaFired=true;
+  initAC(); if(AC&&AC.state==='suspended') AC.resume();
 
   const sv=document.getElementById('supernova');
   const snc=document.getElementById('snCanvas');
   const msg=document.getElementById('snMsg');
-  snc.width=window.innerWidth;
-  snc.height=window.innerHeight;
+  snc.width=window.innerWidth; snc.height=window.innerHeight;
   const sc=snc.getContext('2d');
-  sv.style.display='block';
-  sv.style.pointerEvents='auto';
-  requestAnimationFrame(()=>{sv.style.background='rgba(0,0,0,0.88)';});
+  sv.style.display='block'; sv.style.pointerEvents='auto';
 
-  // 0.5s sonra mesaj belirir
-  setTimeout(()=>{msg.style.opacity='1';},500);
+  // arka plan yavaş kararır
+  let bgAlpha=0;
+  const bgFade=setInterval(()=>{
+    bgAlpha=Math.min(0.88,bgAlpha+0.04);
+    sv.style.background=`rgba(0,0,0,${bgAlpha})`;
+    if(bgAlpha>=0.88) clearInterval(bgFade);
+  },30);
 
-  // PATLAMA PARTİKÜLLERİ
+  setTimeout(()=>{ msg.style.opacity='1'; },700);
+
+  // PARTİKÜLLER
+  const CX=window.innerWidth/2, CY=window.innerHeight/2;
+  const cols=['#fcd34d','#d8b4fe','#f0abfc','#fff','#fbbf24','#a78bfa','#34d399'];
   const particles=[];
-  const CX=window.innerWidth/2,CY=window.innerHeight/2;
-  const colors=['#fcd34d','#d8b4fe','#f0abfc','#ffffff','#fbbf24','#a78bfa','#34d399'];
 
-  // ilk patlama dalgası
-  for(let i=0;i<120;i++){
-    const angle=Math.random()*Math.PI*2;
-    const speed=2+Math.random()*8;
-    particles.push({
-      x:CX,y:CY,
-      vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,
-      r:Math.random()*3+1,
-      color:colors[Math.floor(Math.random()*colors.length)],
-      alpha:1,decay:0.012+Math.random()*0.015,
-      trail:[],type:'spark'
-    });
+  for(let i=0;i<100;i++){
+    const a=Math.random()*Math.PI*2, spd=1.5+Math.random()*7;
+    particles.push({x:CX,y:CY,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,r:Math.random()*3+1,color:cols[Math.floor(Math.random()*cols.length)],alpha:1,decay:0.01+Math.random()*0.012,type:'spark'});
+  }
+  for(let i=0;i<7;i++){
+    const a=(i/7)*Math.PI*2, spd=1+Math.random()*2.5;
+    particles.push({x:CX,y:CY,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,r:7+Math.random()*7,color:cols[i%cols.length],alpha:0.9,decay:0.006,type:'orb'});
+  }
+  for(let i=0;i<35;i++){
+    const a=Math.random()*Math.PI*2, spd=3+Math.random()*10;
+    particles.push({x:CX,y:CY,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,r:Math.random()*2+0.5,color:'#fff',alpha:1,decay:0.016,type:'dot'});
   }
 
-  // büyük parlayan daireler
-  for(let i=0;i<8;i++){
-    const angle=(i/8)*Math.PI*2;
-    const speed=1.5+Math.random()*3;
-    particles.push({
-      x:CX,y:CY,
-      vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,
-      r:6+Math.random()*8,
-      color:colors[i%colors.length],
-      alpha:0.8,decay:0.008,type:'orb'
-    });
-  }
-
-  // yıldız şekilli ışıklar
-  for(let i=0;i<40;i++){
-    const angle=Math.random()*Math.PI*2;
-    const speed=4+Math.random()*12;
-    particles.push({
-      x:CX,y:CY,
-      vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,
-      r:Math.random()*2+0.5,
-      color:'#ffffff',
-      alpha:1,decay:0.018,type:'star'
-    });
-  }
-
-  let frame=0;
+  let fr=0;
   function animSN(){
-    if(frame===0) sc.clearRect(0,0,snc.width,snc.height);
     sc.clearRect(0,0,snc.width,snc.height);
-
-    // merkez ışık
-    if(frame<60){
-      const prog=frame/60;
-      const radius=prog*300;
-      const g=sc.createRadialGradient(CX,CY,0,CX,CY,radius);
-      g.addColorStop(0,`rgba(252,211,77,${0.4*(1-prog)})`);
-      g.addColorStop(0.4,`rgba(216,180,254,${0.3*(1-prog)})`);
-      g.addColorStop(1,'rgba(0,0,0,0)');
-      sc.fillStyle=g;
-      sc.fillRect(0,0,snc.width,snc.height);
+    if(fr<50){
+      const prog=fr/50,rad=prog*250;
+      const grd=sc.createRadialGradient(CX,CY,0,CX,CY,rad);
+      grd.addColorStop(0,`rgba(252,211,77,${0.35*(1-prog)})`);
+      grd.addColorStop(0.5,`rgba(216,180,254,${0.2*(1-prog)})`);
+      grd.addColorStop(1,'rgba(0,0,0,0)');
+      sc.fillStyle=grd; sc.fillRect(0,0,snc.width,snc.height);
     }
-
     particles.forEach(p=>{
-      p.x+=p.vx;p.y+=p.vy;
-      p.vy+=0.05; // hafif yerçekimi
-      p.vx*=0.99;p.alpha-=p.decay;
-
+      p.x+=p.vx; p.y+=p.vy; p.vy+=0.04; p.vx*=0.99; p.alpha-=p.decay;
       if(p.alpha<=0) return;
       sc.globalAlpha=p.alpha;
-
       if(p.type==='spark'){
         const g2=sc.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*4);
-        g2.addColorStop(0,p.color);g2.addColorStop(1,'rgba(0,0,0,0)');
-        sc.fillStyle=g2;sc.beginPath();sc.arc(p.x,p.y,p.r*4,0,Math.PI*2);sc.fill();
-        sc.fillStyle=p.color;sc.beginPath();sc.arc(p.x,p.y,p.r,0,Math.PI*2);sc.fill();
+        g2.addColorStop(0,p.color); g2.addColorStop(1,'rgba(0,0,0,0)');
+        sc.fillStyle=g2; sc.beginPath(); sc.arc(p.x,p.y,p.r*4,0,Math.PI*2); sc.fill();
+        sc.fillStyle=p.color; sc.beginPath(); sc.arc(p.x,p.y,p.r,0,Math.PI*2); sc.fill();
       } else if(p.type==='orb'){
-        const g3=sc.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*6);
-        g3.addColorStop(0,p.color);g3.addColorStop(1,'rgba(0,0,0,0)');
-        sc.fillStyle=g3;sc.beginPath();sc.arc(p.x,p.y,p.r*6,0,Math.PI*2);sc.fill();
+        const g3=sc.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*5);
+        g3.addColorStop(0,p.color); g3.addColorStop(1,'rgba(0,0,0,0)');
+        sc.fillStyle=g3; sc.beginPath(); sc.arc(p.x,p.y,p.r*5,0,Math.PI*2); sc.fill();
       } else {
-        sc.fillStyle='#fff';sc.fillRect(p.x,p.y,p.r,p.r);
+        sc.fillStyle='#fff'; sc.fillRect(p.x,p.y,p.r,p.r);
       }
     });
-
-    sc.globalAlpha=1;frame++;
+    sc.globalAlpha=1; fr++;
     if(particles.some(p=>p.alpha>0)) requestAnimationFrame(animSN);
   }
   animSN();
 
-  // SÜPERNOVA SESİ — 528 Hz üzerinde yükselen akord
-  if(audioCtx){
-    const snFreqs=[528,660,792,1056,528*3];
-    snFreqs.forEach((freq,i)=>{
-      setTimeout(()=>{
-        const o=audioCtx.createOscillator();
-        const g=audioCtx.createGain();
-        o.type='sine';o.frequency.value=freq;
-        g.gain.setValueAtTime(0,audioCtx.currentTime);
-        g.gain.linearRampToValueAtTime(0.12,audioCtx.currentTime+0.1);
-        g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+3);
-        o.connect(g);g.connect(audioCtx.destination);
-        o.start();o.stop(audioCtx.currentTime+3);
-      },i*200);
+  // Süpernova sesi
+  if(AC){
+    [528,660,792,1056].forEach((freq,i)=>{
+      setTimeout(()=>playNote(freq,0.1,3),i*180);
     });
-    // son şelale
     setTimeout(()=>{
-      [528,660,792,660,528].forEach((freq,i)=>{
-        setTimeout(()=>{
-          const o=audioCtx.createOscillator();const g=audioCtx.createGain();
-          o.type='sine';o.frequency.value=freq;
-          g.gain.setValueAtTime(0.07,audioCtx.currentTime);
-          g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.8);
-          o.connect(g);g.connect(audioCtx.destination);
-          o.start();o.stop(audioCtx.currentTime+0.8);
-        },i*150);
+      [792,660,528,396].forEach((freq,i)=>{
+        setTimeout(()=>playNote(freq,0.06,1.5),i*200);
       });
-    },1200);
+    },1000);
   }
 
-  // gökadayı da patlatstır
-  for(let i=0;i<stars.length;i++){
-    setTimeout(()=>{
-      if(stars[i]){stars[i].glow=1;stars[i].decay=0.008;}
-    },i*8);
-  }
-  for(let i=0;i<8;i++) setTimeout(shooter,i*200);
+  // Tüm yıldızlar parlasın
+  stars.forEach((s,i)=>{ setTimeout(()=>{s.glow=1;s.decay=0.007;},i*5); });
+  for(let i=0;i<6;i++) setTimeout(shooter,i*180);
 
-  // 5 saniye sonra kapat
+  // 5.5s sonra kapat
   setTimeout(()=>{
-    sv.style.background='rgba(0,0,0,0)';
     msg.style.opacity='0';
-    setTimeout(()=>{sv.style.display='none';sv.style.pointerEvents='none';},1000);
-  },5000);
+    let a=0.88;
+    const fade=setInterval(()=>{
+      a=Math.max(0,a-0.04);
+      sv.style.background=`rgba(0,0,0,${a})`;
+      if(a<=0){ clearInterval(fade); sv.style.display='none'; sv.style.pointerEvents='none'; }
+    },30);
+  },5500);
 
-  // 30 saniye sonra tekrar ateşlenebilir
-  setTimeout(()=>{supernovaFired=false;},30000);
+  setTimeout(()=>{ supernovaFired=false; },35000);
 }
 
-/* Günlük %100 → Süpernova tetikle — gRing içine hook */
-const _snCheck=()=>{
-  const d=gS+gH+(gSt?1:0)+gW,p=Math.round(d/GT*100);
-  if(p>=100&&!supernovaFired){
-    setTimeout(()=>{initAudio();fireSuperNova();},800);
-  }
-};
-// orijinal gt ve updSt fonksiyonlarına snCheck ekle
-const _origGt=gt;
-window.gt=function(item,type){_origGt(item,type);_snCheck();};
-const _origUpdSt=updSt;
-window.updSt=function(){_origUpdSt();_snCheck();};
-gRing();
+// Günlük %100 → Süpernova
+function snCheck(){
+  const d=gS+gH+(gSt?1:0)+gW, p=Math.round(d/GT*100);
+  if(p>=100&&!supernovaFired) setTimeout(fireSuperNova,800);
+}
+// gt ve updSt'ye snCheck ekle
+document.querySelectorAll('.git').forEach(el=>{
+  const orig=el.getAttribute('onclick');
+  el.setAttribute('onclick', orig+';snCheck();');
+});
+
 </script>
 
 </body>
