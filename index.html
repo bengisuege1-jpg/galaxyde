@@ -5,7 +5,6 @@ window.location.href = 'intro.html';
 }
 </script>
 <!DOCTYPE html>
-
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
@@ -16,56 +15,44 @@ window.location.href = 'intro.html';
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{background:#000;color:#fff;font-family:'DM Sans',sans-serif;overflow-x:hidden;}
 #starCanvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
-
-/* INTRO */
 #intro{position:fixed;inset:0;z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#000;text-align:center;transition:opacity 1s ease;}
 #intro.fade{opacity:0;pointer-events:none;}
-.i-logo{font-family:‘Cormorant Garamond’,serif;font-size:clamp(42px,10vw,64px);font-weight:600;color:#fff;opacity:0;animation:iUp 1s ease 0.4s forwards;}
+.i-logo{font-family:'Cormorant Garamond',serif;font-size:clamp(42px,10vw,64px);font-weight:600;color:#fff;opacity:0;animation:iUp 1s ease 0.4s forwards;}
 .i-logo span{color:#d8b4fe;}
 .i-sub{font-size:12px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(216,180,254,0.55);margin-top:10px;opacity:0;animation:iUp 0.8s ease 1.1s forwards;}
 .i-bar{width:1px;height:0;background:linear-gradient(to bottom,rgba(216,180,254,0.7),transparent);margin-top:22px;animation:iBar 1s ease 1.7s forwards;}
 @keyframes iUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 @keyframes iBar{to{height:56px}}
-
-/* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;background:rgba(0,0,0,0.65);backdrop-filter:blur(20px);border-bottom:1px solid rgba(216,180,254,0.15);}
-.nav-logo{font-family:‘Cormorant Garamond’,serif;font-size:22px;font-weight:600;color:#fff;}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:#fff;}
 .nav-logo span{color:#d8b4fe;}
 .nav-tabs{display:flex;gap:4px;}
-.nav-tab{font-size:11px;font-weight:500;padding:6px 12px;border-radius:20px;border:none;cursor:pointer;font-family:‘DM Sans’,sans-serif;color:rgba(216,180,254,0.6);background:transparent;transition:all 0.2s;}
+.nav-tab{font-size:11px;font-weight:500;padding:6px 12px;border-radius:20px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;color:rgba(216,180,254,0.6);background:transparent;transition:all 0.2s;}
 .nav-tab.active,.nav-tab:hover{color:#fff;background:rgba(216,180,254,0.12);}
-.nav-cta{font-size:11px;font-weight:600;padding:7px 16px;border-radius:20px;background:linear-gradient(135deg,#6d28d9,#9f5af4);color:#fff;border:none;cursor:pointer;font-family:‘DM Sans’,sans-serif;}
-
-/* PAGES */
+.nav-cta{font-size:11px;font-weight:600;padding:7px 16px;border-radius:20px;background:linear-gradient(135deg,#6d28d9,#9f5af4);color:#fff;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;}
 .page{display:none;min-height:100vh;padding-top:70px;position:relative;z-index:10;}
 .page.active{display:block;}
-
-/* HERO */
 .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem 1.5rem 4rem;position:relative;}
 .nbl{position:absolute;border-radius:50%;pointer-events:none;filter:blur(80px);}
 .badge{display:inline-flex;align-items:center;gap:7px;background:rgba(216,180,254,0.1);border:1px solid rgba(216,180,254,0.3);border-radius:20px;padding:5px 16px;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:#d8b4fe;margin-bottom:2rem;opacity:0;animation:fadeUp 0.7s ease 0.2s forwards;}
 .bdot{width:5px;height:5px;border-radius:50%;background:#d8b4fe;animation:pulse 2s ease-in-out infinite;}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.6)}}
-h1.big{font-family:‘Cormorant Garamond’,serif;font-size:clamp(48px,12vw,72px);font-weight:300;line-height:1.06;color:#fff;max-width:600px;margin-bottom:1.5rem;opacity:0;animation:fadeUp 0.8s ease 0.4s forwards;}
+h1.big{font-family:'Cormorant Garamond',serif;font-size:clamp(48px,12vw,72px);font-weight:300;line-height:1.06;color:#fff;max-width:600px;margin-bottom:1.5rem;opacity:0;animation:fadeUp 0.8s ease 0.4s forwards;}
 h1.big em{font-style:italic;color:#d8b4fe;}
 .hero-sub{font-size:15px;color:rgba(216,180,254,0.7);max-width:360px;line-height:1.9;font-weight:300;margin-bottom:2.5rem;opacity:0;animation:fadeUp 0.8s ease 0.6s forwards;}
 .btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;opacity:0;animation:fadeUp 0.8s ease 0.8s forwards;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-.btn-p{padding:14px 32px;border-radius:100px;background:linear-gradient(135deg,#6d28d9,#9f5af4);color:#fff;border:none;font-size:14px;font-weight:600;cursor:pointer;font-family:‘DM Sans’,sans-serif;transition:opacity 0.2s,transform 0.15s;}
+.btn-p{padding:14px 32px;border-radius:100px;background:linear-gradient(135deg,#6d28d9,#9f5af4);color:#fff;border:none;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity 0.2s,transform 0.15s;}
 .btn-p:hover{opacity:.88;transform:translateY(-1px);}
-.btn-g{padding:14px 32px;border-radius:100px;background:rgba(216,180,254,0.1);color:#d8b4fe;border:1px solid rgba(216,180,254,0.3);font-size:14px;cursor:pointer;font-family:‘DM Sans’,sans-serif;transition:background 0.2s;}
+.btn-g{padding:14px 32px;border-radius:100px;background:rgba(216,180,254,0.1);color:#d8b4fe;border:1px solid rgba(216,180,254,0.3);font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background 0.2s;}
 .btn-g:hover{background:rgba(216,180,254,0.2);}
-
-/* MANIFESTO */
 .sec{padding:0 1.5rem 4rem;max-width:720px;margin:0 auto;}
 .sec-lbl{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(216,180,254,0.5);text-align:center;margin-bottom:1.75rem;display:flex;align-items:center;gap:1rem;}
-.sec-lbl::before,.sec-lbl::after{content:’’;flex:1;height:1px;background:rgba(216,180,254,0.15);}
+.sec-lbl::before,.sec-lbl::after{content:'';flex:1;height:1px;background:rgba(216,180,254,0.15);}
 .mcard{background:rgba(255,255,255,0.04);border:1px solid rgba(216,180,254,0.2);border-radius:24px;padding:2.5rem;text-align:center;}
 .mlbl{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(216,180,254,0.5);margin-bottom:1.25rem;}
-.mtext{font-family:‘Cormorant Garamond’,serif;font-size:20px;font-style:italic;font-weight:300;line-height:1.8;color:rgba(216,180,254,0.85);}
+.mtext{font-family:'Cormorant Garamond',serif;font-size:20px;font-style:italic;font-weight:300;line-height:1.8;color:rgba(216,180,254,0.85);}
 .mtext strong{font-style:normal;font-weight:600;color:#fff;}
-
-/* PLANETS */
 .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
 @media(max-width:480px){.pgrid{grid-template-columns:1fr;}}
 .pcard{background:rgba(255,255,255,0.04);border:1px solid rgba(216,180,254,0.18);border-radius:18px;padding:1.5rem 1rem;text-align:center;cursor:pointer;transition:border-color 0.2s,background 0.2s,transform 0.2s;}
@@ -73,18 +60,14 @@ h1.big em{font-style:italic;color:#d8b4fe;}
 .pico{font-size:34px;display:block;margin-bottom:10px;}
 .pname{font-size:13px;font-weight:600;color:#d8b4fe;margin-bottom:4px;}
 .psub{font-size:11px;color:rgba(216,180,254,0.45);line-height:1.5;}
-
-/* POPUP */
 .pop-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;align-items:center;justify-content:center;padding:2rem;}
 .pop-ov.open{display:flex;}
 .pop-card{background:#100228;border:1px solid rgba(216,180,254,0.35);border-radius:24px;padding:2.5rem 2rem;max-width:360px;width:100%;text-align:center;position:relative;}
 .pop-x{position:absolute;top:14px;right:16px;background:none;border:none;color:rgba(216,180,254,0.5);font-size:22px;cursor:pointer;}
 .pop-ico{font-size:44px;display:block;margin-bottom:14px;}
-.pop-title{font-family:‘Cormorant Garamond’,serif;font-size:24px;color:#fff;margin-bottom:10px;}
+.pop-title{font-family:'Cormorant Garamond',serif;font-size:24px;color:#fff;margin-bottom:10px;}
 .pop-body{font-size:14px;color:rgba(216,180,254,0.8);line-height:1.8;}
 .pop-tag{display:inline-block;margin-top:14px;background:rgba(216,180,254,0.12);border:1px solid rgba(216,180,254,0.3);border-radius:12px;padding:4px 14px;font-size:12px;color:#d8b4fe;}
-
-/* TIPS */
 .tgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:12px;}
 .tcard{background:rgba(255,255,255,0.04);border:1px solid rgba(216,180,254,0.15);border-radius:18px;padding:1.5rem;transition:border-color 0.2s,transform 0.2s;}
 .tcard:hover{border-color:rgba(216,180,254,0.4);transform:translateY(-2px);}
@@ -93,16 +76,12 @@ h1.big em{font-style:italic;color:#d8b4fe;}
 .ttitle{font-size:14px;font-weight:600;color:#fff;margin-bottom:7px;}
 .tbody{font-size:12px;color:rgba(216,180,254,0.65);line-height:1.75;}
 .ttag{display:inline-block;margin-top:8px;background:rgba(216,180,254,0.1);border-radius:8px;padding:2px 10px;font-size:11px;color:#d8b4fe;}
-
-/* FOOTER */
 .footer{text-align:center;padding:3rem 1.5rem 2rem;border-top:1px solid rgba(216,180,254,0.08);position:relative;z-index:10;}
-.flogo{font-family:‘Cormorant Garamond’,serif;font-size:24px;font-weight:600;color:#fff;margin-bottom:10px;}
+.flogo{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:#fff;margin-bottom:10px;}
 .flogo span{color:#d8b4fe;}
 .ftext{font-size:12px;color:rgba(216,180,254,0.35);font-style:italic;line-height:1.8;max-width:400px;margin:0 auto;}
-
-/* TAHLİL */
 .tp{padding:1.5rem;}
-.ptitle{font-family:‘Cormorant Garamond’,serif;font-size:32px;font-weight:300;color:#fff;line-height:1.1;margin-bottom:4px;}
+.ptitle{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:#fff;line-height:1.1;margin-bottom:4px;}
 .ptitle em{font-style:italic;color:#d8b4fe;}
 .psub2{font-size:13px;color:rgba(216,180,254,0.5);margin-bottom:1.5rem;}
 .tgr{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
@@ -114,7 +93,7 @@ h1.big em{font-style:italic;color:#d8b4fe;}
 .tn{font-size:15px;font-weight:600;color:#fff;margin-bottom:2px;}
 .tr{font-size:11px;color:rgba(216,180,254,0.4);margin-bottom:10px;line-height:1.5;}
 .tir{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
-.tinput{width:80px;padding:8px 10px;font-size:15px;font-weight:600;text-align:center;background:rgba(255,255,255,0.07);border:1px solid rgba(216,180,254,0.3);border-radius:10px;color:#fff;font-family:‘DM Sans’,sans-serif;outline:none;transition:border-color 0.15s;}
+.tinput{width:80px;padding:8px 10px;font-size:15px;font-weight:600;text-align:center;background:rgba(255,255,255,0.07);border:1px solid rgba(216,180,254,0.3);border-radius:10px;color:#fff;font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.15s;}
 .tinput:focus{border-color:rgba(216,180,254,0.7);}
 .tinput::placeholder{color:rgba(216,180,254,0.25);}
 .tunit{font-size:11px;color:rgba(216,180,254,0.4);}
@@ -138,12 +117,10 @@ h1.big em{font-style:italic;color:#d8b4fe;}
 .acttit{font-size:10px;color:rgba(216,180,254,0.5);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:7px;}
 .actlist{list-style:none;}
 .actlist li{font-size:12px;color:rgba(216,180,254,0.7);padding:3px 0;display:flex;gap:7px;}
-.actlist li::before{content:‘→’;color:rgba(216,180,254,0.4);flex-shrink:0;}
+.actlist li::before{content:'→';color:rgba(216,180,254,0.4);flex-shrink:0;}
 .tahbtns{display:flex;gap:8px;margin-top:4px;}
-.tahbtn{font-size:12px;padding:9px 16px;background:rgba(255,255,255,0.05);border:1px solid rgba(216,180,254,0.2);border-radius:10px;color:rgba(216,180,254,0.7);cursor:pointer;font-family:‘DM Sans’,sans-serif;transition:background 0.15s;}
+.tahbtn{font-size:12px;padding:9px 16px;background:rgba(255,255,255,0.05);border:1px solid rgba(216,180,254,0.2);border-radius:10px;color:rgba(216,180,254,0.7);cursor:pointer;font-family:'DM Sans',sans-serif;transition:background 0.15s;}
 .tahbtn:hover{background:rgba(216,180,254,0.1);}
-
-/* GÜNLÜK */
 .gp{padding:1.5rem;}
 .phead{background:rgba(255,255,255,0.04);border:1px solid rgba(216,180,254,0.18);border-radius:18px;padding:1.1rem 1.25rem;display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;}
 .grw{position:relative;width:62px;height:62px;flex-shrink:0;}
@@ -179,7 +156,7 @@ h1.big em{font-style:italic;color:#d8b4fe;}
 .stbarfill{height:100%;border-radius:4px;background:#d8b4fe;width:0%;transition:width 0.5s ease,background 0.4s;}
 .sthint{font-size:11px;color:rgba(216,180,254,0.4);margin-bottom:10px;}
 .stbtns{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
-.stbtn{padding:9px 4px;border-radius:9px;background:rgba(255,255,255,0.05);border:1px solid rgba(216,180,254,0.18);color:#d8b4fe;font-size:12px;font-weight:600;cursor:pointer;font-family:‘DM Sans’,sans-serif;transition:all 0.15s;}
+.stbtn{padding:9px 4px;border-radius:9px;background:rgba(255,255,255,0.05);border:1px solid rgba(216,180,254,0.18);color:#d8b4fe;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
 .stbtn.ok{background:rgba(52,211,153,0.15);border-color:rgba(52,211,153,0.4);color:#34d399;}
 .wcard{background:rgba(255,255,255,0.05);border:1px solid rgba(216,180,254,0.18);border-radius:14px;padding:1rem 1.1rem;margin-bottom:12px;}
 .wtop{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
@@ -187,13 +164,13 @@ h1.big em{font-style:italic;color:#d8b4fe;}
 .wval{font-size:18px;font-weight:700;color:#93c5fd;}
 .wgls{display:flex;gap:6px;flex-wrap:wrap;}
 .glass{width:32px;height:36px;border-radius:7px;background:rgba(147,197,253,0.08);border:1px solid rgba(147,197,253,0.2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;font-size:16px;}
-.glass::after{content:‘○’;font-size:11px;color:rgba(147,197,253,0.3);}
+.glass::after{content:'○';font-size:11px;color:rgba(147,197,253,0.3);}
 .glass.filled{background:rgba(147,197,253,0.18);border-color:rgba(147,197,253,0.5);}
-.glass.filled::after{content:‘💧’;font-size:16px;}
+.glass.filled::after{content:'💧';font-size:16px;}
 .moodcard{background:rgba(255,255,255,0.05);border:1px solid rgba(216,180,254,0.18);border-radius:14px;padding:1rem 1.1rem;margin-bottom:12px;}
 .moodlbl{font-size:12px;font-weight:600;color:#fff;margin-bottom:10px;}
 .moods{display:flex;gap:8px;}
-.mbtn{flex:1;padding:10px 4px;border-radius:11px;background:rgba(255,255,255,0.04);border:1px solid rgba(216,180,254,0.15);cursor:pointer;text-align:center;transition:all 0.15s;font-family:‘DM Sans’,sans-serif;}
+.mbtn{flex:1;padding:10px 4px;border-radius:11px;background:rgba(255,255,255,0.04);border:1px solid rgba(216,180,254,0.15);cursor:pointer;text-align:center;transition:all 0.15s;font-family:'DM Sans',sans-serif;}
 .mbtn.sel{border-color:rgba(216,180,254,0.6);background:rgba(216,180,254,0.12);}
 .mem{font-size:22px;display:block;margin-bottom:3px;}
 .mtx{font-size:10px;font-weight:600;color:rgba(216,180,254,0.5);}
@@ -202,14 +179,12 @@ h1.big em{font-style:italic;color:#d8b4fe;}
 .strico{font-size:32px;}
 .strn{font-size:30px;font-weight:700;color:#fbbf24;line-height:1;}
 .strl{font-size:12px;color:rgba(251,191,36,0.6);}
-
-/* FORM */
 .fp{padding:1.5rem;}
 .fcard{background:rgba(255,255,255,0.04);border:1px solid rgba(216,180,254,0.2);border-radius:22px;padding:2rem 1.5rem;max-width:480px;margin:0 auto;}
 .ftit{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(216,180,254,0.5);text-align:center;margin-bottom:1.5rem;}
 .ff{margin-bottom:12px;}
 .fl{display:block;font-size:12px;color:rgba(216,180,254,0.6);margin-bottom:5px;}
-.fi,.fsel{width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(216,180,254,0.25);border-radius:11px;color:#fff;font-size:14px;font-family:‘DM Sans’,sans-serif;outline:none;transition:border-color 0.15s;-webkit-appearance:none;}
+.fi,.fsel{width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(216,180,254,0.25);border-radius:11px;color:#fff;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.15s;-webkit-appearance:none;}
 .fi:focus,.fsel:focus{border-color:rgba(216,180,254,0.6);background:rgba(216,180,254,0.08);}
 .fi::placeholder{color:rgba(216,180,254,0.25);}
 .fsel option{background:#100228;color:#fff;}
@@ -217,34 +192,37 @@ h1.big em{font-style:italic;color:#d8b4fe;}
 .fcon{display:flex;align-items:flex-start;gap:10px;margin:14px 0;}
 .fcon input{width:17px;height:17px;flex-shrink:0;margin-top:2px;accent-color:#7c3aed;cursor:pointer;}
 .fcontxt{font-size:12px;color:rgba(216,180,254,0.45);line-height:1.6;}
-.fsub{width:100%;padding:14px;background:linear-gradient(135deg,#6d28d9,#9f5af4);color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:‘DM Sans’,sans-serif;transition:opacity 0.2s,transform 0.15s;}
+.fsub{width:100%;padding:14px;background:linear-gradient(135deg,#6d28d9,#9f5af4);color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity 0.2s,transform 0.15s;}
 .fsub:hover{opacity:.88;transform:translateY(-1px);}
 .fsucc{display:none;text-align:center;padding:2rem 1rem;}
 .fsico{font-size:48px;display:block;margin-bottom:14px;}
-.fstitl{font-family:‘Cormorant Garamond’,serif;font-size:28px;color:#fff;margin-bottom:8px;}
+.fstitl{font-family:'Cormorant Garamond',serif;font-size:28px;color:#fff;margin-bottom:8px;}
 .fssub{font-size:14px;color:rgba(216,180,254,0.65);line-height:1.7;}
-
-/* BOTTOM NAV */
 .bnav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(0,0,0,0.92);backdrop-filter:blur(20px);border-top:1px solid rgba(216,180,254,0.15);}
 @media(max-width:600px){.bnav{display:flex;}nav .nav-tabs{display:none;}nav .nav-cta{display:none;}body{padding-bottom:60px;}}
-.bb{flex:1;padding:12px 0;background:none;border:none;font-size:10px;font-weight:600;color:rgba(216,180,254,0.45);cursor:pointer;font-family:‘DM Sans’,sans-serif;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.bb{flex:1;padding:12px 0;background:none;border:none;font-size:10px;font-weight:600;color:rgba(216,180,254,0.45);cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;flex-direction:column;align-items:center;gap:3px;}
 .bb.active{color:#d8b4fe;}
 .bico{font-size:20px;}
+/* KİŞİSEL YILDIZ */
+.star-toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);z-index:600;text-align:center;background:rgba(5,1,15,0.96);border:1px solid rgba(252,211,77,0.5);border-radius:24px;padding:2rem 2rem 1.5rem;transition:transform .6s cubic-bezier(.34,1.56,.64,1),opacity .4s;opacity:0;pointer-events:none;backdrop-filter:blur(20px);box-shadow:0 0 80px rgba(252,211,77,0.25);max-width:300px;width:90%;}
+.star-toast.show{transform:translate(-50%,-50%) scale(1);opacity:1;pointer-events:all;}
+.star-toast-ico{font-size:3.5rem;display:block;margin-bottom:.75rem;animation:starSpin 1.2s ease forwards;}
+@keyframes starSpin{0%{transform:scale(0) rotate(-30deg);opacity:0;}60%{transform:scale(1.25) rotate(8deg);}100%{transform:scale(1) rotate(0);opacity:1;}}
+.star-toast h3{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;color:#fff;margin-bottom:.4rem;line-height:1.2;}
+.star-toast h3 em{font-style:italic;color:#fcd34d;}
+.star-toast p{font-size:12px;color:rgba(252,211,77,0.65);line-height:1.75;margin-bottom:1.2rem;}
+.star-toast-close{padding:.6rem 1.6rem;background:rgba(252,211,77,0.12);border:1px solid rgba(252,211,77,0.35);border-radius:20px;color:#fcd34d;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.star-counter{position:fixed;top:14px;left:16px;z-index:200;display:flex;align-items:center;gap:5px;background:rgba(0,0,0,0.55);border:1px solid rgba(252,211,77,0.28);border-radius:20px;padding:4px 10px;font-size:11px;color:rgba(252,211,77,0.7);backdrop-filter:blur(12px);}
+.star-counter-num{font-weight:700;color:#fcd34d;}
 </style>
-
 </head>
 <body>
-
 <canvas id="starCanvas"></canvas>
-
-<!-- INTRO -->
-
 <div id="intro">
   <div class="i-logo">galaxy<span>'de</span></div>
   <div class="i-sub">PCOS Şifa Gökadası</div>
   <div class="i-bar"></div>
 </div>
-
 <nav>
   <div class="nav-logo">galaxy<span>'de</span></div>
   <div class="nav-tabs">
@@ -254,11 +232,8 @@ h1.big em{font-style:italic;color:#d8b4fe;}
     <button class="nav-tab" onclick="window.location.href='starmap.html'">🌌 Harita</button>
     <button class="nav-tab" onclick="showPage('form',this)">Katıl</button>
   </div>
-  <button class="nav-cta" onclick="showPage('form',null)">Gökadaya Katıl ✦</button>
+  <button class="nav-cta" onclick="showPage('form',null)">Gökadaya Katıl ❖</button>
 </nav>
-
-<!-- HOME -->
-
 <div class="page active" id="page-home">
   <div class="hero">
     <div class="nbl" style="width:350px;height:350px;background:rgba(109,40,217,0.18);top:-80px;left:-80px;"></div>
@@ -268,30 +243,27 @@ h1.big em{font-style:italic;color:#d8b4fe;}
       <h1 class="big">Bedenin senin<br><em>evin</em>,<br>savaş alanın değil.</h1>
       <p class="hero-sub">HOMA-IR'ından SHBG'ye tahlillerini takip et. Takviyeni kaçırma. Binlerce Diva ile yürü.</p>
       <div class="btns">
-        <button class="btn-p" onclick="showPage('form',null)">✦ Gökadaya Katıl</button>
+        <button class="btn-p" onclick="showPage('form',null)">❖ Gökadaya Katıl</button>
         <button class="btn-g" onclick="showPage('tahlil',null)">Tahlilimi Gir</button>
       </div>
     </div>
   </div>
-
   <div class="sec">
     <div class="mcard">
-      <div class="mlbl">✦ Kutup Yıldızı Manifestosu</div>
+      <div class="mlbl">❖ Kutup Yıldızı Manifestosu</div>
       <div class="mtext">"Sivilcen, kilon ya da dökülen saçların senin değerini belirlemez. <strong>Sen her halinle değerlisin — iyileşme bu sevginin sonucu olacak, şartı değil.</strong>"</div>
     </div>
   </div>
-
   <div class="sec">
-    <div class="sec-lbl">✦ Üç Büyük Gezegen</div>
+    <div class="sec-lbl">❖ Üç Büyük Gezegen</div>
     <div class="pgrid">
-      <div class="pcard" onclick="openPop('insulin')"><span class="pico">🪐</span><div class="pname">Metabolizma Kalkanı</div><div class="psub">İnsülin & HOMA-IR</div></div>
-      <div class="pcard" onclick="openPop('shbg')"><span class="pico">💫</span><div class="pname">Hormon Mıknatısı</div><div class="psub">SHBG & Androjenler</div></div>
-      <div class="pcard" onclick="openPop('ferritin')"><span class="pico">✨</span><div class="pname">Onarım Kraliçesi</div><div class="psub">Ferritin & Demir</div></div>
+      <div class="pcard" onclick="openPop('insulin')"><span class="pico">🪐</span><div class="pname">Metabolizma Kalkanı</div><div class="psub">İnsülin &amp; HOMA-IR</div></div>
+      <div class="pcard" onclick="openPop('shbg')"><span class="pico">💫</span><div class="pname">Hormon Mıknatısı</div><div class="psub">SHBG &amp; Androjenler</div></div>
+      <div class="pcard" onclick="openPop('ferritin')"><span class="pico">✨</span><div class="pname">Onarım Kraliçesi</div><div class="psub">Ferritin &amp; Demir</div></div>
     </div>
   </div>
-
   <div class="sec">
-    <div class="sec-lbl">✦ PCOS Tavsiyeler</div>
+    <div class="sec-lbl">❖ PCOS Tavsiyeler</div>
     <div class="tgrid">
       <div class="tcard"><span class="tico">🍽️</span><div class="tcat">Beslenme</div><div class="ttitle">Yemek Sıralaması Önemli</div><div class="tbody">Önce sebze, sonra protein, en son karbonhidrat. Bu sıra insülin spikeını %73 azaltır. Tabakta karbonhidrat en son!</div><span class="ttag">HOMA-IR ↓</span></div>
       <div class="tcard"><span class="tico">🍵</span><div class="tcat">İçecek</div><div class="ttitle">Kıvırcık Nane Çayı</div><div class="tbody">Günde 2 bardak, 30 günde testosteron düşürücü etki. Antiandrojenik etkisi klinik çalışmalarla kanıtlı. Sabah + öğlen iç.</div><span class="ttag">SHBG ↑ · Testosteron ↓</span></div>
@@ -304,21 +276,17 @@ h1.big em{font-style:italic;color:#d8b4fe;}
       <div class="tcard"><span class="tico">🐟</span><div class="tcat">Omega-3</div><div class="ttitle">Testosteronu Omega-3 ile Düşür</div><div class="tbody">Günde 2000mg EPA+DHA, 2–6 ayda testosteronu düşürüyor, kıllanmayı azaltıyor. Yağlı balık, keten tohumu ve ceviz de kaynak.</div><span class="ttag">Testosteron ↓ · İnflamasyon ↓</span></div>
     </div>
   </div>
-
   <div class="footer">
     <div class="flogo">galaxy<span>'de</span></div>
-    <div class="ftext">"Bu gökada, mükemmel kadınların değil — her gün kendine bir şans daha veren, bedenini seven ve şifayı birlikte arayan güçlü kadınların evidir." "Lütfen hekimine danışmadan bir tedaviye başlama.Her beden özeldir"  </div>
+    <div class="ftext">"Bu gökada, mükemmel kadınların değil — her gün kendine bir şans daha veren, bedenini seven ve şifayı birlikte arayan güçlü kadınların evidir." "Lütfen hekimine danışmadan bir tedaviye başlama. Her beden özeldir"</div>
   </div>
-<div style="text-align:center;padding:2rem 1.5rem 3rem;display:flex;flex-direction:column;align-items:center;gap:0.5rem;">
-<div style="width:48px;height:1px;background:linear-gradient(90deg,transparent,rgba(192,132,252,0.4),transparent);margin-bottom:0.8rem;"></div>
-<span style="font-family:serif;font-size:0.65rem;letter-spacing:0.35em;color:rgba(240,230,255,0.35);text-transform:uppercase;">tarafından hazırlandı</span>
-<span style="font-family:serif;font-size:1rem;background:linear-gradient(135deg,#e9d5ff,#c084fc,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:0.08em;">Dr. Bengi Su Ege</span>
-<div style="width:48px;height:1px;background:linear-gradient(90deg,transparent,rgba(192,132,252,0.4),transparent);margin-top:0.3rem;"></div>
+  <div style="text-align:center;padding:2rem 1.5rem 3rem;display:flex;flex-direction:column;align-items:center;gap:0.5rem;">
+    <div style="width:48px;height:1px;background:linear-gradient(90deg,transparent,rgba(192,132,252,0.4),transparent);margin-bottom:0.8rem;"></div>
+    <span style="font-family:serif;font-size:0.65rem;letter-spacing:0.35em;color:rgba(240,230,255,0.35);text-transform:uppercase;">tarafından hazırlandı</span>
+    <span style="font-family:serif;font-size:1rem;background:linear-gradient(135deg,#e9d5ff,#c084fc,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:0.08em;">Dr. Bengi Su Ege</span>
+    <div style="width:48px;height:1px;background:linear-gradient(90deg,transparent,rgba(192,132,252,0.4),transparent);margin-top:0.3rem;"></div>
+  </div>
 </div>
-</div>
-
-<!-- TAHLİL -->
-
 <div class="page" id="page-tahlil">
   <div class="tp">
     <div class="ptitle">Diva <em>Tahlil</em> Paneli</div>
@@ -330,7 +298,7 @@ h1.big em{font-style:italic;color:#d8b4fe;}
       <div class="tc"><div class="tpl"><div class="tdot" style="background:#93c5fd;"></div>Güneş Vitamini</div><div class="tn">Vitamin D</div><div class="tr">Eksik &lt;20 · Yetersiz 20–40 · İdeal &gt;40</div><div class="tir"><input class="tinput" type="number" id="vitdVal" placeholder="—" min="0" max="150" step="1" inputmode="numeric" oninput="updateT()"><span class="tunit">ng/mL</span></div><div class="bbg"><div class="bfill" id="vitdBar"></div></div><div class="bzones"><span>0</span><span>20</span><span>40</span><span>80+</span></div><div class="tstat" id="dst"></div><div class="tins" id="dins"></div></div>
     </div>
     <div class="sumcard" id="sumCard">
-      <div class="sumtitle">✦ Genel Tablo</div>
+      <div class="sumtitle">❖ Genel Tablo</div>
       <div class="suminr">
         <div>
           <div class="sumrow"><div class="sumlbl">HOMA-IR</div><div class="sumbbg"><div class="sumbfill" id="sb1" style="background:#d8b4fe;"></div></div><div class="sumval" id="sv1">—</div></div>
@@ -351,16 +319,13 @@ h1.big em{font-style:italic;color:#d8b4fe;}
     </div>
   </div>
 </div>
-
-<!-- GÜNLÜK -->
-
 <div class="page" id="page-gunluk">
   <div class="gp">
     <div class="ptitle" style="margin-bottom:4px;">Günlük <em>Yıldız</em> Eylemleri</div>
     <div class="psub2" style="margin-bottom:1rem;">Bugün ne yaptın, Diva?</div>
     <div class="phead">
       <div class="grw"><svg width="62" height="62" viewBox="0 0 62 62"><circle class="grbg" cx="31" cy="31" r="26"/><circle class="grfill" id="gRing" cx="31" cy="31" r="26"/></svg><div class="grc"><div class="grpct" id="gPct">0%</div><div class="grlbl">tamam</div></div></div>
-      <div><div class="gpmsg" id="gMsg">Bugüne başla ✦</div><div class="gpsub" id="gSub">Takviye ve alışkanlıklarını işaretle</div></div>
+      <div><div class="gpmsg" id="gMsg">Bugüne başla ❖</div><div class="gpsub" id="gSub">Takviye ve alışkanlıklarını işaretle</div></div>
     </div>
     <div class="gsl">💊 Takviyeler <span class="gcnt" id="supCnt">0/6</span></div>
     <div class="gits">
@@ -368,7 +333,7 @@ h1.big em{font-style:italic;color:#d8b4fe;}
       <div class="git" onclick="gt(this,'s')"><div class="gico">⚡</div><div class="gbody"><div class="gname">Magnezyum 400mg</div><div class="gdet">akşam yemekle</div><div class="gwhy">↓ İnsülin direnci · ↑ Uyku</div></div><div class="gchk">✓</div></div>
       <div class="git" onclick="gt(this,'s')"><div class="gico">☀️</div><div class="gbody"><div class="gname">Vitamin D3 + K2</div><div class="gdet">2000–4000 IU · sabah yemekle</div><div class="gwhy">↑ SHBG · ↑ Hormon dengesi</div></div><div class="gchk">✓</div></div>
       <div class="git" onclick="gt(this,'s')"><div class="gico">🐟</div><div class="gbody"><div class="gname">Omega-3 (EPA+DHA) 2000mg</div><div class="gdet">yemekle</div><div class="gwhy">↓ Testosteron · ↓ İnflamasyon</div></div><div class="gchk">✓</div></div>
-      <div class="git" onclick="gt(this,'s')"><div class="gico">🛡️</div><div class="gbody"><div class="gname">Çinko 30–50mg</div><div class="gdet">yemekle</div><div class="gwhy">↓ Kıllanma & sivilce · ↑ Saç</div></div><div class="gchk">✓</div></div>
+      <div class="git" onclick="gt(this,'s')"><div class="gico">🛡️</div><div class="gbody"><div class="gname">Çinko 30–50mg</div><div class="gdet">yemekle</div><div class="gwhy">↓ Kıllanma &amp; sivilce · ↑ Saç</div></div><div class="gchk">✓</div></div>
       <div class="git" onclick="gt(this,'s')"><div class="gico">🌿</div><div class="gbody"><div class="gname">Berberine 1500mg</div><div class="gdet">3×500mg yemekle</div><div class="gwhy">↓ HOMA-IR · Metformin benzeri</div></div><div class="gchk">✓</div></div>
     </div>
     <div class="gsl">🌟 Alışkanlıklar <span class="gcnt" id="habCnt">0/5</span></div>
@@ -395,22 +360,19 @@ h1.big em{font-style:italic;color:#d8b4fe;}
     <div class="strcard"><div class="strico">🔥</div><div><div class="strn">3</div><div class="strl">günlük seri — bugün de tamamla!</div></div></div>
   </div>
 </div>
-
-<!-- FORM -->
-
 <div class="page" id="page-form">
   <div class="fp">
     <div class="ptitle" style="text-align:center;margin-bottom:4px;">Gökadaya <em>Katıl</em></div>
     <div class="psub2" style="text-align:center;margin-bottom:1.5rem;">Yıldızını yak, iyileşme yolculuğuna başla</div>
     <div class="fcard">
-      <div class="ftit">✦ Diva Kayıt Formu</div>
+      <div class="ftit">❖ Diva Kayıt Formu</div>
       <div id="fFields">
         <div class="frow"><div class="ff"><label class="fl">Adın</label><input class="fi" type="text" id="fName" placeholder="Diva adın..."></div><div class="ff"><label class="fl">Yaşın</label><input class="fi" type="number" id="fAge" placeholder="25" inputmode="numeric"></div></div>
         <div class="ff"><label class="fl">E-posta</label><input class="fi" type="email" id="fEmail" placeholder="yildizin@galaktik.com" inputmode="email"></div>
         <div class="ff"><label class="fl">Teşhis ne zaman konuldu?</label><select class="fsel" id="fDiag"><option value="" disabled selected>Seç...</option><option>1 yıldan az önce</option><option>1–3 yıl önce</option><option>3–5 yıl önce</option><option>5+ yıl önce</option><option>Henüz resmi teşhis yok</option></select></div>
         <div class="ff"><label class="fl">Seni en çok zorlayan ne?</label><select class="fsel" id="fChal"><option value="" disabled selected>Seç...</option><option>İnsülin direnci / kilo</option><option>Hormonal sivilce / kıllanma</option><option>Adet düzensizliği</option><option>Beyin sisi / yorgunluk</option><option>Saç dökülmesi</option><option>Ruh hali dalgalanmaları</option></select></div>
         <div class="fcon"><input type="checkbox" id="fCon"><div class="fcontxt">Galaxy'de'nin destek amaçlı bir platform olduğunu, tıbbi tavsiye yerine geçmediğini anlıyorum.</div></div>
-        <button class="fsub" onclick="doForm()">✦ Yıldızımı Yak</button>
+        <button class="fsub" onclick="doForm()">❖ Yıldızımı Yak</button>
       </div>
       <div class="fsucc" id="fSucc">
         <span class="fsico">✨</span>
@@ -421,9 +383,6 @@ h1.big em{font-style:italic;color:#d8b4fe;}
     </div>
   </div>
 </div>
-
-<!-- POPUP -->
-
 <div class="pop-ov" id="pop">
   <div class="pop-card">
     <button class="pop-x" onclick="closePop()">✕</button>
@@ -433,61 +392,88 @@ h1.big em{font-style:italic;color:#d8b4fe;}
     <span class="pop-tag" id="pTag"></span>
   </div>
 </div>
-
-<!-- SES KONTROL -->
-
-<div id="audioBtn" onclick="toggleAudio()" title="Müzik aç/kapat" style="
-  position:fixed;bottom:80px;right:16px;z-index:200;
-  width:44px;height:44px;border-radius:50%;
-  background:rgba(216,180,254,0.12);
-  border:1px solid rgba(216,180,254,0.3);
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;font-size:18px;
-  transition:background 0.2s;
-  backdrop-filter:blur(10px);
-">🔇</div>
-
-<!-- SÜPERNOVA OVERLAY -->
-
-<div id="supernova" style="
-  display:none;position:fixed;inset:0;z-index:500;
-  background:rgba(0,0,0,0);
-  pointer-events:none;
-  transition:background 0.5s;
-">
+<div id="audioBtn" onclick="toggleAudio()" style="position:fixed;bottom:80px;right:16px;z-index:200;width:44px;height:44px;border-radius:50%;background:rgba(216,180,254,0.12);border:1px solid rgba(216,180,254,0.3);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;transition:background 0.2s;backdrop-filter:blur(10px);">🔇</div>
+<div id="supernova" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0);pointer-events:none;transition:background 0.5s;">
   <canvas id="snCanvas" style="position:absolute;inset:0;width:100%;height:100%;"></canvas>
-  <div id="snMsg" style="
-    position:absolute;inset:0;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
-    text-align:center;padding:2rem;
-    opacity:0;transition:opacity 0.8s;
-  ">
+  <div id="snMsg" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;opacity:0;transition:opacity 0.8s;">
     <div style="font-size:56px;margin-bottom:16px;">🌟</div>
-    <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,8vw,52px);font-weight:600;color:#fff;line-height:1.1;margin-bottom:12px;">
-      SÜPERNOVA<br><span style="color:#fcd34d;">Diva!</span>
-    </div>
-    <div style="font-size:14px;color:rgba(216,180,254,0.8);max-width:300px;line-height:1.7;margin-bottom:20px;" id="snSubMsg">
-      Bugün tüm görevlerini tamamladın.<br>Gökada seninle gurur duyuyor ✦
-    </div>
-    <div style="
-      background:rgba(252,211,77,0.15);border:1px solid rgba(252,211,77,0.4);
-      border-radius:20px;padding:6px 18px;font-size:12px;color:#fcd34d;
-      letter-spacing:0.08em;
-    ">✦ BUGÜNÜN YILDIZI</div>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,8vw,52px);font-weight:600;color:#fff;line-height:1.1;margin-bottom:12px;">SÜPERNOVA<br><span style="color:#fcd34d;">Diva!</span></div>
+    <div style="font-size:14px;color:rgba(216,180,254,0.8);max-width:300px;line-height:1.7;margin-bottom:20px;">Bugün tüm görevlerini tamamladın.<br>Gökada seninle gurur duyuyor ❖</div>
+    <div style="background:rgba(252,211,77,0.15);border:1px solid rgba(252,211,77,0.4);border-radius:20px;padding:6px 18px;font-size:12px;color:#fcd34d;letter-spacing:0.08em;">❖ bugünün yildizi</div>
   </div>
 </div>
-
-<!-- BOTTOM NAV -->
-
+<!-- KİŞİSEL YILDIZ HTML -->
+<div class="star-toast" id="starToast">
+  <span class="star-toast-ico">⭐</span>
+  <h3><em id="starToastDay">1. Gününün</em><br>Yıldızı Yandı!</h3>
+  <p>Bugün tüm görevlerini tamamladın.<br>Yıldızın gökyüzüne işlendi — sonsuza dek senindir. ❖</p>
+  <button class="star-toast-close" onclick="document.getElementById('starToast').classList.remove('show')">Yıldızımı Gördüm ❖</button>
+</div>
+<div class="star-counter">❖ <span class="star-counter-num" id="starCounterNum">0</span> yıldız</div>
 <div class="bnav">
   <button class="bb active" id="bb-home" onclick="showPage('home',this)"><span class="bico">🌌</span>Ana</button>
   <button class="bb" id="bb-tahlil" onclick="showPage('tahlil',this)"><span class="bico">🔬</span>Tahlil</button>
   <button class="bb" id="bb-gunluk" onclick="showPage('gunluk',this)"><span class="bico">⭐</span>Günlük</button>
   <button class="bb" onclick="window.location.href='starmap.html'"><span class="bico">🗺️</span>Harita</button>
-  <button class="bb" id="bb-form" onclick="showPage('form',this)"><span class="bico">✦</span>Katıl</button>
+  <button class="bb" id="bb-form" onclick="showPage('form',this)"><span class="bico">❖</span>Katıl</button>
 </div>
-
 <script>
+/* ── KİŞİSEL YILDIZ SİSTEMİ (loop'tan önce tanımla) ── */
+const MY_STARS_KEY='galaxy_my_stars';
+const LAST_STAR_KEY='galaxy_last_star_date';
+function getMyStars(){try{return JSON.parse(localStorage.getItem(MY_STARS_KEY)||'[]');}catch(e){return[];}}
+function saveMyStars(a){localStorage.setItem(MY_STARS_KEY,JSON.stringify(a));}
+function todayStr(){return new Date().toISOString().slice(0,10);}
+function alreadyLitToday(){return localStorage.getItem(LAST_STAR_KEY)===todayStr();}
+var myStarsCache=getMyStars();
+var myT=0;
+
+function updateStarCounter(){
+  var el=document.getElementById('starCounterNum');
+  if(el) el.textContent=myStarsCache.length;
+}
+updateStarCounter();
+
+function drawMyStars(W,H){
+  if(!myStarsCache.length) return;
+  myT+=0.018;
+  myStarsCache.forEach(function(s,i){
+    var sx=s.x*W,sy=s.y*H;
+    var pulse=0.72+0.28*Math.sin(myT+i*0.85);
+    var r=s.r*pulse,a=0.92*pulse;
+    var g1=cx.createRadialGradient(sx,sy,0,sx,sy,r*14);
+    g1.addColorStop(0,s.color);g1.addColorStop(1,'transparent');
+    cx.save();cx.globalAlpha=a*0.25;cx.fillStyle=g1;cx.beginPath();cx.arc(sx,sy,r*14,0,Math.PI*2);cx.fill();cx.restore();
+    var g2=cx.createRadialGradient(sx,sy,0,sx,sy,r*4.5);
+    g2.addColorStop(0,s.color);g2.addColorStop(1,'transparent');
+    cx.save();cx.globalAlpha=a*0.65;cx.fillStyle=g2;cx.beginPath();cx.arc(sx,sy,r*4.5,0,Math.PI*2);cx.fill();cx.restore();
+    cx.save();cx.globalAlpha=a;cx.fillStyle='#fff';cx.beginPath();cx.arc(sx,sy,r,0,Math.PI*2);cx.fill();cx.restore();
+    cx.save();cx.globalAlpha=a*0.4;cx.strokeStyle=s.color;cx.lineWidth=0.8;
+    var b=r*9;cx.beginPath();cx.moveTo(sx-b,sy);cx.lineTo(sx+b,sy);cx.moveTo(sx,sy-b);cx.lineTo(sx,sy+b);cx.stroke();cx.restore();
+    cx.save();cx.globalAlpha=a*0.85;cx.fillStyle=s.color;cx.font='bold 9px sans-serif';cx.textAlign='center';
+    cx.fillText('❖'+s.day,sx,sy-r*5-3);cx.restore();
+  });
+}
+
+function lightNewStar(){
+  if(alreadyLitToday()) return;
+  var arr=getMyStars();
+  var day=arr.length+1;
+  var zones=[{x:[.04,.20],y:[.06,.40]},{x:[.80,.96],y:[.06,.40]},{x:[.04,.22],y:[.58,.92]},{x:[.78,.96],y:[.58,.92]},{x:[.30,.70],y:[.03,.13]}];
+  var z=zones[Math.floor(Math.random()*zones.length)];
+  var pos={x:z.x[0]+Math.random()*(z.x[1]-z.x[0]),y:z.y[0]+Math.random()*(z.y[1]-z.y[0])};
+  arr.push({id:todayStr(),x:pos.x,y:pos.y,day:day,date:todayStr(),r:2.2+Math.random()*1.2,
+    color:['#fcd34d','#f9a8d4','#c4b5fd','#67e8f9','#a5f3fc'][Math.floor(Math.random()*5)]});
+  saveMyStars(arr);
+  localStorage.setItem(LAST_STAR_KEY,todayStr());
+  myStarsCache=arr;
+  updateStarCounter();
+  var label=document.getElementById('starToastDay');
+  var toast=document.getElementById('starToast');
+  if(label) label.textContent=day+'. Gününün';
+  if(toast) setTimeout(function(){toast.classList.add('show');},500);
+}
+
 /* CANVAS */
 const cv=document.getElementById('starCanvas'),cx=cv.getContext('2d');
 function rsz(){cv.width=window.innerWidth;cv.height=window.innerHeight;}
@@ -499,9 +485,7 @@ function shooter(){
   const d=()=>{if(s.life<=0)return;const dx=Math.cos(Math.PI/4)*s.len*s.life,dy=Math.sin(Math.PI/4)*s.len*s.life;cx.save();cx.globalAlpha=s.life*0.75;const g=cx.createLinearGradient(s.x,s.y,s.x-dx,s.y-dy);g.addColorStop(0,'#fff');g.addColorStop(1,'rgba(216,180,254,0)');cx.strokeStyle=g;cx.lineWidth=1.5;cx.beginPath();cx.moveTo(s.x,s.y);cx.lineTo(s.x-dx,s.y-dy);cx.stroke();cx.restore();s.life-=0.035;if(s.life>0)requestAnimationFrame(d);};d();
 }
 setInterval(()=>{if(Math.random()<0.4)shooter();},3000);
-var myStarsCache=[];var myT=0;
-function drawMyStars(W,H){}
-function lightNewStar(){}
+
 function loop(){
   const W=cv.width,H=cv.height;
   const bg=cx.createRadialGradient(W/2,H/2,0,W/2,H/2,Math.max(W,H)*0.85);
@@ -509,12 +493,47 @@ function loop(){
   cx.fillStyle=bg;cx.fillRect(0,0,W,H);
   [[W*.15,H*.2,150,'rgba(109,40,217,0.14)'],[W*.85,H*.75,120,'rgba(76,29,149,0.11)'],[W*.5,H*.08,100,'rgba(139,92,246,0.09)']].forEach(([x,y,r,c])=>{const g2=cx.createRadialGradient(x,y,0,x,y,r);g2.addColorStop(0,c);g2.addColorStop(1,'rgba(0,0,0,0)');cx.beginPath();cx.arc(x,y,r,0,Math.PI*2);cx.fillStyle=g2;cx.fill();});
   stars.forEach(s=>{s.phase+=s.speed;const a=s.base*(0.4+0.6*Math.sin(s.phase));if(s.glow>0){s.glow-=s.decay;if(s.glow<0)s.glow=0;}const fr=s.r+s.glow*4,fa=Math.min(1,a+s.glow);if(s.glow>0.15){const g3=cx.createRadialGradient(s.x,s.y,0,s.x,s.y,fr*9);g3.addColorStop(0,`rgba(200,160,255,${fa*0.45})`);g3.addColorStop(1,'rgba(0,0,0,0)');cx.beginPath();cx.arc(s.x,s.y,fr*9,0,Math.PI*2);cx.fillStyle=g3;cx.fill();}cx.beginPath();cx.arc(s.x,s.y,fr,0,Math.PI*2);cx.fillStyle=`rgba(230,215,255,${fa})`;cx.fill();});
-
+  drawMyStars(W,H);
   requestAnimationFrame(loop);
 }
 loop();
 
-/* INTRO — tüm yıldızlar dalgalanarak parlar */
+// Yıldıza tıklayınca tarih göster
+var starInfoTO;
+document.getElementById('starCanvas').style.pointerEvents='auto';
+document.getElementById('starCanvas').addEventListener('click',function(e){
+  initAC();
+  const mx=e.clientX,my=e.clientY;
+  for(var i=0;i<myStarsCache.length;i++){
+    var s=myStarsCache[i];
+    var sx=s.x*cv.width,sy=s.y*cv.height;
+    if(Math.hypot(mx-sx,my-sy)<24){
+      clearTimeout(starInfoTO);
+      var el=document.getElementById('myStarInfo');
+      if(!el){el=document.createElement('div');el.id='myStarInfo';el.style.cssText='position:fixed;z-index:600;background:rgba(5,1,15,0.93);border:1px solid rgba(252,211,77,0.45);border-radius:12px;padding:.4rem .9rem;font-size:11px;color:#fcd34d;pointer-events:none;backdrop-filter:blur(10px);transition:opacity .2s;white-space:nowrap;';document.body.appendChild(el);}
+      var d=new Date(s.date+'T12:00:00').toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'});
+      el.innerHTML='<strong>❖ '+s.day+'. Gün</strong> · '+d;
+      el.style.left=Math.min(mx,window.innerWidth-175)+'px';
+      el.style.top=(my-46)+'px';el.style.opacity='1';
+      starInfoTO=setTimeout(function(){el.style.opacity='0';},2500);
+      return;
+    }
+  }
+  // Normal yıldız tıklama
+  let near=null,minD=9999;
+  stars.forEach(s=>{const d=Math.hypot(s.x-mx,s.y-my);if(d<minD){minD=d;near=s;}});
+  if(near&&minD<55){near.glow=1;near.decay=0.014;}
+  else{const ns={x:mx,y:my,r:1.2,base:0.9,phase:0,speed:0.003,glow:1,decay:0.013};stars.push(ns);if(stars.length>260)stars.shift();}
+  playStarSound(mx);
+  const rip=document.createElement('div');
+  rip.style.cssText=`position:fixed;left:${mx-20}px;top:${my-20}px;width:40px;height:40px;border-radius:50%;border:1px solid rgba(216,180,254,0.5);pointer-events:none;z-index:50;animation:ripOut 1s ease forwards;`;
+  document.body.appendChild(rip);setTimeout(()=>rip.remove(),1000);
+});
+
+const ripSt=document.createElement('style');
+ripSt.textContent='@keyframes ripOut{from{transform:scale(0);opacity:0.7}to{transform:scale(4);opacity:0}}';
+document.head.appendChild(ripSt);
+
 function introBurst(){
   stars.forEach((s,i)=>{setTimeout(()=>{s.glow=0.5+Math.random()*0.5;s.decay=0.005+Math.random()*0.007;},Math.random()*2000);});
   for(let i=0;i<6;i++) setTimeout(shooter,i*350+100);
@@ -523,14 +542,12 @@ introBurst();
 setTimeout(()=>{
   document.getElementById('intro').classList.add('fade');
   setTimeout(()=>{document.getElementById('intro').style.display='none';},1000);
-  // site açılınca 2. dalga
   setTimeout(()=>{
     for(let i=0;i<50;i++) setTimeout(()=>{const s=stars[Math.floor(Math.random()*stars.length)];s.glow=1;s.decay=0.012;},i*40);
     for(let i=0;i<4;i++) setTimeout(shooter,i*250);
   },600);
 },3200);
 
-/* NAV */
 function showPage(id,btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
@@ -541,21 +558,18 @@ function showPage(id,btn){
   for(let i=0;i<25;i++) setTimeout(()=>{const s=stars[Math.floor(Math.random()*stars.length)];s.glow=0.9;s.decay=0.016;},i*40);
 }
 
-/* POPUP */
 const PD={insulin:{icon:'🪐',title:'Metabolizma Kalkanı',body:'HOMA-IR yüksekse beyin sisi, kilo direnci ve yorgunluk başlar. Inositol (40:1), magnezyum ve düşük glisemik beslenme bu gezegenin enerji kaynağı.',tag:'HOMA-IR < 2.5 ideal'},shbg:{icon:'💫',title:'Hormon Mıknatısı',body:'SHBG düşükse serbest testosteron artar — sivilce, kıllanma, ruh hali dalgalanmaları başlar. Nane çayı, yeşil çay ve karaciğer sağlığı bu gezegenin kalkanı.',tag:'SHBG > 40 nmol/L hedef'},ferritin:{icon:'✨',title:'Onarım Kraliçesi',body:'Ferritin düşükse hücre onarımı yavaşlar, saç dökülür ve enerji tükenir. C vitamini eşliğinde demir ve kırmızı et bu gezegenin yakıtı.',tag:'Ferritin 40–80 µg/L ideal'}};
 function openPop(k){const d=PD[k];document.getElementById('pIco').textContent=d.icon;document.getElementById('pTit').textContent=d.title;document.getElementById('pBody').textContent=d.body;document.getElementById('pTag').textContent=d.tag;document.getElementById('pop').classList.add('open');}
 function closePop(){document.getElementById('pop').classList.remove('open');}
 document.getElementById('pop').addEventListener('click',e=>{if(e.target===document.getElementById('pop'))closePop();});
 
-/* TAHLİL */
 const TC={homa:{bar:'homaBar',st:'hst',ins:'hins',sb:'sb1',sv:'sv1',max:8,zones:[{max:2.5,l:'İdeal ✓',bg:'rgba(52,211,153,0.15)',c:'#34d399',bc:'#34d399',t:'HOMA-IR ideal. İnsülin duyarlılığın güçlü. Inositol ve magnezyum rutinine devam et.'},{max:4,l:'Sınırda',bg:'rgba(251,191,36,0.15)',c:'#fbbf24',bc:'#fbbf24',t:'Eşiğindesin. Protein önceliğini artır, yemek sonrası yürüyüş dene.'},{max:99,l:'Yüksek ↑',bg:'rgba(248,113,113,0.15)',c:'#f87171',bc:'#f87171',t:'İnsülin direnci belirgin. Doktorunla Inositol dozunu konuş. Yemekten 15 dk sonra yürüyüş etkili.'}],act:{border:['Her öğüne protein ekle','Şekerli içecekleri kes','Yemekten 15 dk sonra yürü'],high:['Doktorla Inositol dozunu konuş','Düşük GI beslenmeye geç']}},
 shbg:{bar:'shbgBar',st:'sst',ins:'sins',sb:'sb2',sv:'sv2',max:100,zones:[{max:30,l:'Düşük ↓',bg:'rgba(248,113,113,0.15)',c:'#f87171',bc:'#f87171',t:'SHBG düşük — serbest testosteron yüksek. Nane çayı, brokoli ve yeşil çay karaciğerini destekler.'},{max:40,l:'Sınırda',bg:'rgba(251,191,36,0.15)',c:'#fbbf24',bc:'#fbbf24',t:'SHBG sınırda. Alkolü azalt. Günde 2 bardak nane çayı dene.'},{max:999,l:'İdeal ✓',bg:'rgba(52,211,153,0.15)',c:'#34d399',bc:'#34d399',t:'SHBG ideal. Hormon dengesi güçlü!'}],act:{low:['Günde 2 bardak nane çayı','Alkolü kes','Brokoli ve lahana ekle'],border:['Nane çayına başla']}},
 fer:{bar:'ferBar',st:'fst',ins:'fins',sb:'sb3',sv:'sv3',max:150,zones:[{max:20,l:'Çok düşük ↓',bg:'rgba(248,113,113,0.15)',c:'#f87171',bc:'#f87171',t:'Ferritin çok düşük. C vitamini ile demir takviyesi başla. Çayı yemekten 1 saat sonraya ertele.'},{max:40,l:'Yetersiz',bg:'rgba(251,191,36,0.15)',c:'#fbbf24',bc:'#fbbf24',t:'Ferritin yetersiz. Kırmızı et, ıspanak ve mercimek ekle.'},{max:80,l:'İdeal ✓',bg:'rgba(52,211,153,0.15)',c:'#34d399',bc:'#34d399',t:'Ferritin ideal. Hücre onarımın güçlü!'},{max:999,l:'Yüksek ↑',bg:'rgba(251,191,36,0.15)',c:'#fbbf24',bc:'#fbbf24',t:'Ferritin yüksek — doktoruna bildir.'}],act:{low:['C vitamini ile demir takviyesi','Kırmızı et ve ıspanak artır']}},
-vitd:{bar:'vitdBar',st:'dst',ins:'dins',sb:'sb4',sv:'sv4',max:80,zones:[{max:20,l:'Eksik ↓',bg:'rgba(248,113,113,0.15)',c:'#f87171',bc:'#f87171',t:'Vitamin D çok düşük. 4000–5000 IU/gün takviye ve günlük 15 dk güneş önerilir.'},{max:40,l:'Yetersiz',bg:'rgba(251,191,36,0.15)',c:'#fbbf24',bc:'#fbbf24',t:'Vitamin D yetersiz. 2000 IU/gün takviye ve sabah güneşi dene.'},{max:999,l:'İdeal ✓',bg:'rgba(52,211,153,0.15)',c:'#34d399',bc:'#34d399',t:'Vitamin D ideal — sürdür!'}],act:{low:['4000 IU/gün D vitamini başla','Her gün 15 dk güneş'],yetersiz:['2000 IU/gün takviye']}}};
+vitd:{bar:'vitdBar',st:'dst',ins:'dins',sb:'sb4',sv:'sv4',max:80,zones:[{max:20,l:'Eksik ↓',bg:'rgba(248,113,113,0.15)',c:'#f87171',bc:'#f87171',t:'Vitamin D çok düşük. 4000–5000 IU/gün takviye ve günlük 15 dk güneş önerilir.'},{max:40,l:'Yetersiz',bg:'rgba(251,191,36,0.15)',c:'#fbbf24',bc:'#fbbf24',t:'Vitamin D yetersiz. 2000 IU/gün takviye ve sabah güneşi dene.'},{max:999,l:'İdeal ✓',bg:'rgba(52,211,153,0.15)',c:'#34d399',bc:'#34d399',t:'Vitamin D ideal — südür!'}],act:{low:['4000 IU/gün D vitamini başla','Her gün 15 dk güneş'],yetersiz:['2000 IU/gün takviye']}}};
 function gz(v,z){for(let z2 of z)if(v<=z2.max)return z2;return z[z.length-1];}
 function updateT(){
-  const keys=['homa','shbg','fer','vitd'];
-  const ids=['homaVal','shbgVal','ferVal','vitdVal'];
+  const keys=['homa','shbg','fer','vitd'],ids=['homaVal','shbgVal','ferVal','vitdVal'];
   const vals=ids.map(id=>parseFloat(document.getElementById(id).value));
   let filled=0,score=0;const acts=[];
   keys.forEach((k,i)=>{
@@ -581,14 +595,13 @@ function updateT(){
   ['sb1','sb2','sb3','sb4'].forEach((id,i)=>document.getElementById(id).style.width=pc[i]+'%');
   const avg=Math.round(score/filled);document.getElementById('scoreN').textContent=avg;
   const arc=document.getElementById('scoreArc'),circ=163.4;arc.style.strokeDashoffset=(circ-circ*avg/100).toFixed(1);arc.style.stroke=avg>=75?'#34d399':avg>=45?'#fbbf24':'#f87171';
-  const u=[...new Set(acts)].slice(0,5);const box=document.getElementById('actBox'),list=document.getElementById('actList');box.style.display='block';list.innerHTML=u.length>0?u.map(a=>`<li>${a}</li>`).join(''):'<li style="color:#34d399;">Tüm değerlerin ideal — sürdür! ✦</li>';
+  const u=[...new Set(acts)].slice(0,5);const box=document.getElementById('actBox'),list=document.getElementById('actList');box.style.display='block';list.innerHTML=u.length>0?u.map(a=>`<li>${a}</li>`).join(''):'<li style="color:#34d399;">Tüm değerlerin ideal — südür! ❖</li>';
 }
 function loadDemo(){document.getElementById('homaVal').value=3.2;document.getElementById('shbgVal').value=28;document.getElementById('ferVal').value=18;document.getElementById('vitdVal').value=22;updateT();}
 function clearT(){['homaVal','shbgVal','ferVal','vitdVal'].forEach(id=>document.getElementById(id).value='');updateT();document.getElementById('sumCard').style.display='none';}
 
-/* GÜNLÜK */
 let gS=0,gH=0,gSt=false,gW=0;
-const GS=6,GH=5,GT=GS+GH+1+8;
+const GS=6,GH=5,GT=GS+GH; // sadece takviye+alışkanlık sayılır
 function gt(item,type){
   const done=item.classList.toggle('done');item.querySelector('.gchk').style.color=done?'#fff':'transparent';
   if(type==='s'){gS+=done?1:-1;document.getElementById('supCnt').textContent=gS+'/'+GS;}
@@ -601,11 +614,14 @@ function gRing(){
   document.getElementById('gRing').style.stroke=p>=80?'#34d399':'#d8b4fe';
   document.getElementById('gPct').textContent=p+'%';
   const m=document.getElementById('gMsg'),s=document.getElementById('gSub');
-  if(p===0){m.textContent='Bugüne başla ✦';s.textContent='Takviye ve alışkanlıklarını işaretle';}
+  if(p===0){m.textContent='Bugüne başla ❖';s.textContent='Takviye ve alışkanlıklarını işaretle';}
   else if(p<40){m.textContent='Harika başlangıç! 💫';s.textContent='Devam et, yıldızın parlıyor';}
   else if(p<70){m.textContent='Yarıyı geçtin! ⭐';s.textContent='Biraz daha kaldı';}
   else if(p<100){m.textContent='Neredeyse tam! 🌟';s.textContent='Son birkaç adım';}
-  else{m.textContent='Mükemmel gün! ✨';s.textContent='Gökada seninle gurur duyuyor';}
+  else{
+    m.textContent='Mükemmel gün! ✨';s.textContent='Gökada seninle gurur duyuyor';
+    if(p>=100&&!supernovaFired){setTimeout(fireSuperNova,800);setTimeout(lightNewStar,2400);}
+  }
 }
 let steps=0;
 function addSt(n){steps=Math.min(8000,steps+n);updSt();}
@@ -615,7 +631,7 @@ function updSt(){
   const p=Math.min(100,steps/8000*100),b=document.getElementById('stBar');
   b.style.width=p+'%';b.style.background=p>=100?'#34d399':'#d8b4fe';
   document.getElementById('stHint').textContent=p>=100?'✓ Hedefi tamamladın! 🎉':(8000-steps).toLocaleString('tr')+' adım kaldı';
-  if(p>=100)gSt=true;gRing();
+  if(p>=100){gSt=true;}gRing();
 }
 const wg=document.getElementById('wGls');
 for(let i=0;i<8;i++){
@@ -625,7 +641,6 @@ for(let i=0;i<8;i++){
 }
 function selM(btn){document.querySelectorAll('.mbtn').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');}
 
-/* FORM */
 function doForm(){
   const name=document.getElementById('fName').value.trim();
   const email=document.getElementById('fEmail').value.trim();
@@ -639,406 +654,81 @@ function doForm(){
 
 gRing();
 
-/* ── SES SİSTEMİ ── */
 let AC=null,ambNodes=[],audioOn=false,supernovaFired=false;
-
-function initAC(){
-  if(AC) return;
-  try{ AC=new(window.AudioContext||window.webkitAudioContext)(); }catch(e){}
-}
-
-// Çok derin, neredeyse sessiz 528 Hz drone
+function initAC(){if(AC)return;try{AC=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}}
 function startAmbient(){
-  if(!AC||ambNodes.length) return;
-  // Ana masterGain — çok düşük volume
-  const master=AC.createGain();
-  master.gain.value=0;
-  master.connect(AC.destination);
-  // Yavaşça aç — 4 saniyede
-  master.gain.linearRampToValueAtTime(0.025, AC.currentTime+4);
-
-  // 528 Hz — çok yavaş nefes gibi
+  if(!AC||ambNodes.length)return;
+  const master=AC.createGain();master.gain.value=0;master.connect(AC.destination);
+  master.gain.linearRampToValueAtTime(0.025,AC.currentTime+4);
   [[528,0],[264,-0.2],[132,0.2]].forEach(([freq,pan])=>{
-    const o=AC.createOscillator();
-    const g=AC.createGain();
-    const p=AC.createStereoPanner();
-    o.type='sine';
-    o.frequency.value=freq;
-    g.gain.value=freq===528?1:0.35;
-    p.pan.value=pan;
-    // çok yavaş titreşim — nefes gibi (0.05 Hz = 20 saniyede bir)
-    const lfo=AC.createOscillator();
-    const lg=AC.createGain();
-    lfo.frequency.value=0.05;
-    lg.gain.value=0.3;
-    lfo.connect(lg); lg.connect(g.gain);
-    lfo.start(); o.connect(g); g.connect(p); p.connect(master); o.start();
+    const o=AC.createOscillator(),g=AC.createGain(),p=AC.createStereoPanner();
+    o.type='sine';o.frequency.value=freq;g.gain.value=freq===528?1:0.35;p.pan.value=pan;
+    const lfo=AC.createOscillator(),lg=AC.createGain();lfo.frequency.value=0.05;lg.gain.value=0.3;
+    lfo.connect(lg);lg.connect(g.gain);lfo.start();o.connect(g);g.connect(p);p.connect(master);o.start();
     ambNodes.push(o,g,lfo);
   });
-
-  // Çok alçak sub — sadece hissedilsin
-  const sub=AC.createOscillator();
-  const sg=AC.createGain();
-  sub.type='sine'; sub.frequency.value=33; sg.gain.value=0.4;
-  sub.connect(sg); sg.connect(master); sub.start();
-  ambNodes.push(sub,sg,master);
+  const sub=AC.createOscillator(),sg=AC.createGain();
+  sub.type='sine';sub.frequency.value=33;sg.gain.value=0.4;
+  sub.connect(sg);sg.connect(master);sub.start();ambNodes.push(sub,sg,master);
 }
-
-function stopAmbient(){
-  ambNodes.forEach(n=>{try{n.stop?n.stop():n.disconnect();}catch(e){}});
-  ambNodes=[];
-}
-
+function stopAmbient(){ambNodes.forEach(n=>{try{n.stop?n.stop():n.disconnect();}catch(e){}});ambNodes=[];}
 function toggleAudio(){
-  initAC();
-  if(AC&&AC.state==='suspended') AC.resume();
-  audioOn=!audioOn;
+  initAC();if(AC&&AC.state==='suspended')AC.resume();audioOn=!audioOn;
   const btn=document.getElementById('audioBtn');
-  if(audioOn){
-    startAmbient();
-    btn.textContent='🔊';
-    btn.style.background='rgba(216,180,254,0.22)';
-    btn.style.borderColor='rgba(216,180,254,0.55)';
-    // hoş geldin — çok hafif inen üç nota
-    setTimeout(()=>playNote(528,0.06,2),600);
-    setTimeout(()=>playNote(660,0.04,2),1200);
-    setTimeout(()=>playNote(792,0.03,2.5),1800);
-  } else {
-    stopAmbient();
-    btn.textContent='🔇';
-    btn.style.background='rgba(216,180,254,0.1)';
-    btn.style.borderColor='rgba(216,180,254,0.25)';
-  }
+  if(audioOn){startAmbient();btn.textContent='🔊';btn.style.background='rgba(216,180,254,0.22)';btn.style.borderColor='rgba(216,180,254,0.55)';
+    setTimeout(()=>playNote(528,0.06,2),600);setTimeout(()=>playNote(660,0.04,2),1200);setTimeout(()=>playNote(792,0.03,2.5),1800);
+  }else{stopAmbient();btn.textContent='🔇';btn.style.background='rgba(216,180,254,0.1)';btn.style.borderColor='rgba(216,180,254,0.25)';}
 }
-
 function playNote(freq,vol,dur){
-  if(!AC) return;
-  const o=AC.createOscillator(),g=AC.createGain();
-  o.type='sine'; o.frequency.value=freq;
-  g.gain.setValueAtTime(0,AC.currentTime);
-  g.gain.linearRampToValueAtTime(vol,AC.currentTime+0.12);
+  if(!AC)return;
+  const o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.value=freq;
+  g.gain.setValueAtTime(0,AC.currentTime);g.gain.linearRampToValueAtTime(vol,AC.currentTime+0.12);
   g.gain.exponentialRampToValueAtTime(0.0001,AC.currentTime+dur);
-  o.connect(g); g.connect(AC.destination);
-  o.start(); o.stop(AC.currentTime+dur);
+  o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+dur);
 }
-
-/* YILDIZ DOKUNMA SESİ */
 function playStarSound(x){
-  if(!AC||!audioOn) return;
-  const freqs=[528,594,660,704,792];
-  const freq=freqs[Math.floor(Math.random()*freqs.length)];
-  const pan=AC.createStereoPanner();
-  pan.pan.value=(x/window.innerWidth*2-1)*0.6;
-  const o=AC.createOscillator(),g=AC.createGain();
-  o.type='sine'; o.frequency.value=freq;
+  if(!AC||!audioOn)return;
+  const freqs=[528,594,660,704,792];const freq=freqs[Math.floor(Math.random()*freqs.length)];
+  const pan=AC.createStereoPanner();pan.pan.value=(x/window.innerWidth*2-1)*0.6;
+  const o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.value=freq;
   o.frequency.exponentialRampToValueAtTime(freq*1.2,AC.currentTime+0.5);
-  g.gain.setValueAtTime(0,AC.currentTime);
-  g.gain.linearRampToValueAtTime(0.05,AC.currentTime+0.04);
+  g.gain.setValueAtTime(0,AC.currentTime);g.gain.linearRampToValueAtTime(0.05,AC.currentTime+0.04);
   g.gain.exponentialRampToValueAtTime(0.0001,AC.currentTime+1.2);
-  o.connect(g); g.connect(pan); pan.connect(AC.destination);
-  o.start(); o.stop(AC.currentTime+1.2);
+  o.connect(g);g.connect(pan);pan.connect(AC.destination);o.start();o.stop(AC.currentTime+1.2);
 }
 
-/* CANVAS TIKLAMASI */
-const ripSt=document.createElement('style');
-ripSt.textContent='@keyframes ripOut{from{transform:scale(0);opacity:0.7}to{transform:scale(4);opacity:0}}';
-document.head.appendChild(ripSt);
-
-document.getElementById('starCanvas').style.pointerEvents='auto';
-document.getElementById('starCanvas').addEventListener('click',e=>{
-  initAC();
-  const mx=e.clientX,my=e.clientY;
-  let near=null,minD=9999;
-  stars.forEach(s=>{const d=Math.hypot(s.x-mx,s.y-my);if(d<minD){minD=d;near=s;}});
-  if(near&&minD<55){near.glow=1;near.decay=0.014;}
-  else{const ns={x:mx,y:my,r:1.2,base:0.9,phase:0,speed:0.003,glow:1,decay:0.013};stars.push(ns);if(stars.length>260)stars.shift();}
-  playStarSound(mx);
-  const rip=document.createElement('div');
-  rip.style.cssText=`position:fixed;left:${mx-20}px;top:${my-20}px;width:40px;height:40px;border-radius:50%;border:1px solid rgba(216,180,254,0.5);pointer-events:none;z-index:50;animation:ripOut 1s ease forwards;`;
-  document.body.appendChild(rip);setTimeout(()=>rip.remove(),1000);
-});
-
-/* ── SÜPERNOVA ── */
 function fireSuperNova(){
-  if(supernovaFired) return;
-  supernovaFired=true;
-  initAC(); if(AC&&AC.state==='suspended') AC.resume();
-
-  const sv=document.getElementById('supernova');
-  const snc=document.getElementById('snCanvas');
-  const msg=document.getElementById('snMsg');
-  snc.width=window.innerWidth; snc.height=window.innerHeight;
-  const sc=snc.getContext('2d');
-  sv.style.display='block'; sv.style.pointerEvents='auto';
-
-  // arka plan yavaş kararır
+  if(supernovaFired)return;supernovaFired=true;
+  initAC();if(AC&&AC.state==='suspended')AC.resume();
+  const sv=document.getElementById('supernova'),snc=document.getElementById('snCanvas'),msg=document.getElementById('snMsg');
+  snc.width=window.innerWidth;snc.height=window.innerHeight;
+  const sc=snc.getContext('2d');sv.style.display='block';sv.style.pointerEvents='auto';
   let bgAlpha=0;
-  const bgFade=setInterval(()=>{
-    bgAlpha=Math.min(0.88,bgAlpha+0.04);
-    sv.style.background=`rgba(0,0,0,${bgAlpha})`;
-    if(bgAlpha>=0.88) clearInterval(bgFade);
-  },30);
-
-  setTimeout(()=>{ msg.style.opacity='1'; },700);
-
-  // PARTİKÜLLER
-  const CX=window.innerWidth/2, CY=window.innerHeight/2;
+  const bgFade=setInterval(()=>{bgAlpha=Math.min(0.88,bgAlpha+0.04);sv.style.background=`rgba(0,0,0,${bgAlpha})`;if(bgAlpha>=0.88)clearInterval(bgFade);},30);
+  setTimeout(()=>{msg.style.opacity='1';},700);
+  const CX=window.innerWidth/2,CY=window.innerHeight/2;
   const cols=['#fcd34d','#d8b4fe','#f0abfc','#fff','#fbbf24','#a78bfa','#34d399'];
   const particles=[];
-
-  for(let i=0;i<100;i++){
-    const a=Math.random()*Math.PI*2, spd=1.5+Math.random()*7;
-    particles.push({x:CX,y:CY,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,r:Math.random()*3+1,color:cols[Math.floor(Math.random()*cols.length)],alpha:1,decay:0.01+Math.random()*0.012,type:'spark'});
-  }
-  for(let i=0;i<7;i++){
-    const a=(i/7)*Math.PI*2, spd=1+Math.random()*2.5;
-    particles.push({x:CX,y:CY,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,r:7+Math.random()*7,color:cols[i%cols.length],alpha:0.9,decay:0.006,type:'orb'});
-  }
-  for(let i=0;i<35;i++){
-    const a=Math.random()*Math.PI*2, spd=3+Math.random()*10;
-    particles.push({x:CX,y:CY,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,r:Math.random()*2+0.5,color:'#fff',alpha:1,decay:0.016,type:'dot'});
-  }
-
+  for(let i=0;i<100;i++){const a=Math.random()*Math.PI*2,spd=1.5+Math.random()*7;particles.push({x:CX,y:CY,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,r:Math.random()*3+1,color:cols[Math.floor(Math.random()*cols.length)],alpha:1,decay:0.01+Math.random()*0.012,type:'spark'});}
+  for(let i=0;i<7;i++){const a=(i/7)*Math.PI*2,spd=1+Math.random()*2.5;particles.push({x:CX,y:CY,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,r:7+Math.random()*7,color:cols[i%cols.length],alpha:0.9,decay:0.006,type:'orb'});}
+  for(let i=0;i<35;i++){const a=Math.random()*Math.PI*2,spd=3+Math.random()*10;particles.push({x:CX,y:CY,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,r:Math.random()*2+0.5,color:'#fff',alpha:1,decay:0.016,type:'dot'});}
   let fr=0;
   function animSN(){
     sc.clearRect(0,0,snc.width,snc.height);
-    if(fr<50){
-      const prog=fr/50,rad=prog*250;
-      const grd=sc.createRadialGradient(CX,CY,0,CX,CY,rad);
-      grd.addColorStop(0,`rgba(252,211,77,${0.35*(1-prog)})`);
-      grd.addColorStop(0.5,`rgba(216,180,254,${0.2*(1-prog)})`);
-      grd.addColorStop(1,'rgba(0,0,0,0)');
-      sc.fillStyle=grd; sc.fillRect(0,0,snc.width,snc.height);
-    }
-    particles.forEach(p=>{
-      p.x+=p.vx; p.y+=p.vy; p.vy+=0.04; p.vx*=0.99; p.alpha-=p.decay;
-      if(p.alpha<=0) return;
-      sc.globalAlpha=p.alpha;
-      if(p.type==='spark'){
-        const g2=sc.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*4);
-        g2.addColorStop(0,p.color); g2.addColorStop(1,'rgba(0,0,0,0)');
-        sc.fillStyle=g2; sc.beginPath(); sc.arc(p.x,p.y,p.r*4,0,Math.PI*2); sc.fill();
-        sc.fillStyle=p.color; sc.beginPath(); sc.arc(p.x,p.y,p.r,0,Math.PI*2); sc.fill();
-      } else if(p.type==='orb'){
-        const g3=sc.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*5);
-        g3.addColorStop(0,p.color); g3.addColorStop(1,'rgba(0,0,0,0)');
-        sc.fillStyle=g3; sc.beginPath(); sc.arc(p.x,p.y,p.r*5,0,Math.PI*2); sc.fill();
-      } else {
-        sc.fillStyle='#fff'; sc.fillRect(p.x,p.y,p.r,p.r);
-      }
-    });
-    sc.globalAlpha=1; fr++;
-    if(particles.some(p=>p.alpha>0)) requestAnimationFrame(animSN);
+    if(fr<50){const prog=fr/50,rad=prog*250;const grd=sc.createRadialGradient(CX,CY,0,CX,CY,rad);grd.addColorStop(0,`rgba(252,211,77,${0.35*(1-prog)})`);grd.addColorStop(0.5,`rgba(216,180,254,${0.2*(1-prog)})`);grd.addColorStop(1,'rgba(0,0,0,0)');sc.fillStyle=grd;sc.fillRect(0,0,snc.width,snc.height);}
+    particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=0.04;p.vx*=0.99;p.alpha-=p.decay;if(p.alpha<=0)return;sc.globalAlpha=p.alpha;
+      if(p.type==='spark'){const g2=sc.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*4);g2.addColorStop(0,p.color);g2.addColorStop(1,'rgba(0,0,0,0)');sc.fillStyle=g2;sc.beginPath();sc.arc(p.x,p.y,p.r*4,0,Math.PI*2);sc.fill();sc.fillStyle=p.color;sc.beginPath();sc.arc(p.x,p.y,p.r,0,Math.PI*2);sc.fill();}
+      else if(p.type==='orb'){const g3=sc.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*5);g3.addColorStop(0,p.color);g3.addColorStop(1,'rgba(0,0,0,0)');sc.fillStyle=g3;sc.beginPath();sc.arc(p.x,p.y,p.r*5,0,Math.PI*2);sc.fill();}
+      else{sc.fillStyle='#fff';sc.fillRect(p.x,p.y,p.r,p.r);}});
+    sc.globalAlpha=1;fr++;if(particles.some(p=>p.alpha>0))requestAnimationFrame(animSN);
   }
   animSN();
-
-  // Süpernova sesi
-  if(AC){
-    [528,660,792,1056].forEach((freq,i)=>{
-      setTimeout(()=>playNote(freq,0.1,3),i*180);
-    });
-    setTimeout(()=>{
-      [792,660,528,396].forEach((freq,i)=>{
-        setTimeout(()=>playNote(freq,0.06,1.5),i*200);
-      });
-    },1000);
-  }
-
-  // Tüm yıldızlar parlasın
-  stars.forEach((s,i)=>{ setTimeout(()=>{s.glow=1;s.decay=0.007;},i*5); });
-  for(let i=0;i<6;i++) setTimeout(shooter,i*180);
-
-  // 5.5s sonra kapat
-  setTimeout(()=>{
-    msg.style.opacity='0';
-    let a=0.88;
-    const fade=setInterval(()=>{
-      a=Math.max(0,a-0.04);
-      sv.style.background=`rgba(0,0,0,${a})`;
-      if(a<=0){ clearInterval(fade); sv.style.display='none'; sv.style.pointerEvents='none'; }
-    },30);
-  },5500);
-
-  setTimeout(()=>{ supernovaFired=false; },35000);
+  if(AC){[528,660,792,1056].forEach((freq,i)=>{setTimeout(()=>playNote(freq,0.1,3),i*180);});setTimeout(()=>{[792,660,528,396].forEach((freq,i)=>{setTimeout(()=>playNote(freq,0.06,1.5),i*200);});},1000);}
+  stars.forEach((s,i)=>{setTimeout(()=>{s.glow=1;s.decay=0.007;},i*5);});
+  for(let i=0;i<6;i++)setTimeout(shooter,i*180);
+  setTimeout(()=>{msg.style.opacity='0';let a=0.88;const fade=setInterval(()=>{a=Math.max(0,a-0.04);sv.style.background=`rgba(0,0,0,${a})`;if(a<=0){clearInterval(fade);sv.style.display='none';sv.style.pointerEvents='none';}},30);},5500);
+  setTimeout(()=>{supernovaFired=false;},35000);
 }
-
-// Günlük %100 → Süpernova
-function snCheck(){
-  const d=gS+gH+(gSt?1:0)+gW, p=Math.round(d/GT*100);
-  if(p>=100&&!supernovaFired){setTimeout(fireSuperNova,800);setTimeout(lightNewStar,2400);}
-}
-// gt ve updSt'ye snCheck ekle
-document.querySelectorAll('.git').forEach(el=>{
-  const orig=el.getAttribute('onclick');
-  el.setAttribute('onclick', orig+';snCheck();');
-});
-
-</script>
-<!-- ── KİŞİSEL YILDIZ SİSTEMİ ── paste just before </body> -->
-
-<!-- CSS -->
-<style>
-.star-toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);z-index:400;text-align:center;background:rgba(5,1,15,0.95);border:1px solid rgba(252,211,77,0.5);border-radius:24px;padding:2rem 2rem 1.5rem;transition:transform .6s cubic-bezier(.34,1.56,.64,1),opacity .4s;opacity:0;pointer-events:none;backdrop-filter:blur(20px);box-shadow:0 0 80px rgba(252,211,77,0.2);max-width:300px;width:90%;}
-.star-toast.show{transform:translate(-50%,-50%) scale(1);opacity:1;pointer-events:all;}
-.star-toast-ico{font-size:3.5rem;display:block;margin-bottom:.75rem;animation:starSpin 1.2s ease forwards;}
-@keyframes starSpin{0%{transform:scale(0) rotate(-30deg);opacity:0;}60%{transform:scale(1.25) rotate(8deg);}100%{transform:scale(1) rotate(0);opacity:1;}}
-.star-toast h3{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;color:#fff;margin-bottom:.4rem;line-height:1.2;}
-.star-toast h3 em{font-style:italic;color:#fcd34d;}
-.star-toast p{font-size:12px;color:rgba(252,211,77,0.65);line-height:1.75;margin-bottom:1.2rem;}
-.star-toast-close{padding:.6rem 1.6rem;background:rgba(252,211,77,0.12);border:1px solid rgba(252,211,77,0.35);border-radius:20px;color:#fcd34d;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;}
-.star-counter{position:fixed;top:14px;left:16px;z-index:200;display:flex;align-items:center;gap:5px;background:rgba(0,0,0,0.5);border:1px solid rgba(252,211,77,0.25);border-radius:20px;padding:4px 10px;font-size:11px;color:rgba(252,211,77,0.65);backdrop-filter:blur(12px);cursor:default;}
-.star-counter-num{font-weight:700;color:#fcd34d;}
-</style>
-
-<!-- HTML -->
-<div class="star-toast" id="starToast">
-  <span class="star-toast-ico">⭐</span>
-  <h3><em id="starToastDay">1. Gününün</em><br>Yıldızı Yandı!</h3>
-  <p>Bugün tüm görevlerini tamamladın.<br>Yıldızın gökyüzüne işlendi — sonsuza dek senindir. ✦</p>
-  <button class="star-toast-close" onclick="closeStarToast()">Yıldızımı Gördüm ✦</button>
-</div>
-
-<div class="star-counter" id="starCounter">
-  ✦ <span class="star-counter-num" id="starCounterNum">0</span> yıldız
-</div>
-
-<!-- JS -->
-<script>
-(function(){
-const MY_STARS_KEY='galaxy_my_stars';
-const LAST_STAR_KEY='galaxy_last_star_date';
-
-function getMyStars(){try{return JSON.parse(localStorage.getItem(MY_STARS_KEY)||'[]');}catch(e){return[];}}
-function saveMyStars(a){localStorage.setItem(MY_STARS_KEY,JSON.stringify(a));}
-function todayStr(){return new Date().toISOString().slice(0,10);}
-function alreadyLitToday(){return localStorage.getItem(LAST_STAR_KEY)===todayStr();}
-
-function rndPos(){
-  const zones=[
-    {x:[.03,.20],y:[.06,.40]},{x:[.80,.97],y:[.06,.40]},
-    {x:[.03,.22],y:[.58,.90]},{x:[.78,.97],y:[.58,.90]},
-    {x:[.30,.70],y:[.03,.14]}
-  ];
-  const z=zones[Math.floor(Math.random()*zones.length)];
-  return{x:z.x[0]+Math.random()*(z.x[1]-z.x[0]),y:z.y[0]+Math.random()*(z.y[1]-z.y[0])};
-}
-
-function lightNewStar(){
-  if(alreadyLitToday()) return;
-  const arr=getMyStars();
-  const day=arr.length+1;
-  const pos=rndPos();
-  arr.push({id:todayStr(),x:pos.x,y:pos.y,day,date:todayStr(),
-    r:2.2+Math.random()*1.2,
-    color:['#fcd34d','#f9a8d4','#c4b5fd','#67e8f9','#a5f3fc'][Math.floor(Math.random()*5)]});
-  saveMyStars(arr);
-  localStorage.setItem(LAST_STAR_KEY,todayStr());
-  myStarsCache=arr;
-  updateCounter();
-  document.getElementById('starToastDay').textContent=day+'. Gününün';
-  setTimeout(()=>document.getElementById('starToast').classList.add('show'),400);
-}
-
-function closeStarToast(){document.getElementById('starToast').classList.remove('show');}
-window.closeStarToast=closeStarToast;
-
-function updateCounter(){
-  const n=getMyStars().length;
-  const el=document.getElementById('starCounterNum');
-  if(el) el.textContent=n;
-}
-
-let myStarsCache=getMyStars();
-let myT=0;
-updateCounter();
-
-// Canvas'a yıldızları çiz
-function drawMyStars(W,H){
-  if(!myStarsCache.length) return;
-  myT+=0.022;
-  myStarsCache.forEach((s,i)=>{
-    const sx=s.x*W, sy=s.y*H;
-    const pulse=0.72+0.28*Math.sin(myT+i*0.9);
-    const r=s.r*pulse;
-    const a=0.9*pulse;
-    // Büyük glow
-    const g1=cx.createRadialGradient(sx,sy,0,sx,sy,r*13);
-    g1.addColorStop(0,s.color);g1.addColorStop(1,'transparent');
-    cx.save();cx.globalAlpha=a*0.28;cx.fillStyle=g1;
-    cx.beginPath();cx.arc(sx,sy,r*13,0,Math.PI*2);cx.fill();cx.restore();
-    // Orta glow
-    const g2=cx.createRadialGradient(sx,sy,0,sx,sy,r*4);
-    g2.addColorStop(0,s.color);g2.addColorStop(1,'transparent');
-    cx.save();cx.globalAlpha=a*0.65;cx.fillStyle=g2;
-    cx.beginPath();cx.arc(sx,sy,r*4,0,Math.PI*2);cx.fill();cx.restore();
-    // Çekirdek
-    cx.save();cx.globalAlpha=a;cx.fillStyle='#fff';
-    cx.beginPath();cx.arc(sx,sy,r,0,Math.PI*2);cx.fill();cx.restore();
-    // Işık hüzmeleri
-    cx.save();cx.globalAlpha=a*0.45;cx.strokeStyle=s.color;cx.lineWidth=0.8;
-    const b=r*9;
-    cx.beginPath();cx.moveTo(sx-b,sy);cx.lineTo(sx+b,sy);
-    cx.moveTo(sx,sy-b);cx.lineTo(sx,sy+b);cx.stroke();cx.restore();
-    // Gün numarası
-    cx.save();cx.globalAlpha=a*0.8;cx.fillStyle=s.color;
-    cx.font='bold 9px sans-serif';cx.textAlign='center';
-    cx.fillText('✦'+s.day,sx,sy-r*4.5-4);cx.restore();
-  });
-}
-
-// Tıklama: yıldıza tıklayınca tarih göster
-let infoTO;
-function showStarInfo(day,date,x,y){
-  clearTimeout(infoTO);
-  let el=document.getElementById('myStarInfo');
-  if(!el){el=document.createElement('div');el.id='myStarInfo';
-    el.style.cssText='position:fixed;z-index:300;background:rgba(5,1,15,0.92);border:1px solid rgba(252,211,77,0.4);border-radius:12px;padding:.45rem .9rem;font-size:11px;color:#fcd34d;pointer-events:none;backdrop-filter:blur(10px);transition:opacity .2s;white-space:nowrap;';
-    document.body.appendChild(el);}
-  el.innerHTML='<strong>✦ '+day+'. Gün</strong> · '+date;
-  el.style.left=Math.min(x,window.innerWidth-170)+'px';
-  el.style.top=(y-46)+'px';el.style.opacity='1';
-  infoTO=setTimeout(()=>el.style.opacity='0',2500);
-}
-
-document.getElementById('starCanvas').addEventListener('click',function(e){
-  const mx=e.clientX,my=e.clientY;
-  for(const s of myStarsCache){
-    const sx=s.x*cv.width,sy=s.y*cv.height;
-    if(Math.hypot(mx-sx,my-sy)<22){
-      const d=new Date(s.date+'T12:00:00').toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'});
-      showStarInfo(s.day,d,sx,sy);return;
-    }
-  }
-});
-
-window.drawMyStars = drawMyStars;
-window.lightNewStar = lightNewStar;
-
-// Post-draw hook: her frame sonunda kişisel yıldızları çiz
-const _origRAF=window.requestAnimationFrame;
-let hookActive=false;
-if(!hookActive){
-  hookActive=true;
-  (function postLoop(){
-    // Canvas zaten çizildi, üstüne ekle
-    if(typeof cv!=='undefined'&&typeof cx!=='undefined'){
-      drawMyStars(cv.width,cv.height);
-    }
-    _origRAF(postLoop);
-  })();
-}
-
-// snCheck override: %100 → yıldız yak
-window.snCheck=function(){
-  const d=window.gS+window.gH+(window.gSt?1:0)+window.gW;
-  const p=Math.round(d/window.GT*100);
-  if(p>=100&&!window.supernovaFired){
-    setTimeout(window.fireSuperNova,800);
-    setTimeout(lightNewStar,2400);
-  }
-};
-
-})();
 </script>
 </body>
 </html>
