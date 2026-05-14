@@ -871,6 +871,179 @@ document.querySelectorAll('.git').forEach(el=>{
 });
 
 </script>
+<!-- ── KİŞİSEL YILDIZ SİSTEMİ ── paste just before </body> -->
 
+<!-- CSS -->
+<style>
+.star-toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);z-index:400;text-align:center;background:rgba(5,1,15,0.95);border:1px solid rgba(252,211,77,0.5);border-radius:24px;padding:2rem 2rem 1.5rem;transition:transform .6s cubic-bezier(.34,1.56,.64,1),opacity .4s;opacity:0;pointer-events:none;backdrop-filter:blur(20px);box-shadow:0 0 80px rgba(252,211,77,0.2);max-width:300px;width:90%;}
+.star-toast.show{transform:translate(-50%,-50%) scale(1);opacity:1;pointer-events:all;}
+.star-toast-ico{font-size:3.5rem;display:block;margin-bottom:.75rem;animation:starSpin 1.2s ease forwards;}
+@keyframes starSpin{0%{transform:scale(0) rotate(-30deg);opacity:0;}60%{transform:scale(1.25) rotate(8deg);}100%{transform:scale(1) rotate(0);opacity:1;}}
+.star-toast h3{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;color:#fff;margin-bottom:.4rem;line-height:1.2;}
+.star-toast h3 em{font-style:italic;color:#fcd34d;}
+.star-toast p{font-size:12px;color:rgba(252,211,77,0.65);line-height:1.75;margin-bottom:1.2rem;}
+.star-toast-close{padding:.6rem 1.6rem;background:rgba(252,211,77,0.12);border:1px solid rgba(252,211,77,0.35);border-radius:20px;color:#fcd34d;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.star-counter{position:fixed;top:14px;left:16px;z-index:200;display:flex;align-items:center;gap:5px;background:rgba(0,0,0,0.5);border:1px solid rgba(252,211,77,0.25);border-radius:20px;padding:4px 10px;font-size:11px;color:rgba(252,211,77,0.65);backdrop-filter:blur(12px);cursor:default;}
+.star-counter-num{font-weight:700;color:#fcd34d;}
+</style>
+
+<!-- HTML -->
+<div class="star-toast" id="starToast">
+  <span class="star-toast-ico">⭐</span>
+  <h3><em id="starToastDay">1. Gününün</em><br>Yıldızı Yandı!</h3>
+  <p>Bugün tüm görevlerini tamamladın.<br>Yıldızın gökyüzüne işlendi — sonsuza dek senindir. ✦</p>
+  <button class="star-toast-close" onclick="closeStarToast()">Yıldızımı Gördüm ✦</button>
+</div>
+
+<div class="star-counter" id="starCounter">
+  ✦ <span class="star-counter-num" id="starCounterNum">0</span> yıldız
+</div>
+
+<!-- JS -->
+<script>
+(function(){
+const MY_STARS_KEY='galaxy_my_stars';
+const LAST_STAR_KEY='galaxy_last_star_date';
+
+function getMyStars(){try{return JSON.parse(localStorage.getItem(MY_STARS_KEY)||'[]');}catch(e){return[];}}
+function saveMyStars(a){localStorage.setItem(MY_STARS_KEY,JSON.stringify(a));}
+function todayStr(){return new Date().toISOString().slice(0,10);}
+function alreadyLitToday(){return localStorage.getItem(LAST_STAR_KEY)===todayStr();}
+
+function rndPos(){
+  const zones=[
+    {x:[.03,.20],y:[.06,.40]},{x:[.80,.97],y:[.06,.40]},
+    {x:[.03,.22],y:[.58,.90]},{x:[.78,.97],y:[.58,.90]},
+    {x:[.30,.70],y:[.03,.14]}
+  ];
+  const z=zones[Math.floor(Math.random()*zones.length)];
+  return{x:z.x[0]+Math.random()*(z.x[1]-z.x[0]),y:z.y[0]+Math.random()*(z.y[1]-z.y[0])};
+}
+
+function lightNewStar(){
+  if(alreadyLitToday()) return;
+  const arr=getMyStars();
+  const day=arr.length+1;
+  const pos=rndPos();
+  arr.push({id:todayStr(),x:pos.x,y:pos.y,day,date:todayStr(),
+    r:2.2+Math.random()*1.2,
+    color:['#fcd34d','#f9a8d4','#c4b5fd','#67e8f9','#a5f3fc'][Math.floor(Math.random()*5)]});
+  saveMyStars(arr);
+  localStorage.setItem(LAST_STAR_KEY,todayStr());
+  myStarsCache=arr;
+  updateCounter();
+  document.getElementById('starToastDay').textContent=day+'. Gününün';
+  setTimeout(()=>document.getElementById('starToast').classList.add('show'),400);
+}
+
+function closeStarToast(){document.getElementById('starToast').classList.remove('show');}
+window.closeStarToast=closeStarToast;
+
+function updateCounter(){
+  const n=getMyStars().length;
+  const el=document.getElementById('starCounterNum');
+  if(el) el.textContent=n;
+}
+
+let myStarsCache=getMyStars();
+let myT=0;
+updateCounter();
+
+// Canvas'a yıldızları çiz
+function drawMyStars(W,H){
+  if(!myStarsCache.length) return;
+  myT+=0.022;
+  myStarsCache.forEach((s,i)=>{
+    const sx=s.x*W, sy=s.y*H;
+    const pulse=0.72+0.28*Math.sin(myT+i*0.9);
+    const r=s.r*pulse;
+    const a=0.9*pulse;
+    // Büyük glow
+    const g1=cx.createRadialGradient(sx,sy,0,sx,sy,r*13);
+    g1.addColorStop(0,s.color);g1.addColorStop(1,'transparent');
+    cx.save();cx.globalAlpha=a*0.28;cx.fillStyle=g1;
+    cx.beginPath();cx.arc(sx,sy,r*13,0,Math.PI*2);cx.fill();cx.restore();
+    // Orta glow
+    const g2=cx.createRadialGradient(sx,sy,0,sx,sy,r*4);
+    g2.addColorStop(0,s.color);g2.addColorStop(1,'transparent');
+    cx.save();cx.globalAlpha=a*0.65;cx.fillStyle=g2;
+    cx.beginPath();cx.arc(sx,sy,r*4,0,Math.PI*2);cx.fill();cx.restore();
+    // Çekirdek
+    cx.save();cx.globalAlpha=a;cx.fillStyle='#fff';
+    cx.beginPath();cx.arc(sx,sy,r,0,Math.PI*2);cx.fill();cx.restore();
+    // Işık hüzmeleri
+    cx.save();cx.globalAlpha=a*0.45;cx.strokeStyle=s.color;cx.lineWidth=0.8;
+    const b=r*9;
+    cx.beginPath();cx.moveTo(sx-b,sy);cx.lineTo(sx+b,sy);
+    cx.moveTo(sx,sy-b);cx.lineTo(sx,sy+b);cx.stroke();cx.restore();
+    // Gün numarası
+    cx.save();cx.globalAlpha=a*0.8;cx.fillStyle=s.color;
+    cx.font='bold 9px sans-serif';cx.textAlign='center';
+    cx.fillText('✦'+s.day,sx,sy-r*4.5-4);cx.restore();
+  });
+}
+
+// Tıklama: yıldıza tıklayınca tarih göster
+let infoTO;
+function showStarInfo(day,date,x,y){
+  clearTimeout(infoTO);
+  let el=document.getElementById('myStarInfo');
+  if(!el){el=document.createElement('div');el.id='myStarInfo';
+    el.style.cssText='position:fixed;z-index:300;background:rgba(5,1,15,0.92);border:1px solid rgba(252,211,77,0.4);border-radius:12px;padding:.45rem .9rem;font-size:11px;color:#fcd34d;pointer-events:none;backdrop-filter:blur(10px);transition:opacity .2s;white-space:nowrap;';
+    document.body.appendChild(el);}
+  el.innerHTML='<strong>✦ '+day+'. Gün</strong> · '+date;
+  el.style.left=Math.min(x,window.innerWidth-170)+'px';
+  el.style.top=(y-46)+'px';el.style.opacity='1';
+  infoTO=setTimeout(()=>el.style.opacity='0',2500);
+}
+
+document.getElementById('starCanvas').addEventListener('click',function(e){
+  const mx=e.clientX,my=e.clientY;
+  for(const s of myStarsCache){
+    const sx=s.x*cv.width,sy=s.y*cv.height;
+    if(Math.hypot(mx-sx,my-sy)<22){
+      const d=new Date(s.date+'T12:00:00').toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'});
+      showStarInfo(s.day,d,sx,sy);return;
+    }
+  }
+});
+
+// Ana canvas loop'una inject et
+// Mevcut loop fonksiyonunu wrap et
+const _origLoop=window.loop;
+window.loop=function(){
+  // Orijinal loop içeriği zaten requestAnimationFrame ile çalışıyor
+  // drawMyStars'ı stars çizildikten sonra ekle
+  // Bunu yapmanın en temiz yolu: requestAnimationFrame callback'ini override etmek
+  // Bunun yerine stars dizisine sahte bir "always-glow" yıldız ekleyip
+  // asıl custom yıldızları ayrı bir post-frame'de çiziyoruz
+};
+
+// Post-draw hook: her frame sonunda kişisel yıldızları çiz
+const _origRAF=window.requestAnimationFrame;
+let hookActive=false;
+if(!hookActive){
+  hookActive=true;
+  (function postLoop(){
+    // Canvas zaten çizildi, üstüne ekle
+    if(typeof cv!=='undefined'&&typeof cx!=='undefined'){
+      drawMyStars(cv.width,cv.height);
+    }
+    _origRAF(postLoop);
+  })();
+}
+
+// snCheck override: %100 → yıldız yak
+window.snCheck=function(){
+  const d=window.gS+window.gH+(window.gSt?1:0)+window.gW;
+  const p=Math.round(d/window.GT*100);
+  if(p>=100&&!window.supernovaFired){
+    setTimeout(window.fireSuperNova,800);
+    setTimeout(lightNewStar,2400);
+  }
+};
+
+})();
+</script>
 </body>
 </html>
