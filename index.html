@@ -1011,16 +1011,8 @@ document.getElementById('starCanvas').addEventListener('click',function(e){
   }
 });
 
-// Ana canvas loop'una inject et
-// Mevcut loop fonksiyonunu wrap et
-const _origLoop=window.loop;
-window.loop=function(){
-  // Orijinal loop içeriği zaten requestAnimationFrame ile çalışıyor
-  // drawMyStars'ı stars çizildikten sonra ekle
-  // Bunu yapmanın en temiz yolu: requestAnimationFrame callback'ini override etmek
-  // Bunun yerine stars dizisine sahte bir "always-glow" yıldız ekleyip
-  // asıl custom yıldızları ayrı bir post-frame'de çiziyoruz
-};
+window.drawMyStars = drawMyStars;
+window.lightNewStar = lightNewStar;
 
 // Post-draw hook: her frame sonunda kişisel yıldızları çiz
 const _origRAF=window.requestAnimationFrame;
