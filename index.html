@@ -499,7 +499,9 @@ function shooter(){
   const d=()=>{if(s.life<=0)return;const dx=Math.cos(Math.PI/4)*s.len*s.life,dy=Math.sin(Math.PI/4)*s.len*s.life;cx.save();cx.globalAlpha=s.life*0.75;const g=cx.createLinearGradient(s.x,s.y,s.x-dx,s.y-dy);g.addColorStop(0,'#fff');g.addColorStop(1,'rgba(216,180,254,0)');cx.strokeStyle=g;cx.lineWidth=1.5;cx.beginPath();cx.moveTo(s.x,s.y);cx.lineTo(s.x-dx,s.y-dy);cx.stroke();cx.restore();s.life-=0.035;if(s.life>0)requestAnimationFrame(d);};d();
 }
 setInterval(()=>{if(Math.random()<0.4)shooter();},3000);
-
+var myStarsCache=[];var myT=0;
+function drawMyStars(W,H){}
+function lightNewStar(){}
 function loop(){
   const W=cv.width,H=cv.height;
   const bg=cx.createRadialGradient(W/2,H/2,0,W/2,H/2,Math.max(W,H)*0.85);
@@ -864,7 +866,7 @@ function fireSuperNova(){
 function snCheck(){
   const d=gS+gH+(gSt?1:0)+gW, p=Math.round(d/GT*100);
   if(p>=100&&!supernovaFired){setTimeout(fireSuperNova,800);setTimeout(lightNewStar,2400);}
-  }
+}
 // gt ve updSt'ye snCheck ekle
 document.querySelectorAll('.git').forEach(el=>{
   const orig=el.getAttribute('onclick');
