@@ -507,7 +507,7 @@ function loop(){
   cx.fillStyle=bg;cx.fillRect(0,0,W,H);
   [[W*.15,H*.2,150,'rgba(109,40,217,0.14)'],[W*.85,H*.75,120,'rgba(76,29,149,0.11)'],[W*.5,H*.08,100,'rgba(139,92,246,0.09)']].forEach(([x,y,r,c])=>{const g2=cx.createRadialGradient(x,y,0,x,y,r);g2.addColorStop(0,c);g2.addColorStop(1,'rgba(0,0,0,0)');cx.beginPath();cx.arc(x,y,r,0,Math.PI*2);cx.fillStyle=g2;cx.fill();});
   stars.forEach(s=>{s.phase+=s.speed;const a=s.base*(0.4+0.6*Math.sin(s.phase));if(s.glow>0){s.glow-=s.decay;if(s.glow<0)s.glow=0;}const fr=s.r+s.glow*4,fa=Math.min(1,a+s.glow);if(s.glow>0.15){const g3=cx.createRadialGradient(s.x,s.y,0,s.x,s.y,fr*9);g3.addColorStop(0,`rgba(200,160,255,${fa*0.45})`);g3.addColorStop(1,'rgba(0,0,0,0)');cx.beginPath();cx.arc(s.x,s.y,fr*9,0,Math.PI*2);cx.fillStyle=g3;cx.fill();}cx.beginPath();cx.arc(s.x,s.y,fr,0,Math.PI*2);cx.fillStyle=`rgba(230,215,255,${fa})`;cx.fill();});
-drawMyStars(W,H);
+
   requestAnimationFrame(loop);
 }
 loop();
@@ -863,8 +863,8 @@ function fireSuperNova(){
 // Günlük %100 → Süpernova
 function snCheck(){
   const d=gS+gH+(gSt?1:0)+gW, p=Math.round(d/GT*100);
-}
   if(p>=100&&!supernovaFired){setTimeout(fireSuperNova,800);setTimeout(lightNewStar,2400);}
+  }
 // gt ve updSt'ye snCheck ekle
 document.querySelectorAll('.git').forEach(el=>{
   const orig=el.getAttribute('onclick');
