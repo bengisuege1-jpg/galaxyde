@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>PMOS Risk Analizi — Dr. Bengi Su Ege</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#05010f;
+  --surface:rgba(255,255,255,0.04);
+  --border:rgba(216,180,254,0.15);
+  --accent:#d8b4fe;
+  --accent2:#a78bfa;
+  --gold:#fcd34d;
+  --green:#6ee7b7;
+  --red:#f87171;
+  --text:rgba(255,255,255,0.9);
+  --muted:rgba(216,180,254,0.5);
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+
+/* BACKGROUND */
+#bgCanvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+
+/* WRAPPER */
+.wrap{position:relative;z-index:10;max-width:480px;margin:0 auto;padding:0 1.25rem 4rem;}
+
+/* HEADER */
+.header{text-align:center;padding:2.5rem 0 2rem;}
+.header-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(216,180,254,0.1);border:1px solid rgba(216,180,254,0.25);border-radius:20px;padding:4px 14px;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:1.2rem;}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--accent);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.6)}}
+.header h1{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,8vw,48px);font-weight:600;line-height:1.05;color:#fff;margin-bottom:.6rem;}
+.header h1 em{font-style:italic;color:var(--accent);}
+.header-sub{font-size:13px;color:var(--muted);line-height:1.7;max-width:340px;margin:0 auto .8rem;}
+.header-ref{font-size:10px;color:rgba(216,180,254,0.3);letter-spacing:0.06em;font-style:italic;}
+
+/* PROGRESS */
+.progress-wrap{margin-bottom:1.5rem;}
+.progress-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem;}
+.progress-label{font-size:11px;color:var(--muted);letter-spacing:0.08em;}
+.progress-num{font-size:11px;color:var(--accent);font-weight:600;}
+.progress-bar{height:3px;background:rgba(216,180,254,0.12);border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,#7c3aed,#d8b4fe);border-radius:2px;transition:width .5s ease;}
+
+/* SECTION LABEL */
+.section-label{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;}
+.section-label::before{content:'';flex:1;height:1px;background:var(--border);}
+.section-label span{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);white-space:nowrap;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* QUESTION CARD */
+.q-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:1.25rem;margin-bottom:.75rem;transition:border-color .2s;}
+.q-card.answered{border-color:rgba(167,139,250,0.35);}
+.q-num{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem;}
+.q-text{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:400;line-height:1.5;color:#fff;margin-bottom:.1rem;}
+.q-note{font-size:11px;color:rgba(216,180,254,0.4);margin-bottom:1rem;line-height:1.5;}
+.q-options{display:flex;flex-direction:column;gap:.5rem;}
+.q-opt{display:flex;align-items:center;gap:.75rem;padding:.65rem .9rem;border-radius:12px;border:1px solid rgba(216,180,254,0.15);background:rgba(255,255,255,0.03);cursor:pointer;transition:all .18s;-webkit-user-select:none;user-select:none;}
+.q-opt:hover{border-color:rgba(216,180,254,0.35);background:rgba(216,180,254,0.07);}
+.q-opt.selected{border-color:var(--accent2);background:rgba(124,58,237,0.18);}
+.q-opt-dot{width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(216,180,254,0.3);flex-shrink:0;transition:all .18s;display:flex;align-items:center;justify-content:center;}
+.q-opt.selected .q-opt-dot{background:var(--accent2);border-color:var(--accent2);}
+.q-opt-dot::after{content:'';width:6px;height:6px;border-radius:50%;background:#fff;opacity:0;transition:opacity .15s;}
+.q-opt.selected .q-opt-dot::after{opacity:1;}
+.q-opt-text{font-size:13px;color:rgba(255,255,255,0.85);line-height:1.4;}
+.q-opt-score{margin-left:auto;font-size:10px;opacity:0;}
+
+/* MULTI SELECT */
+.q-multi .q-opt.selected{border-color:#6ee7b7;background:rgba(52,211,153,0.1);}
+.q-multi .q-opt.selected .q-opt-dot{background:#6ee7b7;border-color:#6ee7b7;}
+
+/* SUBMIT */
+.btn-submit{width:100%;padding:1rem;background:linear-gradient(135deg,#6d28d9,#9f5af4);color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .25s;margin-top:1.25rem;letter-spacing:.04em;display:none;}
+.btn-submit:hover{opacity:.9;transform:translateY(-1px);}
+.btn-submit.show{display:block;}
+
+/* DISCLAIMER */
+.disclaimer{background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.2);border-radius:12px;padding:1rem;margin-bottom:1.5rem;}
+.disclaimer p{font-size:11px;color:rgba(252,211,77,0.7);line-height:1.7;}
+.disclaimer strong{color:rgba(252,211,77,0.9);}
+
+/* RESULT SCREEN */
+#resultScreen{display:none;}
+.result-hero{text-align:center;padding:2rem 0 1.5rem;}
+.result-ring-wrap{position:relative;width:140px;height:140px;margin:0 auto 1.25rem;}
+.result-ring-wrap svg{transform:rotate(-90deg);}
+.result-ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.result-score{font-size:36px;font-weight:700;color:#fff;line-height:1;}
+.result-score-label{font-size:10px;color:var(--muted);letter-spacing:.06em;margin-top:2px;}
+.result-title{font-family:'Cormorant Garamond',serif;font-size:clamp(22px,6vw,30px);font-weight:600;line-height:1.1;margin-bottom:.5rem;}
+.result-subtitle{font-size:13px;color:var(--muted);line-height:1.7;max-width:340px;margin:0 auto;}
+
+/* RESULT LEVEL COLORS */
+.level-low .result-title{color:#6ee7b7;}
+.level-medium .result-title{color:#fcd34d;}
+.level-high .result-title{color:#f87171;}
+.level-very-high .result-title{color:#f87171;}
+
+/* SYMPTOM BREAKDOWN */
+.breakdown-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:1.25rem;margin-bottom:.75rem;}
+.breakdown-title{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem;}
+.breakdown-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem;}
+.breakdown-icon{font-size:1.1rem;width:28px;text-align:center;flex-shrink:0;}
+.breakdown-info{flex:1;}
+.breakdown-name{font-size:12px;font-weight:600;color:rgba(255,255,255,.9);margin-bottom:3px;}
+.breakdown-bar-bg{height:5px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;}
+.breakdown-bar-fill{height:100%;border-radius:3px;transition:width .8s ease;}
+.breakdown-val{font-size:11px;font-weight:600;min-width:32px;text-align:right;}
+
+/* ROTTERDAM */
+.rotterdam-card{background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.25);border-radius:18px;padding:1.25rem;margin-bottom:.75rem;}
+.rotterdam-title{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:.6rem;}
+.rotterdam-subtitle{font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:1rem;}
+.rotterdam-criteria{display:flex;flex-direction:column;gap:.5rem;}
+.rotterdam-item{display:flex;align-items:flex-start;gap:.6rem;padding:.6rem .75rem;border-radius:10px;background:rgba(255,255,255,.03);}
+.rotterdam-item.met{background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.2);}
+.rotterdam-item.partial{background:rgba(252,211,77,.06);border:1px solid rgba(252,211,77,.18);}
+.rotterdam-item.unmet{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);}
+.rotterdam-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.rotterdam-item.met .rotterdam-dot{background:#6ee7b7;}
+.rotterdam-item.partial .rotterdam-dot{background:#fcd34d;}
+.rotterdam-item.unmet .rotterdam-dot{background:rgba(255,255,255,.2);}
+.rotterdam-item-title{font-size:12px;font-weight:600;color:#fff;margin-bottom:2px;}
+.rotterdam-item-sub{font-size:11px;color:var(--muted);line-height:1.5;}
+
+/* RECOMMENDATIONS */
+.rec-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:1.25rem;margin-bottom:.75rem;}
+.rec-title{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem;}
+.rec-item{display:flex;align-items:flex-start;gap:.6rem;margin-bottom:.65rem;}
+.rec-item:last-child{margin-bottom:0;}
+.rec-icon{font-size:1rem;flex-shrink:0;width:22px;text-align:center;margin-top:1px;}
+.rec-text{font-size:12px;color:rgba(216,180,254,.8);line-height:1.6;}
+.rec-text strong{color:#fff;}
+
+/* SCIENCE NOTE */
+.science-card{background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.2);border-radius:14px;padding:1rem;margin-bottom:.75rem;}
+.science-card p{font-size:11px;color:rgba(196,181,253,.7);line-height:1.7;font-style:italic;}
+.science-card strong{color:rgba(196,181,253,.9);font-style:normal;}
+
+
+
+/* RESTART */
+.btn-restart{width:100%;padding:.85rem;background:rgba(216,180,254,0.08);border:1px solid rgba(216,180,254,0.2);color:var(--accent);border-radius:14px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;margin-top:.5rem;}
+.btn-restart:hover{background:rgba(216,180,254,0.14);}
+
+/* SIGNATURE */
+.signature{text-align:center;padding:2rem 0 1rem;}
+.sig-line{width:40px;height:1px;background:linear-gradient(90deg,transparent,rgba(216,180,254,.3),transparent);margin:0 auto .5rem;}
+.sig-by{font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:rgba(216,180,254,.28);margin-bottom:.3rem;}
+.sig-name{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:600;font-style:italic;background:linear-gradient(135deg,#e9d5ff,#d8b4fe,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+</style>
+</head>
+<body>
+<canvas id="bgCanvas"></canvas>
+
+<div class="wrap">
+
+<!-- TEST SCREEN -->
+<div id="testScreen">
+
+  <div class="header">
+    <div class="header-badge"><div class="dot"></div>Bilimsel Risk Analizi</div>
+    <h1>PMOS <em>Risk</em><br>Testi</h1>
+    <p class="header-sub">Rotterdam 2003 & 2023 PCOS Uluslararası Kanıt Temelli Rehberi'ne dayalı 20 soruluk klinik risk değerlendirmesi.</p>
+    <p class="header-ref">Kaynak: Rotterdam ESHRE/ASRM 2003 · NIH 2012 · Teede et al. 2023</p>
+  </div>
+
+  <div class="disclaimer">
+    <p><strong>⚠️ Önemli Not:</strong> Bu test tıbbi teşhis değildir; risk farkındalığı amacıyla hazırlanmıştır. Sonuçlarını mutlaka bir kadın hastalıkları uzmanıyla paylaş.</p><p style="margin-top:.5rem;"><strong>📌 PMOS Hakkında:</strong> PMOS, Mayıs 2025'te The Lancet'te yayımlanan uluslararası konsensüs kararıyla PCOS'un (Polikistik Over Sendromu) yeni resmi adıdır. 3 yıllık geçiş döneminde her iki isim de kullanılabilir.</p>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-top">
+      <span class="progress-label">İlerleme</span>
+      <span class="progress-num" id="progressNum">0 / 20</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  </div>
+
+  <div id="questionsWrap"></div>
+
+  <button class="btn-submit" id="submitBtn" onclick="showResult()">✦ Sonucumu Gör</button>
+
+</div>
+
+<!-- RESULT SCREEN -->
+<div id="resultScreen">
+  <div class="result-hero">
+    <div class="result-ring-wrap">
+      <svg width="140" height="140" viewBox="0 0 140 140">
+        <circle cx="70" cy="70" r="58" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="8"/>
+        <circle id="resultArc" cx="70" cy="70" r="58" fill="none" stroke="#d8b4fe" stroke-width="8"
+          stroke-dasharray="364.4" stroke-dashoffset="364.4" stroke-linecap="round"
+          style="transition:stroke-dashoffset 1.2s ease, stroke .4s;"/>
+      </svg>
+      <div class="result-ring-center">
+        <div class="result-score" id="resultScoreNum">—</div>
+        <div class="result-score-label">Risk Skoru</div>
+      </div>
+    </div>
+    <div id="resultLevel">
+      <div class="result-title" id="resultTitle"></div>
+      <p class="result-subtitle" id="resultSubtitle"></p>
+    </div>
+  </div>
+
+  <div id="breakdownCard" class="breakdown-card">
+    <div class="breakdown-title">✦ Belirti Kategorileri</div>
+    <div id="breakdownRows"></div>
+  </div>
+
+  <div id="rotterdamCard" class="rotterdam-card">
+    <div class="rotterdam-title">Rotterdam 2003 Kriterleri</div>
+    <div class="rotterdam-subtitle">PMOS teşhisi için 3 kriterden 2'sinin karşılanması gerekir. Bu test belirti örüntünü analiz eder — kesin sonuç için klinisyen değerlendirmesi şarttır.</div>
+    <div class="rotterdam-criteria" id="rotterdamList"></div>
+  </div>
+
+  <div id="recCard" class="rec-card">
+    <div class="rec-title">✦ Sonraki Adımlar</div>
+    <div id="recList"></div>
+  </div>
+
+  <div class="science-card">
+    <p><strong>Bilimsel Not:</strong> PCOS, kadınların %6-20'sini etkileyen en yaygın endokrin bozukluğudur. <strong>Rotterdam 2003 kriterleri</strong> (oligoanovülasyon, hiperandrojenizm, polikistik over morfolojisi) hâlâ altın standarttır. 2023 Uluslararası Rehber, bu üç kriterden ikisinin varlığını onaylamıştır. İnsülin direnci, hastaların %50-70'inde görülür ve HOMA-IR ile değerlendirilir.</p>
+  </div>
+
+
+
+  <button class="btn-restart" onclick="restartTest()">← Testi Yeniden Başlat</button>
+
+  <div class="signature">
+    <div class="sig-line"></div>
+    <div class="sig-by">tarafından hazırlandı</div>
+    <div class="sig-name">Dr. Bengi Su Ege</div>
+    <div class="sig-line" style="margin-top:.5rem;"></div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+// ─────────────────────────────────────────────
+//  BACKGROUND STARS
+// ─────────────────────────────────────────────
+const cv=document.getElementById('bgCanvas'),cx=cv.getContext('2d');
+function rsz(){cv.width=innerWidth;cv.height=innerHeight;}rsz();addEventListener('resize',rsz);
+const stars=Array.from({length:180},()=>({
+  x:Math.random()*innerWidth,y:Math.random()*innerHeight,
+  r:Math.random()*1.4+.2,base:Math.random()*.5+.1,
+  phase:Math.random()*Math.PI*2,speed:Math.random()*.005+.002
+}));
+(function loop(){
+  const W=cv.width,H=cv.height;
+  const bg=cx.createRadialGradient(W/2,H/2,0,W/2,H/2,Math.max(W,H)*.9);
+  bg.addColorStop(0,'#0d0520');bg.addColorStop(.6,'#060115');bg.addColorStop(1,'#000008');
+  cx.fillStyle=bg;cx.fillRect(0,0,W,H);
+  stars.forEach(s=>{
+    s.phase+=s.speed;const a=s.base*(.4+.6*Math.sin(s.phase));
+    cx.beginPath();cx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    cx.fillStyle=`rgba(220,200,255,${a})`;cx.fill();
+  });
+  requestAnimationFrame(loop);
+})();
+
+// ─────────────────────────────────────────────
+//  QUESTIONS DATA
+// ─────────────────────────────────────────────
+// Score system: each question has options with weights
+// Categories: cycle(C), androgen(A), metabolic(M), fertility(F), family(X)
+const QUESTIONS = [
+  // ── ADET DÜZENSİZLİĞİ (Rotterdam: Oligoanovülasyon)
+  {
+    id:'cycle1', cat:'C', catLabel:'Adet & Ovülasyon',
+    text:'Adet döngün kaç günde bir gerçekleşiyor?',
+    note:'Normal adet döngüsü 21-35 gün arasındadır.',
+    type:'single',
+    options:[
+      {text:'21-35 gün arası (düzenli)', score:0},
+      {text:'35-45 gün arası (biraz uzun)', score:2},
+      {text:'45 günden fazla ya da yılda 6-8 kez', score:5},
+      {text:'Yılda 1-2 kez ya da hiç gelmiyor', score:8},
+    ]
+  },
+  {
+    id:'cycle2', cat:'C', catLabel:'Adet & Ovülasyon',
+    text:'Adet düzensizliğin ne kadar süredir devam ediyor?',
+    note:'',
+    type:'single',
+    options:[
+      {text:'Hiç sorunum yok', score:0},
+      {text:'1 yıldan az', score:1},
+      {text:'1-3 yıl', score:3},
+      {text:'3 yıldan fazla / her zaman böyle', score:5},
+    ]
+  },
+  {
+    id:'cycle3', cat:'C', catLabel:'Adet & Ovülasyon',
+    text:'Adet kanamaların süresi ve miktarı nasıl?',
+    note:'',
+    type:'single',
+    options:[
+      {text:'3-7 gün, normal miktar', score:0},
+      {text:'Çok hafif / lekelenme şeklinde', score:2},
+      {text:'Çok ağır / pıhtılı', score:2},
+      {text:'Çok düzensiz, tahmin edilemez', score:3},
+    ]
+  },
+
+  // ── HİPERANDROJENİZM (Rotterdam: Klinik/Biyokimyasal)
+  {
+    id:'and1', cat:'A', catLabel:'Androjen Belirtileri',
+    text:'Yüzünde, çenende, üst dudak veya boyun bölgelerinde koyu, kaba tüylenme var mı?',
+    note:'Hirsutizm: PMOS\'lu kadınların %60-70\'inde görülür. (Ferriman-Gallwey)',
+    type:'single',
+    options:[
+      {text:'Hayır, yok', score:0},
+      {text:'Çok hafif, nadiren', score:2},
+      {text:'Fark edilir düzeyde, tıraş/epilasyon gerekiyor', score:5},
+      {text:'Belirgin, göğüs/karın/sırt bölgesine de yayılmış', score:8},
+    ]
+  },
+  {
+    id:'and2', cat:'A', catLabel:'Androjen Belirtileri',
+    text:'Hormonal akne yaşıyor musun?',
+    note:'PMOS aknesı genellikle çene, boyun, sırt, göğüste; derin kistik karakterde olur.',
+    type:'single',
+    options:[
+      {text:'Hayır', score:0},
+      {text:'Ara sıra yüz sivilcesi', score:1},
+      {text:'Sürekli, özellikle çene/boyun bölgesi', score:4},
+      {text:'Kistik, derin, iz bırakan; tedaviye dirençli', score:7},
+    ]
+  },
+  {
+    id:'and3', cat:'A', catLabel:'Androjen Belirtileri',
+    text:'Saç dökülmesi ya da saç incelme yaşıyor musun?',
+    note:'Androjenik alopesi: tepede incelme, saç çizgisinin gerilemesi.',
+    type:'single',
+    options:[
+      {text:'Hayır', score:0},
+      {text:'Normalden biraz fazla dökülüyor', score:1},
+      {text:'Tepede belirgin incelme var', score:4},
+      {text:'Ciddi, saç çizgim geriledi', score:6},
+    ]
+  },
+  {
+    id:'and4', cat:'A', catLabel:'Androjen Belirtileri',
+    text:'Yağlı cilt ve/veya saç derisinde yağlanma oluyor mu?',
+    note:'',
+    type:'single',
+    options:[
+      {text:'Hayır, normal', score:0},
+      {text:'Bazen yağlanma', score:1},
+      {text:'Sürekli yağlı cilt/saç', score:3},
+    ]
+  },
+
+  // ── METABOLİK
+  {
+    id:'met1', cat:'M', catLabel:'Metabolik Belirtiler',
+    text:'Boyun, koltukaltı veya kasıkta kadife dokusunda koyulaşma (Acanthosis nigricans) fark ettin mi?',
+    note:'İnsülin direncinin güçlü bir belirtisidir. PMOS\'lu kadınların %50-70\'inde insülin direnci görülür.',
+    type:'single',
+    options:[
+      {text:'Hayır', score:0},
+      {text:'Emin değilim', score:1},
+      {text:'Evet, fark ettim', score:6},
+    ]
+  },
+  {
+    id:'met2', cat:'M', catLabel:'Metabolik Belirtiler',
+    text:'Karbonhidrat tükettikten sonra çok şiddetli uyku hali, yorgunluk veya şeker isteği yaşıyor musun?',
+    note:'İnsülin direncinin klasik belirtisi.',
+    type:'single',
+    options:[
+      {text:'Hayır, normalim', score:0},
+      {text:'Bazen oluyor', score:2},
+      {text:'Çoğunlukla oluyor', score:4},
+      {text:'Her öğünden sonra çok belirgin', score:6},
+    ]
+  },
+  {
+    id:'met3', cat:'M', catLabel:'Metabolik Belirtiler',
+    text:'Kilo değişimini nasıl tarif edersin?',
+    note:'PMOS\'lu kadınların %40-80\'inde kilo fazlalığı / obezite görülür; ancak zayıf PMOS da mevcuttur.',
+    type:'single',
+    options:[
+      {text:'Normal kilodayım, zorlanmıyorum', score:0},
+      {text:'Normal kilodayım ama kolayca kilo alıyorum', score:2},
+      {text:'Fazla kilom var, vermekte çok zorlanıyorum', score:4},
+      {text:'Bel/karın bölgesinde yoğunlaşmış yağlanma', score:5},
+    ]
+  },
+  {
+    id:'met4', cat:'M', catLabel:'Metabolik Belirtiler',
+    text:'Sürekli yorgunluk, beyin sisi veya konsantrasyon güçlüğü yaşıyor musun?',
+    note:'',
+    type:'single',
+    options:[
+      {text:'Hayır', score:0},
+      {text:'Bazen', score:1},
+      {text:'Sık sık, günlük yaşamımı etkiliyor', score:3},
+    ]
+  },
+  {
+    id:'met5', cat:'M', catLabel:'Metabolik Belirtiler',
+    text:'Ailenizde tip 2 diyabet, insülin direnci veya metabolik sendrom var mı?',
+    note:'PMOS\'un güçlü genetik bileşeni vardır.',
+    type:'single',
+    options:[
+      {text:'Hayır', score:0},
+      {text:'Uzak akrabalarda var', score:1},
+      {text:'Anne, baba veya kardeşte var', score:3},
+    ]
+  },
+
+  // ── FERTİLİTE & OVÜLASYONs
+  {
+    id:'fer1', cat:'F', catLabel:'Üreme Sağlığı',
+    text:'Hamile kalmaya çalıştın mı? (Denemediysen atla)',
+    note:'',
+    type:'single',
+    options:[
+      {text:'Denemiyorum / henüz çocuk istemiyorum', score:0},
+      {text:'Evet, 6 ay içinde oldu', score:0},
+      {text:'Evet, 1 yıldan fazla sürüyor / olmuyor', score:5},
+      {text:'IVF/yardımcı üreme gerekti', score:7},
+    ]
+  },
+  {
+    id:'fer2', cat:'F', catLabel:'Üreme Sağlığı',
+    text:'Ovülasyon testi veya bazal vücut sıcaklığı takibi yaptın mı?',
+    note:'',
+    type:'single',
+    options:[
+      {text:'Yapmadım', score:0},
+      {text:'Yaptım, düzenli ovülasyon var', score:0},
+      {text:'Yaptım, ovülasyon çok gecikiyor / tespit edemedim', score:5},
+    ]
+  },
+  {
+    id:'fer3', cat:'F', catLabel:'Üreme Sağlığı',
+    text:'Ailenizde PMOS veya adet düzensizliği olan var mı?',
+    note:'PMOS\'un kalıtımla ilişkisi güçlüdür.',
+    type:'single',
+    options:[
+      {text:'Hayır / bilmiyorum', score:0},
+      {text:'Uzak akrabalarda', score:2},
+      {text:'Annem, kız kardeşim veya kızımda var', score:4},
+    ]
+  },
+
+  // ── PSİKOLOJİK
+  {
+    id:'psy1', cat:'P', catLabel:'Psikolojik Belirtiler',
+    text:'Ruh hali dalgalanmaları, anksiyete veya depresyon yaşıyor musun?',
+    note:'PCOS\'lu kadınlarda depresyon ve anksiyete riski 3 kat artmıştır. (Teede et al. 2018)',
+    type:'single',
+    options:[
+      {text:'Hayır', score:0},
+      {text:'Adet öncesi belirgin (PMS)', score:1},
+      {text:'Sık sık, adet döneminden bağımsız', score:3},
+      {text:'Sürekli, günlük yaşamı etkiliyor', score:4},
+    ]
+  },
+  {
+    id:'psy2', cat:'P', catLabel:'Psikolojik Belirtiler',
+    text:'Bedenindeki değişimler (tüylenme, sivilce, kilo) özgüveni etkiliyor mu?',
+    note:'',
+    type:'single',
+    options:[
+      {text:'Hayır, sorunum yok', score:0},
+      {text:'Bazen fark ediyorum', score:1},
+      {text:'Evet, sosyal hayatımı etkiliyor', score:2},
+      {text:'Çok ciddi şekilde etkiliyor', score:3},
+    ]
+  },
+
+  // ── ULTRASOUNd / LAB (bildirilen)
+  {
+    id:'lab1', cat:'L', catLabel:'Tahlil & Ultrason',
+    text:'Daha önce ultrason yaptırdın mı? Sonucu neydi?',
+    note:'Polikistik over morfolojisi: ≥25 folikül/over (8MHz prob) veya over hacmi >10 mL.',
+    type:'single',
+    options:[
+      {text:'Yaptırmadım', score:0},
+      {text:'Normal çıktı', score:0},
+      {text:'Polikistik over görünümü denildi', score:7},
+      {text:'Emin değilim / anlamadım', score:1},
+    ]
+  },
+  {
+    id:'lab2', cat:'L', catLabel:'Tahlil & Ultrason',
+    text:'Kan tahlillerinde herhangi bir anormallik var mıydı?',
+    note:'',
+    type:'multi',
+    multiNote:'Birden fazla seçebilirsin',
+    options:[
+      {text:'Hiç tahlil yaptırmadım', score:0},
+      {text:'Testosteron yüksek bulundu', score:6},
+      {text:'SHBG düşük bulundu', score:4},
+      {text:'HOMA-IR yüksek (insülin direnci)', score:5},
+      {text:'LH/FSH oranı yüksek (>2)', score:5},
+      {text:'AMH yüksek bulundu', score:4},
+      {text:'Tüm değerler normal', score:0},
+    ]
+  },
+  {
+    id:'lab3', cat:'L', catLabel:'Tahlil & Ultrason',
+    text:'Yaşın kaç?',
+    note:'PMOS üreme çağında en sık 18-35 yaş arasında teşhis edilir.',
+    type:'single',
+    options:[
+      {text:'18 yaş altı', score:1},
+      {text:'18-35 yaş', score:2},
+      {text:'36-45 yaş', score:1},
+      {text:'45 yaş üstü / menopoz', score:0},
+    ]
+  },
+];
+
+// ─────────────────────────────────────────────
+//  RENDER QUESTIONS
+// ─────────────────────────────────────────────
+const answers = {}; // id -> {score, selectedIdx[]}
+let currentSection = '';
+
+function renderQuestions() {
+  const wrap = document.getElementById('questionsWrap');
+  wrap.innerHTML = '';
+  let lastCat = '';
+
+  QUESTIONS.forEach((q, qi) => {
+    if (q.catLabel !== lastCat) {
+      lastCat = q.catLabel;
+      const lbl = document.createElement('div');
+      lbl.className = 'section-label';
+      lbl.innerHTML = `<span>${q.catLabel}</span>`;
+      wrap.appendChild(lbl);
+    }
+
+    const card = document.createElement('div');
+    card.className = 'q-card' + (q.type === 'multi' ? ' q-multi' : '');
+    card.id = 'qcard-' + q.id;
+
+    const catIcon = {C:'🌙',A:'✨',M:'🪐',F:'💫',P:'💜',L:'🔬'}[q.cat] || '✦';
+
+    card.innerHTML = `
+      <div class="q-num">${catIcon} Soru ${qi+1} / ${QUESTIONS.length}</div>
+      <div class="q-text">${q.text}</div>
+      ${q.note ? `<div class="q-note">${q.note}</div>` : ''}
+      ${q.multiNote ? `<div class="q-note">📌 ${q.multiNote}</div>` : ''}
+      <div class="q-options" id="opts-${q.id}"></div>
+    `;
+    wrap.appendChild(card);
+
+    const optsWrap = card.querySelector('.q-options');
+    q.options.forEach((opt, oi) => {
+      const btn = document.createElement('div');
+      btn.className = 'q-opt';
+      btn.innerHTML = `<div class="q-opt-dot"></div><div class="q-opt-text">${opt.text}</div>`;
+      btn.addEventListener('click', () => selectOption(q, oi, btn, optsWrap, card));
+      optsWrap.appendChild(btn);
+    });
+  });
+}
+
+function selectOption(q, oi, btn, optsWrap, card) {
+  if (q.type === 'multi') {
+    // multi: toggle
+    btn.classList.toggle('selected');
+    const selected = [];
+    optsWrap.querySelectorAll('.q-opt').forEach((b, i) => {
+      if (b.classList.contains('selected')) selected.push(i);
+    });
+    // if "all normal" selected, deselect others
+    const normalIdx = q.options.findIndex(o => o.score === 0 && o.text.includes('normal'));
+    if (oi === normalIdx && btn.classList.contains('selected')) {
+      optsWrap.querySelectorAll('.q-opt').forEach((b,i)=>{if(i!==normalIdx)b.classList.remove('selected');});
+      answers[q.id] = {score:0, multi:true};
+    } else {
+      if (normalIdx >= 0) optsWrap.querySelectorAll('.q-opt')[normalIdx]?.classList.remove('selected');
+      const score = q.options.filter((_,i) => {
+        const b = optsWrap.querySelectorAll('.q-opt')[i];
+        return b && b.classList.contains('selected');
+      }).reduce((s,o)=>s+o.score,0);
+      answers[q.id] = {score, multi:true};
+    }
+    card.classList.add('answered');
+  } else {
+    optsWrap.querySelectorAll('.q-opt').forEach(b=>b.classList.remove('selected'));
+    btn.classList.add('selected');
+    answers[q.id] = {score: q.options[oi].score};
+    card.classList.add('answered');
+  }
+  updateProgress();
+}
+
+function updateProgress() {
+  const total = QUESTIONS.length;
+  const done = Object.keys(answers).length;
+  document.getElementById('progressNum').textContent = done + ' / ' + total;
+  document.getElementById('progressFill').style.width = (done/total*100) + '%';
+  const btn = document.getElementById('submitBtn');
+  if (done >= total) btn.classList.add('show');
+  else btn.classList.remove('show');
+}
+
+// ─────────────────────────────────────────────
+//  RESULT LOGIC
+// ─────────────────────────────────────────────
+function calcScore() {
+  return Object.values(answers).reduce((s,a)=>s+a.score,0);
+}
+
+function calcCategoryScores() {
+  const cats = {C:{max:21,score:0,label:'Adet Düzensizliği',icon:'🌙'},
+                A:{max:24,score:0,label:'Androjen Belirtileri',icon:'✨'},
+                M:{max:22,score:0,label:'Metabolik Risk',icon:'🪐'},
+                F:{max:12,score:0,label:'Üreme Sağlığı',icon:'💫'},
+                P:{max:7,score:0,label:'Psikolojik Belirtiler',icon:'💜'},
+                L:{max:20,score:0,label:'Tahlil & Ultrason',icon:'🔬'}};
+  QUESTIONS.forEach(q => {
+    const a = answers[q.id];
+    if (a && cats[q.cat]) cats[q.cat].score += a.score;
+  });
+  return cats;
+}
+
+function getRotterdamStatus() {
+  // Criterion 1: Oligoanovulation (cycle questions)
+  const cycleScore = (answers['cycle1']?.score||0) + (answers['cycle2']?.score||0);
+  const c1 = cycleScore >= 5 ? 'met' : cycleScore >= 2 ? 'partial' : 'unmet';
+
+  // Criterion 2: Hyperandrogenism (androgen questions)
+  const androScore = (answers['and1']?.score||0) + (answers['and2']?.score||0) + (answers['and3']?.score||0);
+  const c2 = androScore >= 8 ? 'met' : androScore >= 3 ? 'partial' : 'unmet';
+
+  // Criterion 3: Polycystic morphology / lab
+  const labScore = (answers['lab1']?.score||0) + (answers['lab2']?.score||0);
+  const c3 = labScore >= 6 ? 'met' : labScore >= 3 ? 'partial' : 'unmet';
+
+  return {c1,c2,c3};
+}
+
+function getLevel(score) {
+  if (score <= 12) return {
+    level:'low', color:'#6ee7b7', arcColor:'#6ee7b7',
+    title:'Düşük Risk',
+    subtitle:'Belirgin PMOS belirtileri sınırlı görünüyor. Ancak bazı semptomlara dikkat etmeni öneririz. Rutin jinekolojik kontrolleri aksatma.',
+    pct:score/90
+  };
+  if (score <= 28) return {
+    level:'medium', color:'#fcd34d', arcColor:'#fbbf24',
+    title:'Orta Risk — Değerlendirme Önerilir',
+    subtitle:'Birkaç önemli PMOS belirtisi taşıyorsun. Bir kadın hastalıkları uzmanına başvurarak ultrason ve hormon tahlili yaptırmanı öneririz.',
+    pct:score/90
+  };
+  if (score <= 48) return {
+    level:'high', color:'#f87171', arcColor:'#ef4444',
+    title:'Yüksek Risk — Uzman Başvurusu Gerekli',
+    subtitle:'Güçlü PCOS belirtileri taşıyorsun. Rotterdam kriterlerinden birden fazlasını karşılıyor olabilirsin. Bir an önce jinekoloji ve endokrinoloji değerlendirmesi yaptır.',
+    pct:score/90
+  };
+  return {
+    level:'very-high', color:'#f87171', arcColor:'#dc2626',
+    title:'Çok Yüksek Risk — Acil Değerlendirme',
+    subtitle:'Birden fazla kategoride yoğun belirti taşıyorsun. Lütfen en kısa sürede bir kadın hastalıkları uzmanı ve endokrinolog ile görüş.',
+    pct:Math.min(score/90, 1)
+  };
+}
+
+function getRecommendations(level, cats, rotterdam) {
+  const recs = [];
+  const metCount = [rotterdam.c1,rotterdam.c2,rotterdam.c3].filter(x=>x==='met').length;
+  const partialCount = [rotterdam.c1,rotterdam.c2,rotterdam.c3].filter(x=>x==='partial').length;
+
+  if (level === 'low') {
+    recs.push({icon:'✅',text:'<strong>Rutin takip:</strong> Yılda bir jinekolojik muayene yeterli. Adet düzenini takvim ile takip et.'});
+    recs.push({icon:'🥗',text:'<strong>Önleyici beslenme:</strong> Düşük GI beslenme ve düzenli egzersiz insülin duyarlılığını korur.'});
+    recs.push({icon:'📅',text:'<strong>İzle:</strong> Adet döngünü takip et, herhangi bir değişiklikte doktora başvur.'});
+  } else if (level === 'medium') {
+    recs.push({icon:'🏥',text:'<strong>Jinekoloji randevusu:</strong> Transvajinal ultrason + LH, FSH, testosteron, SHBG, HOMA-IR, AMH, ferritin, D vitamini paneli talep et.'});
+    recs.push({icon:'🔬',text:'<strong>Temel tahliller:</strong> Sabah aç karınına insülin ve açlık glikozu ile HOMA-IR hesaplatabilirsin.'});
+    recs.push({icon:'🥗',text:'<strong>Yaşam tarzı:</strong> Yemek sıralaması (sebze→protein→karbonhidrat), yemek sonrası 15 dk yürüyüş, şekersiz beslenme.'});
+    recs.push({icon:'🍵',text:'<strong>Destekleyici:</strong> Günde 2 bardak kıvırcık nane çayı — antiandrojenik etkisi klinik çalışmalarla desteklenmiştir.'});
+  } else {
+    recs.push({icon:'🚨',text:'<strong>Acil randevu:</strong> Kadın hastalıkları uzmanı + endokrinoloji konsültasyonu. Mümkünse PMOS konusunda deneyimli bir klinisyen ara.'});
+    recs.push({icon:'🔬',text:'<strong>Kapsamlı panel:</strong> Serbest/total testosteron, SHBG, DHEA-S, 17-OHP, prolaktin, LH/FSH, insülin, HbA1c, ferritin, D vitamini, tiroid.'});
+    recs.push({icon:'📷',text:'<strong>Ultrason:</strong> Transvajinal ultrason ile over morfolojisi ve folikül sayımı yapılmalı.'});
+    recs.push({icon:'💊',text:'<strong>Tedavi seçenekleri:</strong> Klinisyeninle Inositol, metformin veya hormonal düzenleme hakkında konuş.'});
+    recs.push({icon:'🧠',text:'<strong>Psikolojik destek:</strong> PMOS\'un duygusal yükü gerçek. Destek almak güç değil, farkındalıktır.'});
+  }
+
+  if (cats.M.score >= 8) {
+    recs.push({icon:'🪐',text:'<strong>İnsülin direnci riski:</strong> Açlık glikozu ve HOMA-IR mutlaka değerlendirilmeli. Berberine veya Inositol doktoruna danışarak başlanabilir.'});
+  }
+  if (cats.A.score >= 10) {
+    recs.push({icon:'✨',text:'<strong>Androjen yönetimi:</strong> Omega-3 (2g/gün EPA+DHA) ve çinko (30-50mg/gün) testosteronu düşürmeye yardımcı olabilir.'});
+  }
+
+  return recs;
+}
+
+// ─────────────────────────────────────────────
+//  SHOW RESULT
+// ─────────────────────────────────────────────
+function showResult() {
+  const score = calcScore();
+  const cats = calcCategoryScores();
+  const lvl = getLevel(score);
+  const rotterdam = getRotterdamStatus();
+  const recs = getRecommendations(lvl.level, cats, rotterdam);
+
+  // Switch screens
+  document.getElementById('testScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+  window.scrollTo(0,0);
+
+  // Score ring
+  document.getElementById('resultScoreNum').textContent = score;
+  const arc = document.getElementById('resultArc');
+  const circ = 364.4;
+  setTimeout(() => {
+    arc.style.strokeDashoffset = circ - circ * Math.min(lvl.pct, 1);
+    arc.style.stroke = lvl.arcColor;
+  }, 100);
+
+  // Level
+  document.getElementById('resultLevel').className = 'level-' + lvl.level;
+  document.getElementById('resultTitle').textContent = lvl.title;
+  document.getElementById('resultSubtitle').textContent = lvl.subtitle;
+
+  // Breakdown
+  const bRows = document.getElementById('breakdownRows');
+  bRows.innerHTML = '';
+  Object.entries(cats).forEach(([key, c]) => {
+    const pct = Math.min(Math.round(c.score / c.max * 100), 100);
+    const color = pct >= 65 ? '#f87171' : pct >= 35 ? '#fcd34d' : '#6ee7b7';
+    bRows.innerHTML += `
+      <div class="breakdown-row">
+        <div class="breakdown-icon">${c.icon}</div>
+        <div class="breakdown-info">
+          <div class="breakdown-name">${c.label}</div>
+          <div class="breakdown-bar-bg">
+            <div class="breakdown-bar-fill" style="width:${pct}%;background:${color};"></div>
+          </div>
+        </div>
+        <div class="breakdown-val" style="color:${color};">${pct}%</div>
+      </div>`;
+  });
+
+  // Rotterdam
+  const rl = document.getElementById('rotterdamList');
+  const statusText = {met:'✦ Belirti örüntüsü karşılanıyor', partial:'~ Kısmi belirti var', unmet:'— Belirti görülmüyor'};
+  rl.innerHTML = `
+    <div class="rotterdam-item ${rotterdam.c1}">
+      <div class="rotterdam-dot"></div>
+      <div>
+        <div class="rotterdam-item-title">Oligoanovülasyon</div>
+        <div class="rotterdam-item-sub">Düzensiz veya seyrek adet — ${statusText[rotterdam.c1]}</div>
+      </div>
+    </div>
+    <div class="rotterdam-item ${rotterdam.c2}">
+      <div class="rotterdam-dot"></div>
+      <div>
+        <div class="rotterdam-item-title">Klinik/Biyokimyasal Hiperandrojenizm</div>
+        <div class="rotterdam-item-sub">Hirsutizm, akne, alopesi — ${statusText[rotterdam.c2]}</div>
+      </div>
+    </div>
+    <div class="rotterdam-item ${rotterdam.c3}">
+      <div class="rotterdam-dot"></div>
+      <div>
+        <div class="rotterdam-item-title">Polikistik Over Morfolojisi / Lab</div>
+        <div class="rotterdam-item-sub">Ultrason veya yüksek AMH — ${statusText[rotterdam.c3]}</div>
+      </div>
+    </div>`;
+
+  // Recs
+  const recList = document.getElementById('recList');
+  recList.innerHTML = recs.map(r => `
+    <div class="rec-item">
+      <div class="rec-icon">${r.icon}</div>
+      <div class="rec-text">${r.text}</div>
+    </div>`).join('');
+}
+
+function restartTest() {
+  Object.keys(answers).forEach(k => delete answers[k]);
+  document.getElementById('testScreen').style.display = 'block';
+  document.getElementById('resultScreen').style.display = 'none';
+  // reset selections
+  document.querySelectorAll('.q-opt').forEach(b=>b.classList.remove('selected'));
+  document.querySelectorAll('.q-card').forEach(c=>c.classList.remove('answered'));
+  updateProgress();
+  window.scrollTo(0,0);
+}
+
+// ─────────────────────────────────────────────
+//  INIT
+// ─────────────────────────────────────────────
+renderQuestions();
+updateProgress();
+</script>
+</body>
+</html>
